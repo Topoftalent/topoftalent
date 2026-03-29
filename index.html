@@ -7,28 +7,35 @@
   <style>
     body {
       margin: 0;
-      background: black;
       overflow: hidden;
     }
 
     iframe {
-      width: 100vw;
-      height: 100vh;
+      position: absolute;
+      width: 100%;
+      height: 100%;
       border: none;
+    }
+
+    #inicioFrame {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Cargamos tu intro -->
+  <!-- Intro -->
   <iframe src="intro.html" id="introFrame"></iframe>
 
+  <!-- Sitio principal -->
+  <iframe src="inicio.html" id="inicioFrame"></iframe>
+
   <script>
-    // Tiempo que dura tu intro (ajústalo)
-    const DURACION_INTRO = 5000; // 5 segundos
+    const DURACION_INTRO = 5000; // ajusta el tiempo
 
     setTimeout(() => {
-      window.location.href = "inicio.html";
+      document.getElementById("introFrame").style.display = "none";
+      document.getElementById("inicioFrame").style.display = "block";
     }, DURACION_INTRO);
   </script>
 
