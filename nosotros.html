@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosotros — Top of Talent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--blue:#3fa9ff;--black:#000;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s,border-color .15s}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
+header{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-weight:700;font-size:10px;letter-spacing:.2em;color:var(--white);text-transform:uppercase;line-height:1.35}
+nav.h-nav{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center}
+nav.h-nav a{font-size:11px;font-weight:400;letter-spacing:.22em;color:rgba(255,255,255,.35);text-decoration:none;text-transform:uppercase;padding:6px 22px;transition:color .2s;position:relative}
+nav.h-nav a:not(:last-child)::after{content:'|';position:absolute;right:0;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.1);pointer-events:none}
+nav.h-nav a:hover{color:var(--purple)}
+nav.h-nav a.active{color:var(--white)}
+nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;right:22px;height:1px;background:var(--purple)}
+.mob-btn{display:none;background:none;border:none;font-weight:700;font-size:10px;letter-spacing:.25em;color:var(--white);text-transform:uppercase;align-items:center;gap:8px;padding:0;transition:color .2s}
+.mob-btn:hover{color:var(--purple)}
+.mlines{display:flex;flex-direction:column;gap:4px}
+.mlines span{display:block;height:1px;background:currentColor;transition:width .3s}
+.mlines span:nth-child(1){width:20px}
+.mlines span:nth-child(2){width:13px}
+.mob-btn:hover .mlines span{width:20px}
+.page{flex:1;padding:130px 60px 0;position:relative;z-index:1}
+.big-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(72px,13vw,180px);text-transform:uppercase;letter-spacing:-.04em;line-height:.88;color:var(--purple);margin-bottom:72px;opacity:0;transform:translateY(24px);animation:slideUp .8s .1s forwards}
+.main-grid{display:grid;grid-template-columns:1fr 280px;gap:80px;align-items:start;margin-bottom:80px;opacity:0;transform:translateY(20px);animation:slideUp .8s .25s forwards}
+.section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.35em;color:var(--purple);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--purple)}
+.body-text{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.95;color:rgba(255,255,255,.92);margin-bottom:20px;max-width:620px}
+.body-text strong{color:var(--white);font-weight:700}
+.body-text em{font-style:italic;color:var(--purple)}
+.quote-wrap{margin:44px 0;position:relative;max-width:660px}
+.quote-base{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(18px,2.5vw,30px);letter-spacing:-.01em;line-height:1.45;color:rgba(255,255,255,.15);padding:28px 32px;border-left:3px solid rgba(200,108,255,.25);position:relative;z-index:1;transition:color .35s;user-select:none}
+.quote-reveal{position:absolute;inset:0;font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(18px,2.5vw,30px);letter-spacing:-.01em;line-height:1.45;color:var(--purple);padding:28px 32px;border-left:3px solid var(--purple);z-index:2;clip-path:circle(0% at 50% 50%);transition:clip-path .55s ease;pointer-events:none}
+.quote-wrap:hover .quote-reveal{clip-path:circle(140% at var(--qx,50%) var(--qy,50%))}
+.quote-wrap:hover .quote-base{color:rgba(255,255,255,.05)}
+.signature{font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.18em;color:rgba(200,108,255,.7);margin-top:40px;display:flex;align-items:center;gap:14px}
+.signature::before{content:'';display:block;width:32px;height:1px;background:rgba(200,108,255,.4)}
+.right-col{display:flex;flex-direction:column;gap:0;padding-top:4px}
+.credits-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.35em;color:var(--purple);text-transform:uppercase;margin-bottom:20px}
+.credit-item{display:flex;flex-direction:column;gap:3px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.07);transition:padding-left .2s;text-decoration:none}
+.credit-item:hover{padding-left:8px}
+.credit-item:hover .ci-platform{color:var(--purple)}
+.credit-item:first-of-type{border-top:1px solid rgba(255,255,255,.07)}
+.ci-platform{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:17px;color:var(--white);letter-spacing:.03em;transition:color .2s}
+.ci-handle{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.1em}
+.marquee-wrap{margin-top:40px;overflow:hidden;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.marquee-track{display:inline-flex;animation:marqueeLeft 18s linear infinite;white-space:nowrap}
+.marquee-item{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(80px,14vw,180px);text-transform:uppercase;letter-spacing:-.04em;color:var(--white);padding:0 60px;line-height:1;display:inline-block;user-select:none}
+.marquee-item .sep{color:var(--purple);margin:0 8px}
+footer{background:rgba(0,0,0,.9);border-top:1px solid rgba(255,255,255,.06);padding:28px 40px 20px;position:relative;z-index:1}
+.footer-main{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.footer-copy{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.25);text-transform:uppercase}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.2);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-legal{border-top:1px solid rgba(255,255,255,.06);padding-top:14px;display:flex;gap:20px;flex-wrap:wrap}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.18);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover{color:rgba(255,255,255,.5)}
+.nav-overlay{position:fixed;inset:0;background:var(--black);z-index:400;display:flex;flex-direction:column;padding:28px 40px;transform:translateY(-100%);transition:transform .55s cubic-bezier(.76,0,.24,1)}
+.nav-overlay.open{transform:translateY(0)}
+.nav-ol-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:80px}
+.nav-close{background:none;border:none;font-weight:700;font-size:11px;letter-spacing:.25em;color:#fff;text-transform:uppercase;transition:color .2s;padding:0}
+.nav-close:hover{color:var(--purple)}
+.nav-links{display:flex;flex-direction:column;gap:8px;flex:1;justify-content:center}
+.nav-link{font-weight:700;font-size:clamp(40px,8vw,88px);text-transform:uppercase;letter-spacing:-.02em;color:rgba(255,255,255,.2);text-decoration:none;line-height:1.05;transition:color .2s;display:flex;align-items:center;gap:18px}
+.nav-link:hover,.nav-link.current{color:#fff}
+.nav-link:hover .nl-n,.nav-link.current .nl-n{color:var(--purple)}
+.nl-n{font-size:11px;letter-spacing:.2em;color:rgba(255,255,255,.18);align-self:flex-end;margin-bottom:8px;transition:color .2s;font-weight:400}
+@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+@keyframes marqueeLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@media(max-width:900px){nav.h-nav{display:none}.mob-btn{display:flex}header{padding:18px 24px}.page{padding:110px 24px 0}.main-grid{grid-template-columns:1fr;gap:48px}.marquee-item{font-size:clamp(56px,14vw,120px);padding:0 32px}}
+
+footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24px 40px 20px;position:relative;z-index:1}
+.footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover{color:#c86cff}
+.footer-legal span:hover{color:#c86cff}
+.footer-copy-line{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase}
+
+.logo-icon{width:36px;height:36px;object-fit:contain;display:block;filter:invert(1)}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="crng"></div>
+<div class="nav-overlay" id="navOL">
+  <div class="nav-ol-hdr">
+    <a href="inicio.html" class="logo"><img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent"><span class="logo-text" style="color:white">Top of<br>Talent</span></a>
+    <button class="nav-close" onclick="closeNav()">Cerrar X</button>
+  </div>
+  <div class="nav-links">
+    <a href="inicio.html" class="nav-link"><span class="nl-n">01</span>Inicio</a>
+    <a href="talento.html" class="nav-link"><span class="nl-n">02</span>Talento</a>
+    <a href="proyectos.html" class="nav-link"><span class="nl-n">03</span>Proyectos</a>
+    <a href="nosotros.html" class="nav-link current"><span class="nl-n">04</span>Nosotros</a>
+  </div>
+</div>
+<header>
+  <a href="inicio.html" class="logo"><img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent"><span class="logo-text">Top of<br>Talent</span></a>
+  <nav class="h-nav">
+    <a href="inicio.html">Inicio</a>
+    <a href="talento.html">Talento</a>
+    <a href="proyectos.html">Proyectos</a>
+    <a href="nosotros.html" class="active">Nosotros</a>
+  </nav>
+  <button class="mob-btn" onclick="openNav()"><div class="mlines"><span></span><span></span></div>Menu</button>
+</header>
+<div class="page">
+  <h1 class="big-title">Nosotros</h1>
+  <div class="main-grid">
+    <div class="left-col">
+      <p class="section-eyebrow">Quiénes somos</p>
+      <p class="body-text">Somos una plataforma dedicada a <em>descubrir, impulsar y dar voz</em> a talentos emergentes que aún no reciben la visibilidad que realmente merecen. Creemos en el poder del arte para conectar, emocionar y transformar, y por eso acercamos a los amantes de la música y la creatividad a artistas que podrían pasar desapercibidos o <strong>creemos necesitan más reconocimiento.</strong></p>
+      <p class="body-text">Top of Talent nace con la idea de que <strong>el talento auténtico merece ser visto, escuchado y valorado.</strong> Nuestra misión es visibilizar el trabajo de nuevos creativos, artistas y, especialmente, músicos, construyendo un espacio donde su arte tenga el reconocimiento que merece. Creemos profundamente en <em>la escena ecuatoriana</em>, en su potencial y en su capacidad de competir al mismo nivel que las escenas que admiramos en el mundo.</p>
+      <div class="quote-wrap" id="qw">
+        <div class="quote-base">"Utilizar medios tecnológicos para transmitir la esencia del arte y de la música."</div>
+        <div class="quote-reveal" id="qr">"Utilizar medios tecnológicos para transmitir la esencia del arte y de la música."</div>
+      </div>
+      <p class="signature">XC &amp; SO</p>
+    </div>
+    <div class="right-col">
+      <p class="credits-label">Contacto &amp; Redes</p>
+      <a href="/cdn-cgi/l/email-protection#54373b3a203537203b32203538313a20143339353d387a373b39" class="credit-item"><span class="ci-platform">Email</span><span class="ci-handle"><span class="__cf_email__" data-cfemail="83e0ecedf7e2e0f7ece5f7e2efe6edf7c3e4eee2eaefade0ecee">[email&#160;protected]</span></span></a>
+      <a href="#" class="credit-item"><span class="ci-platform">Instagram</span><span class="ci-handle">@topoftalent</span></a>
+      <a href="#" class="credit-item"><span class="ci-platform">TikTok</span><span class="ci-handle">@topoftalent</span></a>
+      <a href="#" class="credit-item"><span class="ci-platform">Spotify</span><span class="ci-handle">Top of Talent</span></a>
+      <a href="#" class="credit-item"><span class="ci-platform">YouTube</span><span class="ci-handle">Top of Talent</span></a>
+    </div>
+  </div>
+</div>
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+    <span class="marquee-item">TOP OF TALENT<span class="sep">·</span></span>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+(function() {
+  // CURSOR - most robust implementation
+  var cur = document.getElementById('cur');
+  var crng = document.getElementById('crng');
+  if (!cur || !crng) {
+    // Create them if missing
+    cur = document.createElement('div');
+    cur.id = 'cur';
+    cur.style.cssText = 'position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform';
+    document.body.appendChild(cur);
+    crng = document.createElement('div');
+    crng.id = 'crng';
+    crng.style.cssText = 'position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s';
+    document.body.appendChild(crng);
+  }
+  var mx=0, my=0, rx=0, ry=0;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    cur.style.transform = 'translate(' + (mx-4) + 'px,' + (my-4) + 'px)';
+  });
+  (function loop() {
+    rx += (mx-rx) * 0.14; ry += (my-ry) * 0.14;
+    crng.style.transform = 'translate(' + (rx-14) + 'px,' + (ry-14) + 'px)';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      cur.style.width='12px'; cur.style.height='12px';
+      crng.style.width='40px'; crng.style.height='40px';
+      crng.style.borderColor='rgba(200,108,255,.9)';
+    });
+    el.addEventListener('mouseleave', function() {
+      cur.style.width='8px'; cur.style.height='8px';
+      crng.style.width='28px'; crng.style.height='28px';
+      crng.style.borderColor='rgba(200,108,255,.7)';
+    });
+  });
+
+  // QUOTE reveal
+  var qw = document.getElementById('qw');
+  var qr = document.getElementById('qr');
+  if (qw && qr) {
+    qw.addEventListener('mousemove', function(e) {
+      var r = qw.getBoundingClientRect();
+      var x = ((e.clientX-r.left)/r.width*100).toFixed(1)+'%';
+      var y = ((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+      qr.style.clipPath = 'circle(140% at '+x+' '+y+')';
+    });
+    qw.addEventListener('mouseleave', function() {
+      qr.style.clipPath = 'circle(0% at 50% 50%)';
+    });
+  }
+
+  // NAV
+  window.openNav = function() { document.getElementById('navOL').classList.add('open'); document.body.style.overflow='hidden'; };
+  window.closeNav = function() { document.getElementById('navOL').classList.remove('open'); document.body.style.overflow=''; };
+  document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeNav(); });
+})();
+</script>
+<script src="auth.js"></script>
+<footer>
+  <div class="footer-legal">
+    <a href="nosotros.html">About Us</a>
+    <span>Terminos y Condiciones</span>
+    <span>Politica de Privacidad</span>
+    <span>Politica de Cookies</span>
+    <span>Aviso Legal</span>
+  </div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+</footer>
+</body>
+</html>

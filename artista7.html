@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artista Siete — Top of Talent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--blue:#3fa9ff;--black:#000;--white:#fff;--gray:#888;--gray-dim:#2a2a2a;--cream:#f2f0ec}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{font-family:'JetBrains Mono',monospace;overflow-x:hidden;background:#000}
+#cur{position:fixed;width:8px;height:8px;background:var(--purple);border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.6);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s}
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:500;background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent)}
+.header-bar{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;position:relative}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;color:var(--white);text-transform:uppercase;line-height:1.35}
+.back-btn{position:absolute;left:50%;transform:translateX(-50%);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.65);text-transform:uppercase;text-decoration:none;transition:color .2s;white-space:nowrap}
+.back-btn:hover{color:var(--white)}
+.header-spacer{width:44px;flex-shrink:0}
+.snap-section{scroll-snap-align:start;min-height:100vh}
+#paso1{position:relative;height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;color:var(--white);background:linear-gradient(135deg,#0a0a0a 0%,#111 40%,#1a1a1a 100%)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.3) 50%,transparent 100%)}
+.photo-placeholder-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1}
+.photo-placeholder-center span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;color:rgba(255,255,255,.12);text-transform:uppercase;border:1px solid rgba(255,255,255,.07);padding:12px 20px}
+.hero-socials{position:absolute;right:40px;bottom:140px;z-index:10;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.social-stat{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.social-stat strong{color:var(--white)}
+.hero-bottom{position:relative;z-index:10;padding:0 40px 44px;display:flex;align-items:flex-end;justify-content:space-between}
+.hero-artist-name{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(52px,10vw,130px);text-transform:uppercase;letter-spacing:-.03em;line-height:.88;color:var(--white)}
+.hero-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-bottom:8px}
+.hero-ep{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.35);text-transform:uppercase}
+.hero-rank{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:12px;color:var(--purple);letter-spacing:.1em;border:1px solid rgba(200,108,255,.4);padding:5px 12px}
+.scroll-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.2);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+#paso2{background:var(--cream);color:var(--black);padding:120px 40px 80px;display:flex;flex-direction:column;justify-content:center}
+.paso-header{display:flex;align-items:baseline;gap:24px;margin-bottom:56px}
+.paso-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--purple);text-transform:uppercase}
+.paso-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(24px,4vw,40px);text-transform:uppercase;letter-spacing:-.01em}
+.specs-table{width:100%;border-collapse:collapse}
+.specs-table tr{border-top:1px solid rgba(0,0,0,.1);transition:background .2s}
+.specs-table tr:last-child{border-bottom:1px solid rgba(0,0,0,.1)}
+.specs-table tr:hover{background:rgba(0,0,0,.03)}
+.specs-table td{padding:18px 0;font-family:'JetBrains Mono',monospace;vertical-align:top}
+.specs-table td:first-child{font-size:10px;letter-spacing:.2em;color:#666;text-transform:uppercase;width:35%}
+.specs-table td:last-child{font-size:13px;color:var(--black)}
+.spec-highlight{color:var(--purple)}
+#paso3{background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column}
+.gallery-header{padding:120px 40px 60px;display:flex;align-items:flex-end;justify-content:space-between}
+.gallery-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(56px,9vw,110px);text-transform:uppercase;letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.gallery-note{text-align:right;max-width:280px}
+.gallery-note p{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.08em;line-height:1.6;font-style:italic}
+.gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;flex:1}
+.gallery-photo{background:var(--gray-dim);aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.gallery-photo:first-child{grid-row:1/3;aspect-ratio:auto}
+.photo-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:transform .5s ease}
+.gallery-photo:hover .photo-bg{transform:scale(1.04)}
+.g1{background:linear-gradient(160deg,#0a0a0a,#111)}
+.g2{background:linear-gradient(160deg,#111,#1a1a1a)}
+.g3{background:linear-gradient(160deg,#1a1a1a,#050505)}
+.g4{background:linear-gradient(160deg,#050505,#0a0a0a)}
+.photo-placeholder-icon{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:rgba(255,255,255,.12);text-transform:uppercase;border:1px solid rgba(255,255,255,.06);padding:8px 12px}
+.photo-label{position:absolute;bottom:14px;left:14px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.25);text-transform:uppercase}
+#paso4{background:#fff;color:var(--black);padding:120px 40px 80px}
+.bio-layout{display:grid;grid-template-columns:2fr 1fr;gap:80px;align-items:start}
+.bio-main{padding-top:8px}
+.bio-headline{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(15px,2vw,22px);line-height:1.5;margin-bottom:36px;letter-spacing:-.01em}
+.bio-body{display:flex;flex-direction:column;gap:18px}
+.bio-body p{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9;color:#333}
+.bio-body p strong{color:var(--black);font-weight:400;font-style:italic}
+.bio-right{display:flex;flex-direction:column;gap:22px;padding-top:8px}
+.credit-block{display:flex;flex-direction:column;gap:6px}
+.credit-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;color:#666;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(0,0,0,.1)}
+.credit-item{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--black);line-height:1.6}
+#paso5{background:var(--cream);color:var(--black);padding:120px 40px 60px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh}
+.quote-section{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:800px}
+.quote-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:#666;text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:14px}
+.quote-eyebrow::before{content:'';display:block;width:30px;height:1px;background:var(--purple)}
+.quote-text{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(28px,5vw,60px);letter-spacing:-.02em;line-height:1.15;margin-bottom:32px}
+.quote-text em{font-weight:300;font-style:italic;color:#666}
+.quote-attr{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;color:#666;text-transform:uppercase}
+.profile-cta{display:flex;align-items:center;gap:14px;margin-top:44px;flex-wrap:wrap}
+.btn-dark{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:14px 22px;transition:background .2s}
+.btn-dark:hover{background:var(--purple)}
+.btn-outline{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.25);color:var(--black);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:14px 22px;transition:all .2s}
+.btn-outline:hover{border-color:var(--purple);color:var(--purple)}
+.btn-next{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,108,255,.4);color:var(--purple);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:14px 22px;transition:all .2s}
+.btn-next:hover{background:var(--purple);color:var(--black)}
+.next-artist{background:var(--black);border-top:1px solid var(--gray-dim);padding:56px 40px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:padding-left .3s}
+.next-artist:hover{padding-left:56px}
+.next-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;color:var(--gray);text-transform:uppercase;margin-bottom:8px}
+.next-name{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(28px,5vw,56px);text-transform:uppercase;letter-spacing:-.02em;color:var(--white)}
+.next-arrow{font-size:32px;color:var(--purple);transition:transform .3s}
+.next-artist:hover .next-arrow{transform:translateX(8px)}
+footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 40px 20px}
+.footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover,.footer-legal span:hover{color:#c86cff}
+.footer-copy-line{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase}
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+@media(max-width:768px){.header-bar{padding:16px 20px}#paso2,#paso4,#paso5{padding:100px 20px 60px}.gallery-header{padding:100px 20px 40px;flex-direction:column;gap:16px;align-items:flex-start}.gallery-grid{grid-template-columns:1fr 1fr}.gallery-photo:first-child{grid-row:auto}.bio-layout{grid-template-columns:1fr;gap:40px}.bio-right{display:none}.profile-cta{flex-direction:column;align-items:flex-start}.next-artist{padding:40px 20px}.hero-socials{right:20px;bottom:130px}}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="crng"></div>
+<header>
+  <div class="header-bar">
+    <a href="talento.html" class="logo">
+      <img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent">
+      <span class="logo-text">Top of<br>Talent</span>
+    </a>
+    <a href="talento.html" class="back-btn">← Todos los Artistas</a>
+    <div class="header-spacer"></div>
+  </div>
+</header>
+<section id="paso1" class="snap-section">
+  <div class="hero-overlay"></div>
+  <div class="photo-placeholder-center"><span>Foto Principal — Artista Siete</span></div>
+  <div class="hero-socials">
+    <span class="social-stat">INSTAGRAM <strong>33K</strong></span>
+    <span class="social-stat">SPOTIFY <strong>8K</strong> oyentes/mes</span>
+    <span class="social-stat">YOUTUBE <strong>25K</strong> subs</span>
+    <span class="social-stat">TIKTOK <strong>18K</strong></span>
+  </div>
+  <div class="hero-bottom">
+    <h1 class="hero-artist-name">Artista Siete</h1>
+    <div class="hero-badges">
+      <span class="hero-ep">EP.07 · 2025</span>
+      <span class="hero-rank">#07 TOP OF TALENT</span>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5l4 4 4-4" stroke="currentColor" stroke-width="1.2"/></svg></div>
+</section>
+<section id="paso2" class="snap-section">
+  <div class="paso-header fade-up"><span class="paso-num">02 —</span><h2 class="paso-title">Perfil del Artista</h2></div>
+  <table class="specs-table">
+    <tr class="fade-up"><td>Nombre artístico</td><td>Artista Siete</td></tr>
+    <tr class="fade-up"><td>Ciudad de origen</td><td>Cuenca, Ecuador</td></tr>
+    <tr class="fade-up"><td>Género musical</td><td><span class="spec-highlight">Metal - Rock</span></td></tr>
+    <tr class="fade-up"><td>Activo desde</td><td>2015</td></tr>
+    <tr class="fade-up"><td>Tipo</td><td>Banda</td></tr>
+    <tr class="fade-up"><td>Sello</td><td>Independiente</td></tr>
+    <tr class="fade-up"><td>Discografía</td><td>Forja (2017) - Abismo (2019) - Hierro (2022)</td></tr>
+    <tr class="fade-up"><td>Colaboraciones</td><td>Artista Tres - Festival Rock Quitumbe</td></tr>
+    <tr class="fade-up"><td>Score Top of Talent</td><td><span class="spec-highlight" style="font-size:20px;font-weight:700">80 / 100</span></td></tr>
+  </table>
+</section>
+<section id="paso3" class="snap-section">
+  <div class="gallery-header">
+    <h2 class="gallery-title fade-up">GALERÍA</h2>
+    <div class="gallery-note"><p>*Las imágenes utilizadas fueron extraídas de las redes sociales de los talentos y pertenecen a sus respectivos creadores.</p></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-photo"><div class="photo-bg g1"><span class="photo-placeholder-icon">Foto Principal</span></div><span class="photo-label">Foto 01 · Press</span></div>
+    <div class="gallery-photo"><div class="photo-bg g2"><span class="photo-placeholder-icon">Foto 02</span></div><span class="photo-label">Foto 02 · Live</span></div>
+    <div class="gallery-photo"><div class="photo-bg g3"><span class="photo-placeholder-icon">Foto 03</span></div><span class="photo-label">Foto 03 · Studio</span></div>
+    <div class="gallery-photo"><div class="photo-bg g4"><span class="photo-placeholder-icon">Foto 04</span></div><span class="photo-label">Foto 04 · Event</span></div>
+  </div>
+</section>
+<section id="paso4" class="snap-section">
+  <div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:36px;margin-bottom:56px">
+    <span class="paso-num" style="color:var(--purple)">04 —</span>
+    <h2 class="paso-title" style="color:var(--black)">Biografía</h2>
+  </div>
+  <div class="bio-layout">
+    <div class="bio-main fade-up"><p class="bio-headline">La banda de metal mas consistente del Ecuador: 4 albumes, presencia internacional, sin ceder.</p><div class="bio-body"><p>Artista Siete lleva desde 2015 construyendo el catalogo de metal mas solido del Ecuador. Demostraron que no era necesario mudarse para tener exito.</p><p>Forja (2017) fue seleccionado por revistas de Mexico y Argentina como uno de los albumes latinoamericanos del anio.</p><p>Abismo (2019) los llevo a su primera gira sudamericana con fechas en Colombia, Peru y Chile.</p><p>Hierro (2022): produccion impecable, composicion ambiciosa, la misma actitud de no concesiones. El metal ecuatoriano apunta aqui.</p></div></div>
+    <div class="bio-right fade-up"><div class="credit-block"><span class="credit-label">Discografía destacada</span><span class="credit-item">Forja (2017)</span><span class="credit-item">Abismo (2019)</span><span class="credit-item">Hierro (2022)</span></div><div class="credit-block"><span class="credit-label">Colaboraciones</span><span class="credit-item">Artista Tres</span><span class="credit-item">Festival Rock Quitumbe</span></div></div>
+  </div>
+</section>
+<section id="paso5" class="snap-section">
+  <div class="quote-section">
+    <p class="quote-eyebrow">Resumen de carrera</p>
+    <blockquote class="quote-text fade-up">Metal que no pide disculpas,<br>no busca aprobacion,<br>y no para.</blockquote>
+    <p class="quote-attr fade-up">— Top of Talent, 2025</p>
+    <div class="profile-cta fade-up">
+      <a href="#" class="btn-dark" target="_blank" rel="noopener">Escuchar en Spotify →</a>
+      <a href="#" class="btn-outline" target="_blank" rel="noopener">Ver en Instagram</a>
+      <a href="artista8.html" class="btn-next">Siguiente: Artista Ocho →</a>
+    </div>
+  </div>
+</section>
+<a href="artista8.html" class="next-artist">
+  <div><p class="next-label">Siguiente artista</p><p class="next-name">Artista Ocho</p></div>
+  <span class="next-arrow">→</span>
+</a>
+<footer>
+  <div class="footer-legal">
+    <a href="nosotros.html">About Us</a>
+    <span>Terminos y Condiciones</span>
+    <span>Politica de Privacidad</span>
+    <span>Politica de Cookies</span>
+    <span>Aviso Legal</span>
+  </div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+</footer>
+<script>
+(function() {
+  var cur=document.getElementById('cur'),crng=document.getElementById('crng');
+  var mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.transform='translate('+(mx-4)+'px,'+(my-4)+'px)';});
+  (function loop(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;crng.style.transform='translate('+(rx-14)+'px,'+(ry-14)+'px)';requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){cur.style.width='12px';cur.style.height='12px';crng.style.width='40px';crng.style.height='40px';crng.style.borderColor='rgba(200,108,255,.9)';});
+    el.addEventListener('mouseleave',function(){cur.style.width='8px';cur.style.height='8px';crng.style.width='28px';crng.style.height='28px';crng.style.borderColor='rgba(200,108,255,.6)';});
+  });
+  var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.15});
+  document.querySelectorAll('.fade-up').forEach(function(el){obs.observe(el);});
+})();
+</script>
+<script src="auth.js"></script>
+</body>
+</html>

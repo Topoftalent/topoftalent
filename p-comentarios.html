@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comentarios — Top of Talent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--black:#000;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'JetBrains Mono',monospace;background:#0a0a0a;color:var(--white);cursor:none;display:flex;flex-direction:column}
+.cursor{position:fixed;width:8px;height:8px;background:var(--purple);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(200,108,255,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .1s ease}
+
+/* HEADER */
+
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 40px;background:rgba(0,0,0,.9);border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:30px;height:30px;flex-shrink:0}
+.logo-text{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;color:#fff;text-transform:uppercase;line-height:1.35}
+/* BACK BUTTON — centered absolutely */
+.back-btn{position:absolute;left:50%;transform:translateX(-50%);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.45);text-decoration:none;text-transform:uppercase;transition:color .2s;white-space:nowrap}
+.back-btn:hover{color:#fff}
+/* RIGHT SPACER — mirrors logo width so back btn stays truly centered */
+.header-right-space{width:60px;flex-shrink:0}
+
+.back-btn:hover{color:var(--white)}
+/* MAIN STAGE */
+.stage{
+  flex:1;position:relative;display:flex;flex-direction:column;
+  justify-content:center;overflow:hidden;
+}
+
+/* Title overlay — top left */
+.stage-title{
+  position:absolute;top:32px;left:40px;z-index:20;
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
+  font-weight:700;font-size:clamp(36px,5vw,64px);
+  letter-spacing:-.02em;text-transform:uppercase;
+  line-height:.9;color:rgba(255,255,255,.08);
+  pointer-events:none;user-select:none;
+}
+
+/* CAROUSEL */
+.carousel{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  height:340px;
+  perspective:1200px;
+}
+
+.tweet-slot{
+  position:absolute;
+  width:340px;
+  transition:
+    transform 0.7s cubic-bezier(.68,-.05,.27,1.05),
+    opacity 0.7s ease,
+    filter 0.7s ease;
+  will-change:transform,opacity;
+}
+
+/* STATES: left2, left1, center, right1, right2 + hidden */
+.tweet-slot[data-pos="-2"]{
+  transform:translateX(-680px) scale(0.72) rotateY(22deg);
+  opacity:0;filter:blur(4px);
+  z-index:1;
+}
+.tweet-slot[data-pos="-1"]{
+  transform:translateX(-380px) scale(0.82) rotateY(12deg);
+  opacity:0.45;filter:blur(1.5px);
+  z-index:2;
+}
+.tweet-slot[data-pos="0"]{
+  transform:translateX(0) scale(1) rotateY(0deg);
+  opacity:1;filter:blur(0);
+  z-index:10;
+}
+.tweet-slot[data-pos="1"]{
+  transform:translateX(380px) scale(0.82) rotateY(-12deg);
+  opacity:0.45;filter:blur(1.5px);
+  z-index:2;
+}
+.tweet-slot[data-pos="2"]{
+  transform:translateX(680px) scale(0.72) rotateY(-22deg);
+  opacity:0;filter:blur(4px);
+  z-index:1;
+}
+
+/* TWEET CARD */
+.tweet{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;
+  padding:24px;
+  backdrop-filter:blur(12px);
+  width:340px;
+}
+.tweet.is-center{
+  background:rgba(255,255,255,.94);
+  border-color:rgba(255,255,255,.95);
+  color:#111;
+}
+.tweet.is-side{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08);
+}
+
+.tweet-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tweet-avatar{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:linear-gradient(135deg,#1a1a2e,#2a1540);
+  border:1px solid rgba(255,255,255,.12);
+}
+.tweet.is-center .tweet-avatar{background:linear-gradient(135deg,#f0ede8,#e0ddd8)}
+.tweet-name{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:5px}
+.tweet.is-center .tweet-name{color:#111}
+.tweet-name .dot{color:#1d9bf0;font-size:14px}
+.tweet-handle{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
+.tweet.is-center .tweet-handle{color:rgba(0,0,0,.45)}
+.tweet-body{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:rgba(255,255,255,.8);margin-bottom:16px}
+.tweet.is-center .tweet-body{color:#222}
+.tweet-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.tweet.is-center .tweet-foot{border-top-color:rgba(0,0,0,.1)}
+.tweet-src{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.08em}
+.tweet.is-center .tweet-src{color:rgba(0,0,0,.4)}
+.tweet-mail{font-size:9px;color:#1d9bf0;letter-spacing:.05em}
+
+/* NAV DOTS */
+.nav-dots{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:16px 0 8px;position:relative;z-index:20;flex-shrink:0;
+}
+.dot-btn{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:none;cursor:none;
+  transition:background .3s,transform .3s;padding:0;
+}
+.dot-btn.active{background:var(--purple);transform:scale(1.4)}
+
+/* ARROW BUTTONS */
+.arrow-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  z-index:20;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.5);font-size:18px;
+  width:44px;height:44px;border-radius:50%;
+  cursor:none;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.arrow-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+.arrow-left{left:24px}
+.arrow-right{right:24px}
+
+/* TICKER FOOTER */
+.ticker-footer{flex-shrink:0;border-top:1px solid #1a1a1a;overflow:hidden;white-space:nowrap;padding:12px 0;background:#0a0a0a}
+.ticker-track{display:inline-flex;animation:tickerMove 28s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;gap:14px;padding:0 28px;font-size:10px;letter-spacing:.18em;color:#333;text-transform:uppercase}
+.tdot{width:4px;height:4px;border-radius:50%;background:var(--purple);flex-shrink:0}
+@keyframes tickerMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+@media(max-width:768px){
+  header{padding:16px 20px}
+  .arrow-left{left:8px}.arrow-right{right:8px}
+  .tweet-slot[data-pos="-1"]{transform:translateX(-220px) scale(0.78) rotateY(8deg)}
+  .tweet-slot[data-pos="1"]{transform:translateX(220px) scale(0.78) rotateY(-8deg)}
+  .tweet-slot[data-pos="-2"],.tweet-slot[data-pos="2"]{opacity:0}
+}
+
+footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24px 40px 20px;position:relative;z-index:1}
+.footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover{color:#c86cff}
+.footer-legal span:hover{color:#c86cff}
+.footer-copy-line{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="rng"></div>
+
+<header>
+  <a href="inicio.html" class="logo">
+    <img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent">
+    <span class="logo-text" style="color:white">Top of<br>Talent</span>
+  </a>
+  <a href="proyectos.html" class="back-btn">← Proyectos</a>
+  <div class="header-right-space"></div>
+</header>
+
+<div class="stage">
+  <div class="stage-title">Comen<br>tarios</div>
+
+  <div class="carousel" id="carousel">
+    <button class="arrow-btn arrow-left" onclick="move(-1)">←</button>
+    <button class="arrow-btn arrow-right" onclick="move(1)">→</button>
+    <!-- slots injected by JS -->
+  </div>
+
+  <div class="nav-dots" id="navDots"></div>
+</div>
+
+<div class="ticker-footer">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="tdot"></span>Opinión Editorial</span>
+    <span class="ticker-item"><span class="tdot"></span>@topoftalent</span>
+    <span class="ticker-item"><span class="tdot"></span>Industria Musical Ecuador</span>
+    <span class="ticker-item"><span class="tdot"></span>Talento Nacional</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+    <span class="ticker-item"><span class="tdot"></span>Opinión Editorial</span>
+    <span class="ticker-item"><span class="tdot"></span>@topoftalent</span>
+    <span class="ticker-item"><span class="tdot"></span>Industria Musical Ecuador</span>
+    <span class="ticker-item"><span class="tdot"></span>Talento Nacional</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+  </div>
+</div>
+
+<script>
+var tweets = [
+  "En Ecuador se prioriza a artistas extranjeros en festivales y medios. ¡Demos espacio al talento nacional! Necesitamos políticas culturales que los impulsen.",
+  "Muchos artistas trabajan sin contratos justos ni garantías laborales. Necesitamos una industria más profesional y regulada. 🤝👊",
+  "La industria ecuatoriana necesita más colaboración y menos competencia. Festivales y proyectos colectivos pueden fortalecer nuestra identidad musical. 🎸",
+  "Las canciones ecuatorianas merecen videoclips de calidad mundial. Invertir en producción audiovisual puede ser la llave para conquistar más público internacional. 🎬",
+  "El streaming cambió todo, pero el artista independiente ecuatoriano todavía no tiene las herramientas para competir de igual a igual. Eso tiene que cambiar. 💻",
+  "Cada vez que un artista ecuatoriano llega lejos, lo hace a pesar del sistema, no gracias a él. Imaginen lo que pasaría si el sistema los apoyara. 🚀"
+];
+
+var current = 0;
+var total = tweets.length;
+var carousel = document.getElementById('carousel');
+var navDots = document.getElementById('navDots');
+var autoTimer;
+
+// Build slots (5 visible positions: -2 to +2)
+var slots = [];
+for (var i = -2; i <= 2; i++) {
+  var slot = document.createElement('div');
+  slot.className = 'tweet-slot';
+  slot.setAttribute('data-pos', i);
+  carousel.appendChild(slot);
+  slots.push(slot);
+}
+
+// Build nav dots
+for (var d = 0; d < total; d++) {
+  var btn = document.createElement('button');
+  btn.className = 'dot-btn' + (d === 0 ? ' active' : '');
+  btn.setAttribute('data-i', d);
+  btn.onclick = (function(idx){ return function(){ goTo(idx); }; })(d);
+  navDots.appendChild(btn);
+}
+
+function makeTweetHTML(idx, isCenter) {
+  var cls = isCenter ? 'tweet is-center' : 'tweet is-side';
+  return '<div class="' + cls + '">' +
+    '<div class="tweet-header">' +
+      '<div class="tweet-avatar">🎵</div>' +
+      '<div>' +
+        '<div class="tweet-name">Top of Talent <span class="dot">●</span></div>' +
+        '<div class="tweet-handle">@topoftalent</div>' +
+      '</div>' +
+    '</div>' +
+    '<p class="tweet-body">' + tweets[idx] + '</p>' +
+    '<div class="tweet-foot">' +
+      '<span class="tweet-src">Top of Talent</span>' +
+      '<span class="tweet-mail">contactoftalent@gmail.com</span>' +
+    '</div>' +
+  '</div>';
+}
+
+function mod(n, m) { return ((n % m) + m) % m; }
+
+function render() {
+  for (var s = 0; s < slots.length; s++) {
+    var pos = s - 2; // -2 to +2
+    var tIdx = mod(current + pos, total);
+    var isCenter = (pos === 0);
+    slots[s].innerHTML = makeTweetHTML(tIdx, isCenter);
+  }
+  // Update dots
+  var dots = navDots.querySelectorAll('.dot-btn');
+  dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+}
+
+function goTo(idx) {
+  current = mod(idx, total);
+  render();
+  resetAuto();
+}
+
+function move(dir) { goTo(current + dir); }
+
+function resetAuto() {
+  clearInterval(autoTimer);
+  autoTimer = setInterval(function(){ move(1); }, 4000);
+}
+
+// Keyboard nav
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') move(-1);
+  if (e.key === 'ArrowRight') move(1);
+});
+
+// Touch/swipe
+var touchX = null;
+carousel.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; }, {passive:true});
+carousel.addEventListener('touchend', function(e){
+  if (touchX === null) return;
+  var dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 40) move(dx < 0 ? 1 : -1);
+  touchX = null;
+}, {passive:true});
+
+// Cursor
+var cur = document.getElementById('cur'), rng = document.getElementById('rng');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', function(e){ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*.13; ry+=(my-ry)*.13; rng.style.left=rx+'px'; rng.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button').forEach(function(el){
+  el.addEventListener('mouseenter',function(){ cur.style.width='14px'; cur.style.height='14px'; rng.style.width='44px'; rng.style.height='44px'; rng.style.borderColor='rgba(200,108,255,.8)'; });
+  el.addEventListener('mouseleave',function(){ cur.style.width='8px'; cur.style.height='8px'; rng.style.width='30px'; rng.style.height='30px'; rng.style.borderColor='rgba(200,108,255,.5)'; });
+});
+
+render();
+resetAuto();
+</script>
+<footer>
+  <div class="footer-legal">
+    <a href="nosotros.html">About Us</a>
+    <span>Terminos y Condiciones</span>
+    <span>Politica de Privacidad</span>
+    <span>Politica de Cookies</span>
+    <span>Aviso Legal</span>
+  </div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+</footer>
+<script src="auth.js"></script>
+</body>
+</html>
