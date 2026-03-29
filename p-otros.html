@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Otros Talentos — Top of Talent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--black:#000;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s}
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 40px;background:rgba(0,0,0,.9);border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:30px;height:30px;flex-shrink:0}
+.logo-text{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;color:#fff;text-transform:uppercase;line-height:1.35}
+.back-btn{position:absolute;left:50%;transform:translateX(-50%);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.45);text-decoration:none;text-transform:uppercase;transition:color .2s;white-space:nowrap}
+.back-btn:hover{color:#fff}
+.header-right-space{width:60px;flex-shrink:0}
+.main-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(48px,9vw,120px);text-transform:uppercase;letter-spacing:-.03em;text-align:center;line-height:1;padding:24px 40px 32px;flex-shrink:0}
+.rows{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;overflow:hidden;padding-bottom:20px}
+.marquee-row{overflow:hidden;padding:10px 0}
+.marquee-track{display:inline-flex;gap:60px;white-space:nowrap}
+.marquee-row:nth-child(odd) .marquee-track{animation:scrollLeft 25s linear infinite}
+.marquee-row:nth-child(even) .marquee-track{animation:scrollRight 25s linear infinite}
+@keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes scrollRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.talent-item{display:inline-flex;flex-direction:column;align-items:flex-start;transition:opacity .2s}
+.talent-item:hover{opacity:.7}
+.talent-name{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(24px,3.5vw,52px);letter-spacing:-.01em;line-height:1.1;color:#fff}
+.talent-cat{font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,13px);letter-spacing:.15em;color:rgba(255,255,255,.4);text-transform:lowercase;margin-top:2px}
+footer{flex-shrink:0;border-top:1px solid rgba(255,255,255,.08);padding:24px 40px 20px;background:#000}
+.footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover,.footer-legal span:hover{color:#c86cff}
+.footer-copy-line{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase}
+@media(max-width:768px){header{padding:16px 20px}.main-title{font-size:clamp(36px,12vw,72px);padding:16px 20px 24px}}
+
+.footer-legal a{cursor:none!important}
+.footer-legal a:hover{color:#c86cff}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="crng"></div>
+
+<header>
+  <a href="inicio.html" class="logo">
+    <img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent">
+    <span class="logo-text">Top of<br>Talent</span>
+  </a>
+  <a href="proyectos.html" class="back-btn">← Proyectos</a>
+  <div class="header-right-space"></div>
+</header>
+
+<h1 class="main-title">Otros Talentos</h1>
+<div class="rows" id="rows"></div>
+
+<footer>
+  <div class="footer-legal">
+    <a href="nosotros.html">About Us</a>
+    <a href="#" data-legal="terminos">Términos y Condiciones</a>
+    <a href="#" data-legal="privacidad">Política de Privacidad</a>
+    <a href="#" data-legal="cookies">Política de Cookies</a>
+    <a href="#" data-legal="aviso">Aviso Legal</a>
+  </div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+</footer>
+
+<script>
+var rows = [
+  [
+    {name:'Bryam Heredia', cat:'fotografia', link:'ot-bryam.html'},
+    {name:'Domenica Azuero', cat:'deporte', link:'#'},
+    {name:'Dayanna Copete', cat:'modelaje', link:'#'}
+  ],
+  [
+    {name:'Ana Maria Weir', cat:'modelaje', link:'#'},
+    {name:'Veronica Banchon', cat:'modelaje', link:'#'},
+    {name:'Rayneer Alba', cat:'fotografia', link:'#'}
+  ],
+  [
+    {name:'Nathaly Quinonez', cat:'modelaje', link:'#'},
+    {name:'Michael Morales', cat:'deporte', link:'ot-michael.html'},
+    {name:'Alfredo Campo', cat:'deporte', link:'#'}
+  ]
+];
+
+var container = document.getElementById('rows');
+rows.forEach(function(rowData) {
+  var rowEl = document.createElement('div');
+  rowEl.className = 'marquee-row';
+  var track = document.createElement('div');
+  track.className = 'marquee-track';
+  // Duplicate for seamless loop
+  var all = rowData.concat(rowData).concat(rowData);
+  all.forEach(function(t) {
+    var item = (t.link && t.link !== '#') ? document.createElement('a') : document.createElement('div');
+    if (t.link && t.link !== '#') {
+      item.href = t.link;
+      item.style.textDecoration = 'none';
+    }
+    item.className = 'talent-item';
+    var arrow = (t.link && t.link !== '#') ? ' <span style="font-size:.55em;color:#c86cff;vertical-align:middle">→</span>' : '';
+    item.innerHTML = '<span class="talent-name">' + t.name + arrow + '</span><span class="talent-cat">' + t.cat + '</span>';
+    track.appendChild(item);
+  });
+  rowEl.appendChild(track);
+  container.appendChild(rowEl);
+});
+
+// Cursor
+var cur = document.getElementById('cur');
+var crng = document.getElementById('crng');
+var mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', function(e) {
+  mx = e.clientX; my = e.clientY;
+  cur.style.transform = 'translate(' + (mx-4) + 'px,' + (my-4) + 'px)';
+});
+(function loop() {
+  rx += (mx-rx) * 0.14;
+  ry += (my-ry) * 0.14;
+  crng.style.transform = 'translate(' + (rx-14) + 'px,' + (ry-14) + 'px)';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a').forEach(function(el) {
+  el.addEventListener('mouseenter', function() {
+    cur.style.width='12px'; cur.style.height='12px';
+    crng.style.width='40px'; crng.style.height='40px';
+    crng.style.borderColor='rgba(200,108,255,.9)';
+  });
+  el.addEventListener('mouseleave', function() {
+    cur.style.width='8px'; cur.style.height='8px';
+    crng.style.width='28px'; crng.style.height='28px';
+    crng.style.borderColor='rgba(200,108,255,.7)';
+  });
+});
+</script>
+<script src="legal.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

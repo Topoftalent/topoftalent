@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top of Talent</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;cursor:none}
+
+/* cursor */
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:9999;left:-20px;top:-20px}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:9998;left:-20px;top:-20px;transition:left .08s ease,top .08s ease}
+
+/* blobs */
+.blob{position:fixed;border-radius:50%;filter:blur(180px);pointer-events:none;z-index:0}
+#b1{width:70vw;height:70vw;background:#c86cff;top:-20%;right:-15%;opacity:0;transition:opacity 1.4s}
+#b2{width:60vw;height:60vw;background:#3fa9ff;bottom:-15%;left:-10%;opacity:0;transition:opacity 1.4s .4s}
+
+/* white flash overlay */
+#flash{position:fixed;inset:0;background:#fff;z-index:80;opacity:0;pointer-events:none;transition:opacity .12s}
+
+/* ── ALL SCENES ── */
+.scene{position:fixed;inset:0;z-index:10;opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.scene.active{pointer-events:all}
+
+/* ── S1: ticker ── */
+#s1{align-items:flex-end;opacity:1}
+.ticker-wrap{width:100%;overflow:hidden;white-space:nowrap;padding:14px 0;border-top:1px solid #222;background:#000;opacity:0;transition:opacity .7s .4s}
+.ticker-wrap.on{opacity:1}
+.t-track{display:inline-flex;animation:tScroll 14s linear infinite}
+.t-item{display:inline-flex;align-items:center;gap:16px;padding:0 32px;font-size:11px;letter-spacing:.22em;color:#333;text-transform:uppercase}
+.t-dot{width:4px;height:4px;border-radius:50%;background:#c86cff;flex-shrink:0}
+@keyframes tScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── S2: split TOP OF / TALENT ── */
+#s2{z-index:20}
+.st{position:absolute;top:0;left:0;right:0;height:50%;background:#fff;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;overflow:hidden;transform:translateY(-100%);transition:transform .65s cubic-bezier(.76,0,.24,1)}
+.sb{position:absolute;bottom:0;left:0;right:0;height:50%;background:#000;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;overflow:hidden;transform:translateY(100%);transition:transform .65s cubic-bezier(.76,0,.24,1)}
+.sw{font-size:clamp(52px,11vw,150px);font-weight:700;text-transform:uppercase;letter-spacing:-.03em;line-height:1}
+.st .sw{color:#000}
+.sb .sw{color:#fff}
+/* open state */
+.st.open{transform:translateY(0)}
+.sb.open{transform:translateY(0)}
+/* close back */
+.st.close{transform:translateY(-100%)}
+.sb.close{transform:translateY(100%)}
+
+/* ── S3: word flash ── */
+#s3{z-index:30;background:#000}
+.wd{
+  position:absolute;
+  font-size:clamp(64px,14vw,180px);
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:-.04em;
+  line-height:1;
+  text-align:center;
+  color:#fff;
+  opacity:0;
+  transition:opacity .18s ease;
+}
+.wd.on{opacity:1}
+/* last word — purple neon */
+.wd.neon{
+  color:#c86cff;
+  text-shadow:0 0 30px rgba(200,108,255,.8),0 0 70px rgba(200,108,255,.4);
+  transition:opacity .35s ease;
+}
+
+/* ── S4: DESCUBRE TALENTO split ── */
+#s4{z-index:40}
+.dt{position:absolute;top:0;left:0;right:0;height:50%;background:#fff;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;overflow:hidden;transform:translateY(-100%);transition:transform .65s cubic-bezier(.76,0,.24,1)}
+.db{position:absolute;bottom:0;left:0;right:0;height:50%;background:#000;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;overflow:hidden;transform:translateY(100%);transition:transform .65s cubic-bezier(.76,0,.24,1)}
+.dw{font-size:clamp(44px,9vw,130px);font-weight:700;text-transform:uppercase;letter-spacing:-.03em;line-height:1}
+.dt .dw{color:#000}
+.db .dw{color:#c86cff;text-shadow:0 0 40px rgba(200,108,255,.5)}
+.dt.open{transform:translateY(0)}
+.db.open{transform:translateY(0)}
+.dt.close{transform:translateY(-100%)}
+.db.close{transform:translateY(100%)}
+
+/* ── S5: logo ── */
+#s5{z-index:50;flex-direction:column;gap:24px;background:#000}
+.lbox-img{width:clamp(260px,40vw,520px);height:auto;transform:scale(0) rotate(-8deg);transition:transform .8s cubic-bezier(.68,-.05,.27,1.05);mix-blend-mode:screen;opacity:0}
+.lbox-img.on{transform:scale(1) rotate(0deg);opacity:1}
+
+/* ── SKIP ── */
+#skip{position:fixed;bottom:56px;right:40px;z-index:300;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;color:rgba(255,255,255,.22);text-transform:uppercase;background:none;border:none;cursor:pointer;padding:0;transition:color .2s;opacity:0;animation:fadeSkip .5s 1.6s forwards}
+#skip:hover{color:rgba(255,255,255,.7)}
+@keyframes fadeSkip{to{opacity:1}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="crng"></div>
+<div class="blob" id="b1"></div>
+<div class="blob" id="b2"></div>
+<div id="flash"></div>
+
+<!-- S1 ticker -->
+<div class="scene" id="s1">
+  <div class="ticker-wrap" id="tw">
+    <div class="t-track">
+      <span class="t-item"><span class="t-dot"></span>Talento Nacional</span>
+      <span class="t-item"><span class="t-dot"></span>Ecuador</span>
+      <span class="t-item"><span class="t-dot"></span>Rankings</span>
+      <span class="t-item"><span class="t-dot"></span>Artistas</span>
+      <span class="t-item"><span class="t-dot"></span>Música</span>
+      <span class="t-item"><span class="t-dot"></span>Top of Talent</span>
+      <span class="t-item"><span class="t-dot"></span>2025</span>
+      <span class="t-item"><span class="t-dot"></span>Talento Nacional</span>
+      <span class="t-item"><span class="t-dot"></span>Ecuador</span>
+      <span class="t-item"><span class="t-dot"></span>Rankings</span>
+      <span class="t-item"><span class="t-dot"></span>Artistas</span>
+      <span class="t-item"><span class="t-dot"></span>Música</span>
+      <span class="t-item"><span class="t-dot"></span>Top of Talent</span>
+      <span class="t-item"><span class="t-dot"></span>2025</span>
+    </div>
+  </div>
+</div>
+
+<!-- S2 split TOP OF / TALENT -->
+<div class="scene" id="s2">
+  <div class="st" id="s2t"><span class="sw">TOP OF</span></div>
+  <div class="sb" id="s2b"><span class="sw">TALENT</span></div>
+</div>
+
+<!-- S3 word flash -->
+<div class="scene" id="s3">
+  <div class="wd" id="wd"></div>
+</div>
+
+<!-- S4 DESCUBRE TALENTO split -->
+<div class="scene" id="s4">
+  <div class="dt" id="s4t"><span class="dw">DESCUBRE</span></div>
+  <div class="db" id="s4b"><span class="dw">TALENTO</span></div>
+</div>
+
+<!-- S5 logo -->
+<div class="scene" id="s5">
+  <img src="logo2.png" id="lbox" class="lbox-img" alt="Top of Talent">
+</div>
+
+<button id="skip" onclick="skip()">Omitir →</button>
+
+<script>
+// ── words ──
+var WORDS = [
+  {t:'Descubrimiento', neon:false, dur:320, gap:120},
+  {t:'Visibilidad',    neon:false, dur:300, gap:100},
+  {t:'Creatividad',    neon:false, dur:320, gap:120},
+  {t:'Comunidad',      neon:false, dur:300, gap:100},
+  {t:'Cultura',        neon:false, dur:320, gap:120},
+  {t:'Impulso',        neon:false, dur:300, gap:100},
+  {t:'Talento',        neon:false, dur:350, gap:60},
+  {t:'Talento',        neon:true,  dur:600, gap:0}
+];
+
+// ── cursor ──
+var cur=document.getElementById('cur');
+var crng=document.getElementById('crng');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=(mx-4)+'px';
+  cur.style.top=(my-4)+'px';
+});
+(function loop(){
+  rx+=(mx-rx)*.15; ry+=(my-ry)*.15;
+  crng.style.left=(rx-14)+'px';
+  crng.style.top=(ry-14)+'px';
+  requestAnimationFrame(loop);
+})();
+
+// ── flash ──
+function doFlash(cb){
+  var f=document.getElementById('flash');
+  f.style.transition='opacity .08s';
+  f.style.opacity='1';
+  setTimeout(function(){
+    f.style.transition='opacity .22s';
+    f.style.opacity='0';
+    if(cb) setTimeout(cb,220);
+  },80);
+}
+
+// ── show/hide scenes ──
+function show(id, dur){
+  var el=document.getElementById(id);
+  el.style.transition='opacity '+(dur||350)+'ms ease';
+  el.style.opacity='1';
+}
+function hide(id, dur){
+  var el=document.getElementById(id);
+  el.style.transition='opacity '+(dur||300)+'ms ease';
+  el.style.opacity='0';
+}
+
+// ── split open+close ──
+function splitRun(topId,botId,onDone){
+  var t=document.getElementById(topId);
+  var b=document.getElementById(botId);
+  // open
+  setTimeout(function(){t.classList.add('open');b.classList.add('open');},30);
+  // close
+  setTimeout(function(){
+    t.classList.add('close'); t.classList.remove('open');
+    b.classList.add('close'); b.classList.remove('open');
+    setTimeout(onDone,700);
+  },1200);
+}
+
+// ── word burst ──
+function runWords(onDone){
+  var wd=document.getElementById('wd');
+  var i=0;
+  function next(){
+    if(i>=WORDS.length){onDone();return;}
+    var w=WORDS[i++];
+    wd.className='wd'+(w.neon?' neon':'');
+    wd.textContent=w.t;
+    // force reflow
+    void wd.offsetWidth;
+    wd.classList.add('on');
+    setTimeout(function(){
+      wd.classList.remove('on');
+      setTimeout(next, w.gap);
+    }, w.dur);
+  }
+  next();
+}
+
+// ── main timeline ──
+function run(){
+  // blobs
+  setTimeout(function(){
+    document.getElementById('b1').style.opacity='0.1';
+    document.getElementById('b2').style.opacity='0.09';
+  },400);
+
+  // ticker appears
+  setTimeout(function(){
+    document.getElementById('tw').classList.add('on');
+  },300);
+
+  // 1.8s — flash → S2 split "TOP OF / TALENT"
+  setTimeout(function(){
+    doFlash(function(){
+      hide('s1');
+      show('s2');
+      splitRun('s2t','s2b',function(){
+        hide('s2');
+        // flash → S3 words
+        doFlash(function(){
+          show('s3');
+          runWords(function(){
+            // words done → S3 fades, flash → S4 split "DESCUBRE TALENTO"
+            setTimeout(function(){
+              hide('s3');
+              doFlash(function(){
+                show('s4');
+                splitRun('s4t','s4b',function(){
+                  hide('s4');
+                  doFlash(function(){
+                    // S5 logo
+                    show('s5');
+                    setTimeout(function(){document.getElementById('lbox').classList.add('on');},80);
+                    setTimeout(function(){document.getElementById('lname').classList.add('on');},400);
+                    // fade out and redirect
+                    setTimeout(function(){
+                      hide('s5',900);
+                      setTimeout(function(){window.location.href='inicio.html';},950);
+                    },2200);
+                  });
+                });
+              });
+            }, 200);
+          });
+        });
+      });
+    });
+  },1800);
+}
+
+function skip(){window.location.href='inicio.html';}
+
+run();
+</script>
+<script src="legal.js"></script>
+</body>
+</html>

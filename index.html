@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top of Talent</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000;overflow:hidden}
+</style>
+</head>
+<body>
+<script>
+  // Si ya vio la intro en esta sesion, va directo al inicio
+  // Si no, va a la intro que luego redirige sola a inicio.html
+  if (sessionStorage.getItem('tot_intro_seen')) {
+    window.location.replace('inicio.html');
+  } else {
+    sessionStorage.setItem('tot_intro_seen', '1');
+    window.location.replace('intro.html');
+  }
+</script>
+</body>
+</html>
