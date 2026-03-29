@@ -1,7 +1,36 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=inicio.html">
-  </head>
-  <body></body>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Top of Talent</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cargamos tu intro -->
+  <iframe src="intro.html" id="introFrame"></iframe>
+
+  <script>
+    // Tiempo que dura tu intro (ajústalo)
+    const DURACION_INTRO = 5000; // 5 segundos
+
+    setTimeout(() => {
+      window.location.href = "inicio.html";
+    }, DURACION_INTRO);
+  </script>
+
+</body>
 </html>
