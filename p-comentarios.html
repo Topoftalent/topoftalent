@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comentarios — Top of Talent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--blue:#3fa9ff;--black:#000;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+body{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
+  background:var(--black);color:var(--white);
+  min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden
+}
+
+/* NOISE OVERLAY */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.12;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E")
+}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s}
+
+/* HEADER */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 40px;
+  background:rgba(0,0,0,.75);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(16px)
+}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:36px;height:36px;object-fit:contain;display:block;filter:invert(1)}
+.logo-text{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;color:#fff;text-transform:uppercase;line-height:1.35}
+.back-btn{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.22em;color:rgba(255,255,255,.4);text-decoration:none;text-transform:uppercase;
+  transition:color .2s;white-space:nowrap
+}
+.back-btn:hover{color:#fff}
+.header-right-space{width:60px;flex-shrink:0}
+
+/* PAGE LAYOUT */
+.page{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 40px 48px;position:relative;z-index:1;min-height:calc(100vh - 80px)
+}
+
+/* EYEBROW + TITLE */
+.page-title{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;
+  font-size:clamp(44px,9vw,100px);text-transform:uppercase;letter-spacing:-.03em;
+  line-height:.88;white-space:nowrap;color:#fff;margin-bottom:56px
+}
+
+/* ── CARD STACK ── */
+.stack-scene{
+  position:relative;
+  width:380px;
+  height:488px;
+  margin-bottom:32px;
+}
+
+/* Each card is absolute, same position, stacks via z-index + transform */
+.cc{
+  position:absolute;
+  top:0;left:0;
+  width:380px;height:460px;
+  /* TRANSPARENT background with blur */
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:20px;
+  padding:36px 32px 28px;
+  display:flex;flex-direction:column;
+  transition:transform .5s cubic-bezier(.4,0,.2,1), opacity .5s ease, box-shadow .5s ease, border-color .5s ease;
+  will-change:transform,opacity;
+  user-select:none;
+  touch-action:pan-y;
+}
+
+/* Position states */
+.cc[data-pos="0"]{
+  transform:translateY(0) scale(1);
+  z-index:10;opacity:1;
+  border-color:rgba(200,108,255,.5);
+  box-shadow:0 0 0 1px rgba(200,108,255,.18), 0 12px 48px rgba(200,108,255,.12);
+  background:rgba(200,108,255,.06);
+}
+.cc[data-pos="1"]{
+  transform:translateY(8px) scale(.96);
+  z-index:9;opacity:.75;
+  border-color:rgba(255,255,255,.07);
+}
+.cc[data-pos="2"]{
+  transform:translateY(16px) scale(.92);
+  z-index:8;opacity:.5;
+}
+.cc[data-pos="3"]{
+  transform:translateY(22px) scale(.88);
+  z-index:7;opacity:.3;
+}
+.cc[data-pos="4"]{
+  transform:translateY(26px) scale(.84);
+  z-index:6;opacity:.15;
+}
+.cc[data-pos="5"]{
+  transform:translateY(28px) scale(.80);
+  z-index:5;opacity:.07;
+}
+
+/* Card being dragged — disable transition */
+.cc.is-dragging{transition:none}
+
+/* CARD CONTENT */
+.cc-handle{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+  color:var(--purple);text-transform:uppercase;margin-bottom:20px;
+  display:flex;align-items:center;gap:6px;opacity:.8
+}
+.cc-handle::before{content:'@';opacity:.5}
+
+.cc-divider-top{height:1px;background:rgba(255,255,255,.08);margin-bottom:20px}
+
+.cc-quote{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;
+  font-size:clamp(16px,2.3vw,21px);line-height:1.5;letter-spacing:-.01em;
+  color:#fff;flex:1;display:flex;align-items:center;
+}
+
+
+
+/* Opening quote mark */
+.cc-q-mark{
+  font-family:Georgia,serif;font-size:4em;line-height:1;
+  color:rgba(200,108,255,.25);margin-right:8px;margin-top:-.15em;flex-shrink:0;
+  font-style:normal;
+}
+
+/* ── CONTROLS ── */
+.stack-controls{
+  display:flex;align-items:center;gap:20px;margin-bottom:20px;
+}
+.arr-btn{
+  width:44px;height:44px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.5);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;backdrop-filter:blur(8px);
+}
+.arr-btn:hover{border-color:var(--purple);color:var(--purple);background:rgba(200,108,255,.08)}
+
+/* Dots */
+.stack-dots{display:flex;gap:7px;align-items:center}
+.sd{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.15);transition:all .3s;
+}
+.sd.on{background:var(--purple);transform:scale(1.35)}
+
+/* Swipe hint */
+.swipe-hint{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.22em;color:rgba(255,255,255,.18);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.swipe-hint span{color:rgba(200,108,255,.35)}
+
+/* FOOTER */
+footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.07);padding:24px 40px 20px;position:relative;z-index:1}
+.footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:10px}
+.footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.22);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-legal a:hover,.footer-legal span:hover{color:#c86cff}
+.footer-legal a{cursor:none!important}
+.footer-copy-line{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.13);text-transform:uppercase}
+
+@media(max-width:520px){
+  .stack-scene,.cc{width:calc(100vw - 60px);min-width:280px}
+  .page-title{white-space:normal;font-size:clamp(38px,12vw,64px)}
+  header{padding:16px 20px}
+  .page{padding:40px 20px 36px}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="crng"></div>
+
+<header>
+  <a href="inicio.html" class="logo">
+    <img src="logo.png" class="logo-icon" alt="Top of Talent">
+    <span class="logo-text">Top of<br>Talent</span>
+  </a>
+  <a href="proyectos.html" class="back-btn">← Proyectos</a>
+  <div class="header-right-space"></div>
+</header>
+
+<div class="page">
+  <h1 class="page-title">Comentarios</h1>
+
+  <div class="stack-scene" id="scene"></div>
+
+  <div class="stack-controls">
+    <button class="arr-btn" id="btnPrev" title="Anterior">←</button>
+    <div class="stack-dots" id="dots"></div>
+    <button class="arr-btn" id="btnNext" title="Siguiente">→</button>
+  </div>
+
+  <p class="swipe-hint"><span>←</span> Arrastra o usa las flechas <span>→</span></p>
+</div>
+
+<footer>
+  <div class="footer-legal">
+    <a href="nosotros.html">About Us</a>
+    <a href="#" data-legal="terminos">Términos y Condiciones</a>
+    <a href="#" data-legal="privacidad">Política de Privacidad</a>
+    <a href="#" data-legal="cookies">Política de Cookies</a>
+    <a href="#" data-legal="aviso">Aviso Legal</a>
+  </div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+</footer>
+
+<script>
+var DATA = [
+  {text:"La plataforma que la escena ecuatoriana necesitaba. Finalmente alguien documenta lo que está pasando con seriedad.", author:"Fan desde Quito", num:"01"},
+  {text:"Descubrí a tres artistas que no conocía y todos se convirtieron en parte de mi playlist diaria. El ranking es real.", author:"Oyente frecuente", num:"02"},
+  {text:"El diseño habla del nivel que tiene. No parece una página hecha en Ecuador, parece algo internacional.", author:"Seguidor de Guayaquil", num:"03"},
+  {text:"Me alegra que alguien esté haciendo esto. Los artistas locales se lo merecen y Top of Talent les da el espacio.", author:"Músico independiente", num:"04"},
+  {text:"El Top 7 de esta semana estaba increíble. Exactamente el tipo de curaduría que faltaba en el país.", author:"Amante de la música", num:"05"},
+  {text:"Comparto cada actualización con mis amigos. Es la referencia cuando queremos saber qué está sonando fuerte en Ecuador.", author:"Desde Cuenca", num:"06"}
+];
+
+var N = DATA.length;
+var current = 0;    // index of card visually "front" (data-pos="0")
+var autoT = null;
+var dragStart = null;
+var isDrag = false;
+
+// Build scene
+var scene = document.getElementById('scene');
+var dotsEl = document.getElementById('dots');
+var cards = [];
+
+DATA.forEach(function(d, i) {
+  var c = document.createElement('div');
+  c.className = 'cc';
+  c.id = 'cc' + i;
+  c.innerHTML =
+    '<div class="cc-handle">topoftalent <span style="opacity:.35;margin-left:8px">' + d.num + ' / 06</span></div>' +
+    '<div class="cc-divider-top"></div>' +
+    '<div class="cc-quote"><span class="cc-q-mark">&ldquo;</span>' + d.text + '</div>';
+  scene.appendChild(c);
+  cards.push(c);
+
+  var dot = document.createElement('div');
+  dot.className = 'sd';
+  dot.id = 'sd' + i;
+  dotsEl.appendChild(dot);
+});
+
+function posFor(cardIdx) {
+  // Visual position = how far this card is from current front
+  return (cardIdx - current + N) % N;
+}
+
+function render() {
+  cards.forEach(function(c, i) {
+    c.setAttribute('data-pos', posFor(i));
+  });
+  for (var j = 0; j < N; j++) {
+    var d = document.getElementById('sd' + j);
+    d.className = 'sd' + (j === current ? ' on' : '');
+  }
+}
+
+function advance() {
+  current = (current + 1) % N;
+  render();
+  resetAuto();
+}
+
+function retreat() {
+  current = (current - 1 + N) % N;
+  render();
+  resetAuto();
+}
+
+function startAuto() { autoT = setInterval(advance, 6000); }
+function resetAuto()  { clearInterval(autoT); startAuto(); }
+
+// Arrow buttons
+document.getElementById('btnNext').addEventListener('click', advance);
+document.getElementById('btnPrev').addEventListener('click', retreat);
+
+// ── DRAG on the front card ──
+// We attach to the scene and check if target is front card
+function getFrontCard() {
+  for (var i = 0; i < N; i++) {
+    if (parseInt(cards[i].getAttribute('data-pos')) === 0) return cards[i];
+  }
+  return null;
+}
+
+scene.addEventListener('mousedown', function(e) {
+  var fc = getFrontCard();
+  if (!fc) return;
+  dragStart = e.clientX;
+  isDrag = true;
+  fc.classList.add('is-dragging');
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!isDrag) return;
+  var fc = getFrontCard();
+  if (!fc) return;
+  var dx = e.clientX - dragStart;
+  fc.style.transform = 'translateX(' + dx + 'px) scale(1) rotate(' + (dx * 0.04) + 'deg)';
+});
+
+document.addEventListener('mouseup', function(e) {
+  if (!isDrag) return;
+  isDrag = false;
+  var fc = getFrontCard();
+  if (!fc) return;
+  fc.classList.remove('is-dragging');
+  fc.style.transform = '';
+  var dx = dragStart - e.clientX;
+  if (Math.abs(dx) > 70) {
+    dx > 0 ? advance() : retreat();
+  }
+  dragStart = null;
+});
+
+// Touch
+scene.addEventListener('touchstart', function(e) {
+  dragStart = e.touches[0].clientX;
+  isDrag = true;
+}, {passive:true});
+
+scene.addEventListener('touchend', function(e) {
+  if (!isDrag) return;
+  isDrag = false;
+  var dx = dragStart - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 60) { dx > 0 ? advance() : retreat(); }
+  dragStart = null;
+}, {passive:true});
+
+// Keyboard
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') advance();
+  if (e.key === 'ArrowLeft')  retreat();
+});
+
+render();
+startAuto();
+
+// CURSOR
+var cur=document.getElementById('cur'),crng=document.getElementById('crng');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.transform='translate('+(mx-4)+'px,'+(my-4)+'px)';});
+(function loop(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;crng.style.transform='translate('+(rx-14)+'px,'+(ry-14)+'px)';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button').forEach(function(el){
+  el.addEventListener('mouseenter',function(){cur.style.width='12px';cur.style.height='12px';crng.style.width='40px';crng.style.height='40px';crng.style.borderColor='rgba(200,108,255,.9)';});
+  el.addEventListener('mouseleave',function(){cur.style.width='8px';cur.style.height='8px';crng.style.width='28px';crng.style.height='28px';crng.style.borderColor='rgba(200,108,255,.7)';});
+});
+</script>
+<script src="legal.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>
