@@ -330,11 +330,85 @@ nav.h-nav a.active::before {
 
 .footer-legal a{cursor:none!important}
 .footer-legal a:hover{color:#c86cff}
+
+/* ── LIQUID GLASS BUTTON — Hazte Miembro ── */
+.d-member-lg{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;text-decoration:none!important;
+  padding:13px 24px;cursor:none!important;
+  border-radius:4px;border:none;
+  display:inline-flex;align-items:center;gap:8px;
+  color:#c86cff;
+  position:relative;
+  background:rgba(200,108,255,.07);
+  backdrop-filter:blur(18px) url('#lgf-inicio');
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:
+    inset 1.5px 1.5px 0.5px -2px rgba(255,255,255,.5),
+    inset -1.5px -1.5px 0.5px -2px rgba(255,255,255,.15),
+    inset 0 0 6px 3px rgba(200,108,255,.06),
+    0 0 0 1px rgba(200,108,255,.25),
+    0 4px 18px rgba(0,0,0,.45),
+    0 0 14px rgba(200,108,255,.18);
+  transition:all .3s cubic-bezier(.34,1.2,.64,1);
+  animation:member-pulse 3s ease-in-out infinite;
+}
+@keyframes member-pulse{
+  0%,100%{box-shadow:inset 1.5px 1.5px 0.5px -2px rgba(255,255,255,.5),inset 0 0 6px 3px rgba(200,108,255,.06),0 0 0 1px rgba(200,108,255,.25),0 4px 18px rgba(0,0,0,.45),0 0 14px rgba(200,108,255,.18);}
+  50%{box-shadow:inset 1.5px 1.5px 0.5px -2px rgba(255,255,255,.6),inset 0 0 8px 4px rgba(200,108,255,.1),0 0 0 1px rgba(200,108,255,.4),0 4px 18px rgba(0,0,0,.45),0 0 24px rgba(200,108,255,.35);}
+}
+.d-member-lg::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.4),transparent);
+  border-radius:50%;pointer-events:none;
+}
+.d-member-lg:hover{
+  animation:none;
+  background:rgba(200,108,255,.15);
+  color:#e0a0ff;
+  transform:translateY(-1px);
+  box-shadow:
+    inset 1.5px 1.5px 0.5px -2px rgba(255,255,255,.65),
+    inset 0 0 10px 5px rgba(200,108,255,.1),
+    0 0 0 1px rgba(200,108,255,.45),
+    0 6px 22px rgba(0,0,0,.55),
+    0 0 28px rgba(200,108,255,.35);
+}
+.d-member-lg:active{transform:translateY(1px) scale(.99);}
+
+/* ── WELCOME STATE BUTTONS ── */
+.welcome-btns{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.d-my-account{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;cursor:none!important;
+  padding:13px 20px;border-radius:4px;border:none;
+  color:rgba(255,255,255,.65);
+  background:rgba(255,255,255,.05);
+  box-shadow:0 0 0 1px rgba(255,255,255,.14),0 4px 14px rgba(0,0,0,.35);
+  transition:all .25s;
+}
+.d-my-account:hover{
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  box-shadow:0 0 0 1px rgba(255,255,255,.3),0 4px 18px rgba(0,0,0,.4),0 0 18px rgba(255,255,255,.12);
+}
 </style>
 <link rel="stylesheet" href="auth.css">
 <style>#tot-user-btn,#tot-dropdown{display:none!important}</style>
 </head>
 <body>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="lgf-inicio" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65 0.65" numOctaves="3" seed="2" result="noise"/>
+      <feGaussianBlur in="noise" stdDeviation="1.5" result="blur"/>
+      <feDisplacementMap in="SourceGraphic" in2="blur" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cring"></div>
@@ -398,9 +472,12 @@ nav.h-nav a.active::before {
             <a id="btn-iniciar-sesion" href="#" class="d-login" onclick="if(window.TotAuth){TotAuth.openLogin();}return false;">Iniciar Sesión</a>
           </div>
         </div>
-        <div id="inicio-welcome" style="display:none;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;letter-spacing:.08em;color:rgba(255,255,255,.7);align-items:center;gap:14px">
-          <span id="inicio-welcome-msg">Bienvenido</span>
-          <button onclick="if(window.TotAuth){TotAuth.openProfile('account');}" class="d-register" style="animation:reg-glow 2.8s ease-in-out infinite;border-radius:4px">Mi cuenta</button>
+        <div id="inicio-welcome" style="display:none;">
+          <div class="welcome-btns">
+            <span id="inicio-welcome-msg" style="font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;letter-spacing:.08em;color:rgba(255,255,255,.7);">Bienvenido</span>
+            <button onclick="if(window.TotAuth){TotAuth.openProfile('account');}" class="d-my-account">Mi cuenta</button>
+            <a href="membresia.html" class="d-member-lg" id="inicio-member-cta">★ Hazte Miembro</a>
+          </div>
         </div>
       </div>
     </div>

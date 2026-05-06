@@ -283,6 +283,23 @@ var css=`
 .tot-success-title{font-weight:700;font-size:24px;color:#fff;letter-spacing:-.01em;margin-bottom:8px}
 .tot-success-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.06em;line-height:1.7}
 
+/* Membership upsell card */
+.tot-member-upsell{background:linear-gradient(135deg,rgba(200,108,255,.1),rgba(63,169,255,.07));border:1px solid rgba(200,108,255,.3);border-radius:14px;padding:18px 20px;margin:18px 0 4px;text-align:left}
+.tot-member-upsell-title{font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.tot-member-upsell-title span{font-size:16px}
+.tot-member-upsell-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.7);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.tot-member-perks{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.tot-member-perks li{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);padding-left:16px;position:relative;line-height:1.5}
+.tot-member-perks li::before{content:'★';position:absolute;left:0;color:#c86cff;font-size:8px;top:1px}
+.tot-btn.member-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px;margin-top:0}
+.tot-btn.member-btn:hover{opacity:.9;box-shadow:0 0 28px 6px rgba(200,108,255,.4)}
+
+/* Dropdown membership */
+.tot-dd-item.member-cta{background:rgba(200,108,255,.08);border-bottom:1px solid rgba(200,108,255,.12)!important;color:#c86cff!important}
+.tot-dd-item.member-cta:hover{background:rgba(200,108,255,.18)!important;color:#fff!important}
+.tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
+.tot-dd-member-status.show{display:block}
+
 /* Delete */
 .tot-delete-warn{background:rgba(255,80,80,.05);border:1px solid rgba(255,80,80,.18);border-radius:10px;padding:14px;margin-bottom:18px}
 .tot-delete-warn p{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,100,100,.75);line-height:1.7}
@@ -332,6 +349,11 @@ var HTML=`
     <div class="tot-dd-user">
       <div class="tot-dd-uname" id="tot-dd-uname">–</div>
       <div class="tot-dd-fan" id="tot-dd-fan"></div>
+      <div class="tot-dd-member-status" id="tot-dd-member-status">★ Miembro Activo</div>
+    </div>
+    <div class="tot-dd-item member-cta" id="tot-dd-member-cta" onclick="window.location.href='membresia.html'">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      Hazte Miembro
     </div>
     <div class="tot-dd-item" onclick="TotAuth.openProfile('account')">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -433,7 +455,7 @@ var HTML=`
       <div class="tot-tc">
         <p><strong style="color:rgba(255,255,255,.7)">Términos — Top of Talent</strong></p>
         <p>Al registrarte aceptas nuestros términos de servicio y política de privacidad. El contenido es de uso personal y no comercial.</p>
-        <p>Tu información no será vendida a terceros. Top of Talent opera desde Milán y Praga, dirigido al público ecuatoriano.</p>
+        <p>Tu información no será vendida a terceros. Top of Talent opera desde Europa, dirigido al público ecuatoriano.</p>
         <p>Tienes derecho a acceder, rectificar y suprimir tus datos. Contacto: contactoftalent@gmail.com</p>
         <p>© 2026 topoftalentoficial.com</p>
       </div>
@@ -448,13 +470,24 @@ var HTML=`
     <div class="tot-section" id="reg-step4">
       <div class="tot-success">
         <div class="tot-success-icon">✓</div>
-        <div class="tot-success-title">Sign Up Complete</div>
+        <div class="tot-success-title">¡Cuenta Creada!</div>
         <div class="tot-success-sub">Bienvenido a Top of Talent.<br>Tu cuenta ha sido creada exitosamente.</div>
       </div>
       <div class="tot-output"><div class="tot-output-label">Tu número de fan</div><div class="tot-output-val purple" id="out-fan-val">–</div></div>
       <div class="tot-output"><div class="tot-output-label">Nombre de usuario</div><div class="tot-output-val" id="out-user-val">–</div></div>
       <div class="tot-output"><div class="tot-output-label">Fecha de creación</div><div class="tot-output-val" id="out-date-val">–</div></div>
-      <button class="tot-btn success-btn" onclick="TotAuth.closeRegister()">Entrar a Top of Talent →</button>
+      <div class="tot-member-upsell">
+        <div class="tot-member-upsell-title"><span>★</span> ¿Quieres ser Miembro?</div>
+        <div class="tot-member-upsell-sub">Acceso exclusivo · Fan Premium</div>
+        <ul class="tot-member-perks">
+          <li>Vota por tu artista favorito cada 24 horas</li>
+          <li>Aparece en el ranking de fans del artista</li>
+          <li>Acceso a la sección de comentarios</li>
+          <li>Descuentos en eventos y merch del artista</li>
+        </ul>
+        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia.html'">Ver Membresía →</button>
+      </div>
+      <button class="tot-btn ghost" style="margin-top:10px" onclick="TotAuth.closeRegister()">Continuar sin membresía</button>
     </div>
   </div>
 </div>
@@ -554,7 +587,7 @@ var HTML=`
         <p><strong style="color:rgba(255,255,255,.7)">Términos y Condiciones de Top of Talent</strong></p>
         <p>Al registrarte aceptas nuestros términos de servicio y política de privacidad.</p>
         <p>El contenido es de uso personal y no comercial. Está prohibida su reproducción sin autorización.</p>
-        <p>Tu información no será vendida a terceros. Operamos desde Milán y Praga para el público ecuatoriano.</p>
+        <p>Tu información no será vendida a terceros. Operamos desde Europa para el público ecuatoriano.</p>
         <p>Tienes derecho a acceder, rectificar y eliminar tus datos (RGPD). Menores de 16 años requieren autorización parental.</p>
         <p>© 2026 topoftalentoficial.com</p>
       </div>
@@ -825,6 +858,15 @@ window.TotAuth={
       ddOut.style.display='none';ddIn.style.display='block';
       document.getElementById('tot-dd-uname').textContent='@'+(u.username||'');
       document.getElementById('tot-dd-fan').textContent=u.fanNum||'';
+      var memberCta=document.getElementById('tot-dd-member-cta');
+      var memberStatus=document.getElementById('tot-dd-member-status');
+      if(u.isMember){
+        if(memberCta)memberCta.style.display='none';
+        if(memberStatus){memberStatus.style.display='block';memberStatus.classList.add('show');}
+      }else{
+        if(memberCta)memberCta.style.display='flex';
+        if(memberStatus)memberStatus.style.display='none';
+      }
       var wm=document.getElementById('inicio-welcome-msg');
       if(wm)wm.textContent='Hola, @'+u.username;
       var wa=document.getElementById('inicio-auth-area');
