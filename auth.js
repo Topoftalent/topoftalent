@@ -51,21 +51,57 @@ var css=`
 /* DROPDOWN */
 #tot-dropdown{
   position:fixed;top:66px;right:40px;z-index:499;
-  background:rgba(8,8,14,.96);border:1px solid rgba(200,108,255,.18);
-  min-width:210px;border-radius:12px;overflow:hidden;
+  background:rgba(8,8,14,.92);border:1px solid rgba(200,108,255,.2);
+  min-width:240px;border-radius:16px;overflow:hidden;
   opacity:0;transform:translateY(-8px) scale(.97);
   transition:opacity .2s,transform .2s;pointer-events:none;
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);
+  box-shadow:0 0 0 1px rgba(200,108,255,.1),0 20px 60px rgba(0,0,0,.55),0 0 40px rgba(200,108,255,.06);
 }
 #tot-dropdown.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
 .tot-dd-user{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(200,108,255,.04)}
 .tot-dd-uname{font-weight:700;font-size:13px;color:#fff}
 .tot-dd-fan{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(200,108,255,.6);letter-spacing:.1em;margin-top:3px}
-.tot-dd-item{display:flex;align-items:center;gap:11px;padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s,color .15s}
-.tot-dd-item:last-child{border-bottom:none}
-.tot-dd-item:hover{background:rgba(200,108,255,.1);color:#fff}
+
+/* logged-out items: big liquid glass buttons */
+#tot-dd-out{padding:10px;display:flex;flex-direction:column;gap:6px}
+#tot-dd-out .tot-dd-item{
+  font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
+  font-size:17px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+  padding:16px 20px;border-radius:10px;border-bottom:none;
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.04);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.08),inset -1px -1px 0 rgba(255,255,255,.03),0 0 0 1px rgba(255,255,255,.06);
+  transition:background .2s,box-shadow .2s,color .2s,transform .15s;
+}
+#tot-dd-out .tot-dd-item::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.18),transparent);
+  border-radius:50%;pointer-events:none;
+}
+#tot-dd-out .tot-dd-item:hover{
+  background:rgba(200,108,255,.12);color:#fff;transform:translateX(-2px);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(200,108,255,.3),0 0 20px rgba(200,108,255,.12);
+}
+#tot-dd-out .tot-dd-item svg{width:20px;height:20px;opacity:.6;flex-shrink:0}
+#tot-dd-out .tot-dd-item:hover svg{opacity:1}
+
+/* member-cta in logged-out stays purple */
+#tot-dd-out .tot-dd-item.member-cta{
+  color:#c86cff!important;background:rgba(200,108,255,.08)!important;
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(200,108,255,.2),0 0 16px rgba(200,108,255,.1)!important;
+}
+#tot-dd-out .tot-dd-item.member-cta:hover{background:rgba(200,108,255,.18)!important;color:#fff!important}
+
+/* logged-in items: compact as before */
+#tot-dd-in .tot-dd-item{display:flex;align-items:center;gap:11px;padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s,color .15s}
+#tot-dd-in .tot-dd-item:last-child{border-bottom:none}
+#tot-dd-in .tot-dd-item:hover{background:rgba(200,108,255,.1);color:#fff}
+#tot-dd-in .tot-dd-item.member-cta{background:rgba(200,108,255,.08);border-bottom:1px solid rgba(200,108,255,.12)!important;color:#c86cff!important}
+#tot-dd-in .tot-dd-item.member-cta:hover{background:rgba(200,108,255,.18)!important;color:#fff!important}
 .tot-dd-item.danger{color:rgba(255,80,80,.65)}
-.tot-dd-item.danger:hover{background:rgba(255,80,80,.08);color:#ff5050}
+.tot-dd-item.danger:hover{background:rgba(255,80,80,.08)!important;color:#ff5050!important}
 .tot-dd-sep{height:1px;background:rgba(255,255,255,.05)}
 
 /* ── BACKDROP — blurs the page behind ── */
@@ -294,9 +330,7 @@ var css=`
 .tot-btn.member-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px;margin-top:0}
 .tot-btn.member-btn:hover{opacity:.9;box-shadow:0 0 28px 6px rgba(200,108,255,.4)}
 
-/* Dropdown membership */
-.tot-dd-item.member-cta{background:rgba(200,108,255,.08);border-bottom:1px solid rgba(200,108,255,.12)!important;color:#c86cff!important}
-.tot-dd-item.member-cta:hover{background:rgba(200,108,255,.18)!important;color:#fff!important}
+/* Dropdown membership — scoped rules above per #tot-dd-out / #tot-dd-in */
 .tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
 .tot-dd-member-status.show{display:block}
 
