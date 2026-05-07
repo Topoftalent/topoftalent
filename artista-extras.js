@@ -328,7 +328,60 @@
     }, { threshold: .15 });
     paso5.querySelectorAll('.fade-up').forEach(function (el) { obs.observe(el); });
 
+    startDotMatrix();
     if (isMember) startTicker();
+  }
+
+  /* ── DOT MATRIX BACKGROUND ── */
+  function startDotMatrix() {
+    var section = document.getElementById('paso5');
+    if (!section) return;
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.18';
+    section.style.position = 'relative';
+    section.insertBefore(canvas, section.firstChild);
+
+    var ctx = canvas.getContext('2d');
+    var DOT = 3, GRID = 22;
+    var cols, rows, dots = [], startTime = Date.now();
+
+    function resize() {
+      var rect = section.getBoundingClientRect();
+      canvas.width  = rect.width;
+      canvas.height = rect.height;
+      cols = Math.ceil(rect.width / GRID);
+      rows = Math.ceil(rect.height / GRID);
+      buildDots();
+    }
+    function buildDots() {
+      dots = [];
+      var cx = cols / 2, cy = rows / 2;
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+        var d = Math.sqrt(Math.pow(c - cx, 2) + Math.pow(r - cy, 2));
+        dots.push({ c: c, r: r, delay: d * .04 + Math.random() * .3, target: .2 + Math.random() * .8 });
+      }
+    }
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var t = (Date.now() - startTime) / 1000;
+      var opLevels = [.05, .1, .18, .28, .38, .5, .62, .75, .88, 1];
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+        var p  = Math.max(0, Math.min(1, (t - d.delay) * 1.8));
+        var op = p * d.target;
+        if (op < .01) continue;
+        var opIdx = Math.min(9, Math.floor(op * 10));
+        if (t > d.delay + 3 + Math.random() * 2) { d.target = .2 + Math.random() * .8; d.delay = t + Math.random() * .5; }
+        ctx.beginPath();
+        ctx.arc(d.c * GRID + GRID / 2, d.r * GRID + GRID / 2, DOT / 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(200,108,255,' + opLevels[opIdx] + ')';
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    draw();
   }
 
   /* ── TICKER ANIMATION ── */
