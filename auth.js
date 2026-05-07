@@ -64,15 +64,15 @@ var css=`
 .tot-dd-fan{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(200,108,255,.6);letter-spacing:.1em;margin-top:3px}
 
 /* logged-out items: big liquid glass buttons */
-#tot-dd-out{padding:10px;display:flex;flex-direction:column;gap:6px}
+#tot-dd-out{padding:7px;display:flex;flex-direction:column;gap:4px}
 #tot-dd-out .tot-dd-item{
   font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
-  font-size:17px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:rgba(255,255,255,.85);
-  padding:16px 20px;border-radius:10px;border-bottom:none;
+  font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);
+  padding:12px 16px;border-radius:8px;border-bottom:none;
   position:relative;overflow:hidden;
-  background:rgba(255,255,255,.04);
-  box-shadow:inset 1px 1px 0 rgba(255,255,255,.08),inset -1px -1px 0 rgba(255,255,255,.03),0 0 0 1px rgba(255,255,255,.06);
+  background:rgba(255,255,255,.03);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.06),0 0 0 1px rgba(255,255,255,.05);
   transition:background .2s,box-shadow .2s,color .2s,transform .15s;
 }
 #tot-dd-out .tot-dd-item::before{
@@ -84,7 +84,7 @@ var css=`
   background:rgba(200,108,255,.12);color:#fff;transform:translateX(-2px);
   box-shadow:inset 1px 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(200,108,255,.3),0 0 20px rgba(200,108,255,.12);
 }
-#tot-dd-out .tot-dd-item svg{width:20px;height:20px;opacity:.6;flex-shrink:0}
+#tot-dd-out .tot-dd-item svg{width:15px;height:15px;opacity:.5;flex-shrink:0}
 #tot-dd-out .tot-dd-item:hover svg{opacity:1}
 
 /* member-cta in logged-out stays purple */
