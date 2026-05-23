@@ -127,7 +127,7 @@ var css=`
   border:1px solid rgba(255,255,255,.1);
   border-radius:20px;
   width:100%;max-width:440px;max-height:90vh;overflow-y:auto;
-  position:relative;overflow:hidden;
+  position:relative;
   /* entrance: slides up from below */
   transform:translateY(40px) scale(.96);opacity:0;
   transition:transform .45s cubic-bezier(.34,1.56,.64,1), opacity .35s ease;
@@ -148,12 +148,6 @@ var css=`
     radial-gradient(ellipse 60% 25% at 0% 0%, rgba(200,108,255,.14), transparent 70%),
     radial-gradient(ellipse 40% 20% at 100% 0%, rgba(63,169,255,.1), transparent 70%),
     radial-gradient(ellipse 50% 15% at 100% 100%, rgba(200,108,255,.08), transparent 60%);
-}
-/* Subtle grid texture */
-.tot-modal::after{
-  content:'';position:absolute;inset:0;border-radius:20px;pointer-events:none;z-index:0;opacity:.025;
-  background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);
-  background-size:28px 28px;
 }
 /* Traveling light beam on top edge */
 .tot-modal-beam{
@@ -604,6 +598,17 @@ var HTML=`
       <button class="tot-btn" onclick="TotAuth.saveProfile()">Guardar Cambios</button>
       <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4cff91;display:none;margin-top:8px" id="prof-saved">✓ Cambios guardados</div>
       <button class="tot-btn danger-btn" onclick="TotAuth.showDeleteConfirm()">⚠ Eliminar Cuenta</button>
+      <!-- Paso 1: mensaje emocional -->
+      <div id="delete-sad" style="display:none;margin-top:16px;background:rgba(200,108,255,.07);border:1px solid rgba(200,108,255,.22);border-radius:12px;padding:20px 18px;text-align:center">
+        <div style="font-size:28px;margin-bottom:10px">💜</div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;font-weight:700;margin-bottom:8px">Nos da mucha tristeza que te vayas</p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:18px">Has sido parte de la comunidad de Top of Talent. ¿Estás seguro de que quieres eliminar tu cuenta?</p>
+        <div style="display:flex;gap:10px">
+          <button class="tot-btn ghost" style="flex:1;margin-top:0" onclick="TotAuth.cancelDelete()">¡Me quedo 💜</button>
+          <button class="tot-btn danger-btn" style="flex:1;margin-top:0" onclick="TotAuth.showDeleteInput()">Sí, eliminar</button>
+        </div>
+      </div>
+      <!-- Paso 2: confirmación con texto -->
       <div id="delete-confirm" style="display:none;margin-top:16px">
         <div class="tot-delete-warn"><p><strong>ACCIÓN IRREVERSIBLE</strong><br><br>Perderás tu número de fan, historial y acceso a funciones exclusivas.</p></div>
         <label class="tot-label">Escribe <strong style="color:#ff5050">ELIMINAR</strong> para confirmar</label>
@@ -829,6 +834,7 @@ window.TotAuth={
     document.getElementById('notif-artists').checked=!!n.artists;
     document.getElementById('notif-events').checked=n.events!==false;
     document.getElementById('notif-marketing').checked=!!n.marketing;
+    document.getElementById('delete-sad').style.display='none';
     document.getElementById('delete-confirm').style.display='none';
     document.getElementById('prof-saved').style.display='none';
     TotAuth.switchTab(tab||'account');
@@ -864,8 +870,19 @@ window.TotAuth={
     if(idx>=0){users[idx]=u;saveUsers(users);}
     setSession(u);TotAuth.showToast('Preferencias guardadas ✓');
   },
-  showDeleteConfirm:function(){document.getElementById('delete-confirm').style.display='block';document.getElementById('delete-confirm-input').value='';},
-  cancelDelete:function(){document.getElementById('delete-confirm').style.display='none';},
+  showDeleteConfirm:function(){
+    document.getElementById('delete-sad').style.display='block';
+    document.getElementById('delete-confirm').style.display='none';
+  },
+  showDeleteInput:function(){
+    document.getElementById('delete-sad').style.display='none';
+    document.getElementById('delete-confirm').style.display='block';
+    document.getElementById('delete-confirm-input').value='';
+  },
+  cancelDelete:function(){
+    document.getElementById('delete-sad').style.display='none';
+    document.getElementById('delete-confirm').style.display='none';
+  },
   deleteAccount:function(){
     var val=document.getElementById('delete-confirm-input').value.trim();
     if(val!=='ELIMINAR'){alert('Escribe ELIMINAR para confirmar');return;}

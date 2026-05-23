@@ -264,13 +264,13 @@
     if (isMember) {
       var v       = gv();
       var myData  = (v[artistId] && v[artistId][username]) || { total: 0, last: 0 };
-      var canVote = (Date.now() - myData.last) > 86400000;
+      var canVote = (Date.now() - myData.last) > 28800000;
 
       area.innerHTML =
         '<button id="voteBtn" class="vote-btn"' + (canVote ? '' : ' disabled') + '>' +
           '<span class="vote-star">★</span>' + (canVote ? 'Votar' : 'Votaste hoy') +
         '</button>' +
-        '<p class="vote-legend">*Se restablece cada 24 horas</p>' +
+        '<p class="vote-legend">*Se restablece cada 8 horas</p>' +
         (myData.total > 0 ? '<p class="vote-my">Tus votos: <strong>' + myData.total + '</strong></p>' : '');
 
       var btn = area.querySelector('#voteBtn');
@@ -292,7 +292,7 @@
     } else {
       area.innerHTML =
         '<a href="membresia.html" class="vote-btn vote-upsell-btn"><span class="vote-star">★</span>Hazte Miembro para Votar</a>' +
-        '<p class="vote-legend">*Se restablece cada 24 horas</p>';
+        '<p class="vote-legend">*Se restablece cada 8 horas</p>';
     }
 
     // Contador público de votos (visible para todos)
