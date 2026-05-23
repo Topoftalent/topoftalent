@@ -82,21 +82,23 @@ footer{flex-shrink:0;border-top:1px solid rgba(255,255,255,.08);padding:24px 40p
 </footer>
 
 <script>
+// Artistas con ficha propia → su URL. Los demás apuntan a inicio.html
+// (TODO Firebase: reemplazar 'inicio.html' con la URL real de cada ficha)
 var rows = [
   [
-    {name:'Bryam Heredia', cat:'fotografia', link:'ot-bryam.html'},
-    {name:'Domenica Azuero', cat:'deporte', link:'#'},
-    {name:'Dayanna Copete', cat:'modelaje', link:'#'}
+    {name:'Bryam Heredia',    cat:'fotografia', link:'ot-bryam.html',   ready:true},
+    {name:'Domenica Azuero', cat:'deporte',     link:'inicio.html',     ready:false},
+    {name:'Dayanna Copete',  cat:'modelaje',    link:'inicio.html',     ready:false}
   ],
   [
-    {name:'Ana Maria Weir', cat:'modelaje', link:'#'},
-    {name:'Veronica Banchon', cat:'modelaje', link:'#'},
-    {name:'Rayneer Alba', cat:'fotografia', link:'#'}
+    {name:'Ana Maria Weir',    cat:'modelaje',   link:'inicio.html',    ready:false},
+    {name:'Veronica Banchon',  cat:'modelaje',   link:'inicio.html',    ready:false},
+    {name:'Rayneer Alba',      cat:'fotografia', link:'inicio.html',    ready:false}
   ],
   [
-    {name:'Nathaly Quinonez', cat:'modelaje', link:'#'},
-    {name:'Michael Morales', cat:'deporte', link:'ot-michael.html'},
-    {name:'Alfredo Campo', cat:'deporte', link:'#'}
+    {name:'Nathaly Quinonez', cat:'modelaje', link:'inicio.html',       ready:false},
+    {name:'Michael Morales',  cat:'deporte',  link:'ot-michael.html',   ready:true},
+    {name:'Alfredo Campo',    cat:'deporte',  link:'inicio.html',       ready:false}
   ]
 ];
 
@@ -106,16 +108,16 @@ rows.forEach(function(rowData) {
   rowEl.className = 'marquee-row';
   var track = document.createElement('div');
   track.className = 'marquee-track';
-  // Duplicate for seamless loop
   var all = rowData.concat(rowData).concat(rowData);
   all.forEach(function(t) {
-    var item = (t.link && t.link !== '#') ? document.createElement('a') : document.createElement('div');
-    if (t.link && t.link !== '#') {
-      item.href = t.link;
-      item.style.textDecoration = 'none';
-    }
+    var item = document.createElement('a');
+    item.href = t.link;
+    item.style.textDecoration = 'none';
     item.className = 'talent-item';
-    var arrow = (t.link && t.link !== '#') ? ' <span style="font-size:.55em;color:#c86cff;vertical-align:middle">→</span>' : '';
+    // Flecha sólida si tiene ficha propia, punteada si es placeholder
+    var arrow = t.ready
+      ? ' <span style="font-size:.55em;color:#c86cff;vertical-align:middle">→</span>'
+      : ' <span style="font-size:.45em;color:rgba(200,108,255,.4);vertical-align:middle" title="Próximamente">→</span>';
     item.innerHTML = '<span class="talent-name">' + t.name + arrow + '</span><span class="talent-cat">' + t.cat + '</span>';
     track.appendChild(item);
   });
