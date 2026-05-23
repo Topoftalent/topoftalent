@@ -534,26 +534,32 @@ function openNav()  { document.getElementById('navOL').classList.add('open');  d
 function closeNav() { document.getElementById('navOL').classList.remove('open'); document.body.style.overflow=''; }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeNav(); });
 
-// Inicio welcome state
+// Inicio welcome state — single source of truth, no setTimeout race
 function updateInicioAuth() {
   var session = null;
   try { session = JSON.parse(localStorage.getItem('tot_session')); } catch(e) {}
-  var authArea = document.getElementById('inicio-auth-area');
+  var authArea    = document.getElementById('inicio-auth-area');
   var welcomeArea = document.getElementById('inicio-welcome');
-  var welcomeMsg = document.getElementById('inicio-welcome-msg');
+  var welcomeMsg  = document.getElementById('inicio-welcome-msg');
   if (!authArea || !welcomeArea) return;
   if (session && session.username) {
-    authArea.style.display = 'none';
+    authArea.style.display    = 'none';
     welcomeArea.style.display = 'flex';
-    welcomeMsg.textContent = 'Hola, @' + session.username;
+    if (welcomeMsg) welcomeMsg.textContent = 'Hola, @' + session.username;
   } else {
-    authArea.style.display = 'block';
+    authArea.style.display    = 'block';
     welcomeArea.style.display = 'none';
   }
 }
-window.addEventListener('load', updateInicioAuth);
-// Re-check after auth.js runs
-setTimeout(updateInicioAuth, 800);
+// Run once when DOM is ready — auth.js also calls _updateBtn() which handles the same elements,
+// so we hook into the same moment instead of racing with a blind setTimeout.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateInicioAuth);
+} else {
+  updateInicioAuth();
+}
+// Keep in sync if user logs in/out via the auth modal without reloading
+window.addEventListener('tot-auth-change', updateInicioAuth);
 
 </script>
 

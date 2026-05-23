@@ -904,6 +904,7 @@ window.TotAuth={
   _emailExists:function(e){return getUsers().some(function(u){return u.email===e;});},
   _userExists:function(u){return getUsers().some(function(x){return x.username===u;});},
   _updateBtn:function(){
+    window.dispatchEvent(new Event('tot-auth-change'));
     var u=getSession();
     var btn=document.getElementById('tot-user-btn');
     var letter=document.getElementById('tot-avatar-letter');
