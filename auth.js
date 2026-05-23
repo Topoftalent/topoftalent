@@ -779,15 +779,13 @@ window.TotAuth={
   closeLogin:function(){document.getElementById('tot-log-backdrop').classList.remove('open');document.body.style.overflow='';},
   socialLogin:function(provider){
     var found=getUsers().find(function(u){return u.provider===provider;});
-    if(found){setSession(found);TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+found.username+'!');}
-    else{
-      var u={id:uid(),provider:provider,firstName:provider,lastName:'User',
-        email:provider.toLowerCase()+'_'+Date.now()+'@social.tot',
-        username:provider.toLowerCase()+'_'+Math.floor(Math.random()*9999),
-        country:'EC',fanNum:fanNum(),createdAt:today(),age:18,
-        notifications:{email:true,rankings:true,artists:false,events:true,marketing:false}};
-      var users=getUsers();users.push(u);saveUsers(users);setSession(u);
-      TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+u.username+'!');
+    if(found){
+      setSession(found);TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+found.username+'!');
+    } else {
+      // No account found — send through full registration flow (DOB + T&C required)
+      TotAuth.closeLogin();
+      TotAuth.openRegister();
+      TotAuth.socialReg(provider);
     }
   },
   submitLogin:function(){
