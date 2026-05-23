@@ -316,26 +316,20 @@ window.TotLegal = {
   }
 };
 
-// Wire footer links
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('[data-legal]').forEach(function(el) {
-    el.addEventListener('click', function(e) {
+// Wire footer links — run once only
+function _wireLegal(){
+  document.querySelectorAll('[data-legal]').forEach(function(el){
+    el.addEventListener('click',function(e){
       e.preventDefault();
       TotLegal.open(el.getAttribute('data-legal'));
     });
   });
   TotLegal.checkCookies();
-});
-
-// Also check if DOM is already ready
-if (document.readyState !== 'loading') {
-  document.querySelectorAll('[data-legal]').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-      e.preventDefault();
-      TotLegal.open(el.getAttribute('data-legal'));
-    });
-  });
-  TotLegal.checkCookies();
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',_wireLegal);
+}else{
+  _wireLegal();
 }
 
 })();

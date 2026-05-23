@@ -15,6 +15,12 @@ function clearSession(){ localStorage.removeItem(SK); }
 
 // ── UTILS ──
 function uid(){ return 'TOT-'+Math.random().toString(36).substr(2,4).toUpperCase()+Math.random().toString(36).substr(2,4).toUpperCase(); }
+function hashPwd(pwd){
+  var enc=new TextEncoder();
+  return crypto.subtle.digest('SHA-256',enc.encode(pwd)).then(function(buf){
+    return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+  });
+}
 function fanNum(){
   // Format: # + 6 last digits of timestamp + 2 random digits
   // Example: #847312-47 → unique per millisecond
@@ -722,8 +728,10 @@ window.TotAuth={
     if(!first||!last||!country)ok=false;
     if(!ok)return;
     var dob=document.getElementById('reg-dob').value;
-    _pendingUser={provider:'email',firstName:first,lastName:last,email:email,username:user,password:pwd,country:country,dob:dob,age:calcAge(dob),fanNum:fanNum(),createdAt:today()};
-    TotAuth.goTC();
+    hashPwd(pwd).then(function(hash){
+      _pendingUser={provider:'email',firstName:first,lastName:last,email:email,username:user,pwdHash:hash,country:country,dob:dob,age:calcAge(dob),fanNum:fanNum(),createdAt:today()};
+      TotAuth.goTC();
+    });
   },
   goTC:function(){
     if(_regProvider){
@@ -785,9 +793,21 @@ window.TotAuth={
   submitLogin:function(){
     var email=document.getElementById('log-email').value.trim();
     var pwd=document.getElementById('log-pwd').value;
-    var found=getUsers().find(function(u){return u.email===email&&u.password===pwd;});
-    if(found){setSession(found);TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+found.username+'!');}
-    else document.getElementById('log-err').classList.add('show');
+    var errEl=document.getElementById('log-err');
+    hashPwd(pwd).then(function(hash){
+      var found=getUsers().find(function(u){
+        return u.email===email&&(u.pwdHash===hash||(u.password&&u.password===pwd));
+      });
+      if(found){
+        // Migrate legacy plaintext password to hash silently
+        if(found.password&&!found.pwdHash){
+          found.pwdHash=hash;delete found.password;
+          var users=getUsers();var idx=users.findIndex(function(x){return x.id===found.id;});
+          if(idx>=0){users[idx]=found;saveUsers(users);}
+        }
+        setSession(found);TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+found.username+'!');
+      } else errEl.classList.add('show');
+    });
   },
 
   openProfile:function(tab){
@@ -826,9 +846,12 @@ window.TotAuth={
   },
   saveProfile:function(){
     var u=getSession();if(!u)return;
+    var newUser=document.getElementById('prof-user').value.trim();
+    if(!isValidUsername(newUser)){alert('Usuario inválido (3–20 chars, sin espacios ni caracteres especiales)');return;}
+    if(newUser!==u.username&&TotAuth._userExists(newUser)){alert('Ese nombre de usuario ya está en uso');return;}
     u.firstName=document.getElementById('prof-first').value.trim();
     u.lastName=document.getElementById('prof-last').value.trim();
-    u.username=document.getElementById('prof-user').value.trim();
+    u.username=newUser;
     u.country=document.getElementById('prof-country').value;
     var users=getUsers();var idx=users.findIndex(function(x){return x.id===u.id;});
     if(idx>=0){users[idx]=u;saveUsers(users);}

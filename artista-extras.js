@@ -7,6 +7,16 @@
   var username   = isLoggedIn ? ('@' + session.username) : null;
   var artistId   = document.body.dataset.artistId || 'artista1';
 
+  /* ── XSS PROTECTION ── */
+  function escapeHTML(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   /* ── STORAGE ── */
   function gv() { try { return JSON.parse(localStorage.getItem('tot_votes') || '{}'); } catch (e) { return {}; } }
   function sv(d) { localStorage.setItem('tot_votes', JSON.stringify(d)); }
@@ -15,7 +25,7 @@
 
   /* ── COMMENT DAILY LIMIT ── */
   var CMT_LIMIT = 5;
-  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
   function getCmtDaily() { try { return JSON.parse(localStorage.getItem('tot_cmt_daily') || '{}'); } catch(e) { return {}; } }
   function saveCmtDaily(d) { localStorage.setItem('tot_cmt_daily', JSON.stringify(d)); }
   function cmtTodayCount() {
@@ -280,14 +290,14 @@
         var medals = ['🥇', '🥈', '🥉'];
         var pos = i < 3 ? medals[i] : '<span class="rank-num">#' + (i + 1) + '</span>';
         return '<div class="fan-row"><span class="fan-pos">' + pos + '</span>' +
-          '<span class="fan-name">' + entry[0] + '</span>' +
-          '<span class="fan-votes">' + entry[1].total + ' votos</span></div>';
+          '<span class="fan-name">' + escapeHTML(entry[0]) + '</span>' +
+          '<span class="fan-votes">' + (parseInt(entry[1].total,10)||0) + ' votos</span></div>';
       }).join('') : '<p class="empty-state">Sé el primero en votar</p>';
 
       var used = cmtTodayCount();
       var left = CMT_LIMIT - used;
       var cmtItems = comments.concat(comments).map(function (cm) {
-        return '<div class="cmt-card"><span class="cmt-uname">' + cm.u + '</span><p class="cmt-body">' + cm.t + '</p></div>';
+        return '<div class="cmt-card"><span class="cmt-uname">' + escapeHTML(cm.u) + '</span><p class="cmt-body">' + escapeHTML(cm.t) + '</p></div>';
       }).join('');
       cmtHTML =
         '<div class="cmt-ticker-wrap"><div class="cmt-ticker" id="cmtTicker">' + cmtItems + '</div></div>' +
@@ -428,7 +438,7 @@
       if (!ticker) return;
       var fresh = gc()[artistId] || [];
       ticker.innerHTML = fresh.concat(fresh).map(function (cm) {
-        return '<div class="cmt-card"><span class="cmt-uname">' + cm.u + '</span><p class="cmt-body">' + cm.t + '</p></div>';
+        return '<div class="cmt-card"><span class="cmt-uname">' + escapeHTML(cm.u) + '</span><p class="cmt-body">' + escapeHTML(cm.t) + '</p></div>';
       }).join('');
     }
   };
