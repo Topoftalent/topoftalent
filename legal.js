@@ -10,7 +10,7 @@
 var LEGAL = {
   terminos: {
     title: 'Términos y Condiciones',
-    date: 'Última actualización: marzo 2026',
+    date: 'Última actualización: mayo 2026',
     sections: [
       {h:'1. Aceptación de los Términos', p:'Al acceder y usar la plataforma Top of Talent (<strong>topoftalentoficial.com</strong>), el usuario acepta de forma expresa y sin reservas los presentes Términos y Condiciones. Si no está de acuerdo con alguno de ellos, debe abstenerse de usar la plataforma.'},
       {h:'2. Descripción del Servicio', p:'Top of Talent es una plataforma editorial digital dedicada al descubrimiento, visibilidad y promoción de talentos emergentes del Ecuador, con énfasis en la música y la cultura. El sitio ofrece contenido editorial, rankings, perfiles de artistas, información de eventos y otras secciones de interés cultural. La plataforma es operada por sus fundadores con base en <strong>Europa</strong>, y está dirigida principalmente al público <strong>ecuatoriano</strong>.'},
@@ -26,7 +26,7 @@ var LEGAL = {
   },
   privacidad: {
     title: 'Política de Privacidad',
-    date: 'Última actualización: marzo 2026',
+    date: 'Última actualización: mayo 2026',
     sections: [
       {h:'1. Responsable del Tratamiento', p:'Top of Talent, operado desde <strong>Europa</strong>, actúa como responsable del tratamiento de los datos personales recopilados a través de <strong>topoftalentoficial.com</strong>. Contacto: <a href="mailto:contactoftalent@gmail.com" style="color:#c86cff">contactoftalent@gmail.com</a>'},
       {h:'2. Datos que Recopilamos', p:'Podemos recopilar los siguientes datos: <br>• Nombre y dirección de correo electrónico (al registrarse)<br>• Nombre de usuario y contraseña (al crear cuenta)<br>• País o región de residencia<br>• Datos de inicio de sesión social (Google, Apple, Facebook, X) cuando el usuario elige esta opción<br>• Datos de uso y navegación (páginas visitadas, tiempo de sesión)<br>• Información técnica del dispositivo y del navegador'},
@@ -42,7 +42,7 @@ var LEGAL = {
   },
   cookies: {
     title: 'Política de Cookies',
-    date: 'Última actualización: marzo 2026',
+    date: 'Última actualización: mayo 2026',
     sections: [
       {h:'1. ¿Qué son las Cookies?', p:'Las cookies son pequeños archivos de texto que un sitio web almacena en el dispositivo del usuario cuando este lo visita. Permiten que la plataforma recuerde información sobre la visita para mejorar la experiencia.'},
       {h:'2. Cookies que Utilizamos', p:'<strong>Cookies esenciales:</strong> Necesarias para el funcionamiento básico de la plataforma (gestión de sesión, autenticación). No pueden desactivarse sin afectar el funcionamiento del sitio.<br><br><strong>Cookies de análisis:</strong> Nos ayudan a entender cómo los usuarios interactúan con la plataforma (páginas visitadas, tiempo en el sitio). Se usan de forma agregada y anónima.<br><br><strong>Cookies de preferencias:</strong> Guardan preferencias del usuario (idioma, configuración de notificaciones, consentimiento de cookies).'},
@@ -55,7 +55,7 @@ var LEGAL = {
   },
   aviso: {
     title: 'Aviso Legal y Disclaimer',
-    date: 'Última actualización: marzo 2026',
+    date: 'Última actualización: mayo 2026',
     sections: [
       {h:'1. Titular de la Plataforma', p:'Top of Talent es una plataforma editorial digital operada de forma independiente, con base de operaciones en <strong>Europa</strong>, dirigida al público ecuatoriano y latinoamericano. Contacto: <a href="mailto:contactoftalent@gmail.com" style="color:#c86cff">contactoftalent@gmail.com</a>'},
       {h:'2. Naturaleza Editorial', p:'Top of Talent es una publicación editorial independiente de música y cultura. Los rankings, puntuaciones, selecciones de artistas y cualquier otro contenido evaluativo son expresión de la <strong>opinión editorial</strong> del equipo de Top of Talent. No tienen carácter oficial ni vinculante, y no representan un reconocimiento formal de ningún tipo.'},

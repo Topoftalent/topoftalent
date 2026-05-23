@@ -101,7 +101,7 @@ var css=`
 #tot-dd-out .tot-dd-item.member-cta:hover{background:rgba(200,108,255,.18)!important;color:#fff!important}
 
 /* logged-in items: compact as before */
-#tot-dd-in .tot-dd-item{display:flex;align-items:center;gap:11px;padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s,color .15s}
+#tot-dd-in .tot-dd-item{display:flex;align-items:center;gap:11px;padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s,color .15s}
 #tot-dd-in .tot-dd-item:last-child{border-bottom:none}
 #tot-dd-in .tot-dd-item:hover{background:rgba(200,108,255,.1);color:#fff}
 #tot-dd-in .tot-dd-item.member-cta{background:rgba(200,108,255,.08);border-bottom:1px solid rgba(200,108,255,.12)!important;color:#c86cff!important}
@@ -514,7 +514,7 @@ var HTML=`
         <div class="tot-member-upsell-title"><span>★</span> ¿Quieres ser Miembro?</div>
         <div class="tot-member-upsell-sub">Acceso exclusivo · Fan Premium</div>
         <ul class="tot-member-perks">
-          <li>Vota por tu artista favorito cada 24 horas</li>
+          <li>Vota por tu artista favorito cada 8 horas</li>
           <li>Aparece en el ranking de fans del artista</li>
           <li>Acceso a la sección de comentarios</li>
           <li>Descuentos en eventos y merch del artista</li>
