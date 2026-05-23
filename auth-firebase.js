@@ -623,6 +623,7 @@ window.TotAuth = {
   _resetReg: function() {
     _regProvider = null; _pendingUser = {};
     TotAuth._showRegStep(1);
+    document.getElementById('reg-step1').classList.add('active');
     ['reg-first','reg-last','reg-email','reg-user','reg-pwd','reg-s2b-user','reg-dob','reg-s2b-dob'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
     ['reg-email-err','reg-user-err','reg-pwd-err','reg-dob-err','reg-s2b-dob-err','reg-s2b-user-err'].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('show'); });
     document.getElementById('tc1').checked = false;
