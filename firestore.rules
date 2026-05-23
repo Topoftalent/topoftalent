@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── USERS ────────────────────────────────────────────────────
+    // Only the owner can read/write their own user doc
+    match /users/{userId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId
+                    // Prevent client from setting isMember = true (only backend can)
+                    && !('isMember' in request.resource.data.diff(resource.data).affectedKeys());
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── VOTES ────────────────────────────────────────────────────
+    // Anyone can read vote totals (public counter)
+    // Only authenticated users can write their own vote doc
+    match /votes/{artistId}/fans/{userId} {
+      allow read:   if true;
+      allow write:  if request.auth != null && request.auth.uid == userId
+                    // Prevent manipulating lastVote manually
+                    && request.resource.data.lastVote == request.time;
+    }
+
+    // ── COMMENTS ─────────────────────────────────────────────────
+    // Anyone can read comments
+    // Only authenticated members can write (isMember checked server-side ideally)
+    match /comments/{artistId}/list/{commentId} {
+      allow read:   if true;
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.text.size() <= 200;
+      allow update, delete: if false; // Comments are immutable
+    }
+
+    // ── ARTISTAS (future) ────────────────────────────────────────
+    // Public read, admin-only write (managed via Firebase Console)
+    match /artistas/{artistId} {
+      allow read: if true;
+      allow write: if false; // Only via Firebase Console / Admin SDK
+    }
+  }
+}
