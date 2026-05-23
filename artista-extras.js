@@ -134,7 +134,7 @@
       '@keyframes border-glow{0%{opacity:.4;filter:blur(0px)}100%{opacity:1;filter:blur(1px)}}',
       /* Community grid */
       '.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;position:relative;z-index:1}',
-      '.comm-col-title{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.3em;color:#666;',
+      '.comm-col-title{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.25em;color:#444;',
       'text-transform:uppercase;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
       /* Ranking */
       '.fan-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.05)}',
