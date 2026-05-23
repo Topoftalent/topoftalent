@@ -212,8 +212,39 @@ var css=`
 .tot-btn.danger-btn::after{display:none}
 .tot-btn.success-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px}
 .tot-btn.success-btn:hover{opacity:.9;box-shadow:0 0 24px 6px rgba(200,108,255,.4)}
-.tot-btn.member-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px;margin-top:0}
-.tot-btn.member-btn:hover{opacity:.9;box-shadow:0 0 28px 6px rgba(200,108,255,.4)}
+/* Member CTA — liquid glass igual que en membresia.html */
+.tot-btn.member-btn{
+  background:rgba(200,108,255,.07);color:#fff;border-radius:14px;margin-top:0;
+  border:none;outline:1px solid rgba(255,255,255,.06);outline-offset:-1px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:
+    inset 2px 2px 0.5px -2px rgba(255,255,255,.55),
+    inset -2px -2px 0.5px -2px rgba(255,255,255,.18),
+    inset 1px 1px 1px -0.5px rgba(255,255,255,.45),
+    inset -1px -1px 1px -0.5px rgba(255,255,255,.22),
+    inset 0 0 8px 4px rgba(200,108,255,.06),
+    0 8px 32px rgba(0,0,0,.5),
+    0 0 0 1px rgba(200,108,255,.22),
+    0 0 18px rgba(200,108,255,.18);
+  position:relative;overflow:hidden;
+  transition:all .3s cubic-bezier(.34,1.2,.64,1);
+}
+.tot-btn.member-btn::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.55),transparent);
+  border-radius:50%;pointer-events:none;
+}
+.tot-btn.member-btn:hover{
+  background:rgba(200,108,255,.14);transform:translateY(-2px) scale(1.01);
+  box-shadow:
+    inset 2px 2px 0.5px -2px rgba(255,255,255,.65),
+    inset 1px 1px 1px -0.5px rgba(255,255,255,.55),
+    inset 0 0 10px 6px rgba(200,108,255,.1),
+    0 12px 40px rgba(0,0,0,.6),
+    0 0 0 1px rgba(200,108,255,.35),
+    0 0 30px rgba(200,108,255,.3);
+  color:#fff;
+}
 .tot-providers{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .tot-provider{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 16px;transition:all .2s;font-size:13px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.04em;position:relative;overflow:hidden;}
 .tot-provider::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent,rgba(200,108,255,.06),transparent);transform:translateX(-100%);transition:transform .4s}
@@ -270,11 +301,14 @@ var css=`
 .tot-delete-warn strong{color:#ff5050;font-weight:700}
 #tot-toast{
   position:fixed;top:74px;left:50%;transform:translateX(-50%) translateY(-12px);z-index:10000;
-  background:linear-gradient(135deg,rgba(200,108,255,.92),rgba(63,169,255,.9));
-  color:#fff;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(8,8,14,.88);
+  border:1px solid rgba(200,108,255,.35);
+  color:#c86cff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;
   padding:11px 28px;border-radius:40px;opacity:0;
   transition:opacity .35s,transform .35s;pointer-events:none;white-space:nowrap;
-  backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(200,108,255,.35);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 0 0 1px rgba(200,108,255,.1),0 8px 32px rgba(0,0,0,.5),0 0 20px rgba(200,108,255,.15);
 }
 #tot-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 /* Firebase loading spinner */
@@ -443,7 +477,7 @@ var HTML=`
           <li>Acceso a la sección de comentarios</li>
           <li>Descuentos en eventos y merch del artista</li>
         </ul>
-        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia.html'">Ver Membresía →</button>
+        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia.html'">Hazte Miembro →</button>
       </div>
       <button class="tot-btn ghost" style="margin-top:10px" onclick="TotAuth.closeRegister()">Continuar sin membresía</button>
     </div>
