@@ -186,12 +186,64 @@
       'box-shadow:0 0 0 1px rgba(200,108,255,.55),0 4px 24px rgba(0,0,0,.12),0 0 36px rgba(200,108,255,.38)}',
       /* CTAs in community section */
       '.community-cta{position:relative;z-index:1}',
+      /* Votos públicos totales */
+      '.vote-total-public{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;',
+      'color:#c86cff;text-align:right;display:flex;align-items:center;gap:7px}',
+      '.vote-total-public strong{font-size:16px;font-weight:700}',
+      /* Botón compartir */
+      '.share-btn{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:10px;font-weight:700;',
+      'letter-spacing:.18em;text-transform:uppercase;padding:10px 18px;border:1px solid rgba(255,255,255,.18);',
+      'background:transparent;color:rgba(255,255,255,.55);border-radius:4px;cursor:none!important;',
+      'transition:all .25s;display:inline-flex;align-items:center;gap:7px}',
+      '.share-btn:hover{border-color:#c86cff;color:#c86cff;background:rgba(200,108,255,.08)}',
+      '.share-btn.copied{border-color:#4cff91;color:#4cff91;background:rgba(76,255,145,.06)}',
       /* Mobile */
       '@media(max-width:768px){.community-grid{grid-template-columns:1fr;gap:40px}',
       '.cmt-ticker-wrap{height:220px}.vote-area{align-items:flex-start}',
       '.vote-legend{text-align:left}.resumen-quote-big{font-size:clamp(18px,5vw,28px)}}',
     ].join('');
     document.head.appendChild(s);
+  }
+
+  /* ── HELPERS VOTOS PÚBLICOS ── */
+  function getTotalVotesPublic() {
+    try {
+      var v = JSON.parse(localStorage.getItem('tot_votes') || '{}');
+      var av = v[artistId] || {};
+      return Object.keys(av).reduce(function(sum, u) { return sum + (av[u].total || 0); }, 0);
+    } catch(e) { return 0; }
+  }
+
+  function updatePublicCounter() {
+    var el = document.getElementById('tot-public-votes');
+    if (el) el.textContent = getTotalVotesPublic();
+  }
+
+  /* ── BOTÓN COMPARTIR ── */
+  function buildShareBtn(container) {
+    var btn = document.createElement('button');
+    btn.className = 'share-btn';
+    btn.innerHTML = '↗ Invitar a votar';
+    btn.addEventListener('click', function() {
+      var url = window.location.href.split('?')[0];
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+          btn.innerHTML = '✓ Link copiado';
+          btn.classList.add('copied');
+          setTimeout(function() { btn.innerHTML = '↗ Invitar a votar'; btn.classList.remove('copied'); }, 2500);
+        });
+      } else {
+        // fallback para navegadores sin clipboard API
+        var ta = document.createElement('textarea');
+        ta.value = url; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.innerHTML = '✓ Link copiado'; btn.classList.add('copied');
+        setTimeout(function() { btn.innerHTML = '↗ Invitar a votar'; btn.classList.remove('copied'); }, 2500);
+      }
+    });
+    container.appendChild(btn);
   }
 
   /* ── 1. VOTE BUTTON in #paso2 ── */
@@ -235,12 +287,22 @@
         var tot = vv[artistId][username].total;
         if (mv) mv.innerHTML = 'Tus votos: <strong>' + tot + '</strong>';
         else area.insertAdjacentHTML('beforeend', '<p class="vote-my">Tus votos: <strong>' + tot + '</strong></p>');
+        updatePublicCounter();
       });
     } else {
       area.innerHTML =
         '<a href="membresia.html" class="vote-btn vote-upsell-btn"><span class="vote-star">★</span>Hazte Miembro para Votar</a>' +
         '<p class="vote-legend">*Se restablece cada 24 horas</p>';
     }
+
+    // Contador público de votos (visible para todos)
+    var publicCounter = document.createElement('p');
+    publicCounter.className = 'vote-total-public';
+    publicCounter.innerHTML = '★ <strong id="tot-public-votes">' + getTotalVotesPublic() + '</strong> votos totales';
+    area.appendChild(publicCounter);
+
+    // Botón compartir
+    buildShareBtn(area);
 
     ph.appendChild(area);
   }

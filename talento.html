@@ -76,6 +76,8 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .card-info{padding:10px 0 4px}
 .card-name{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:-.01em;line-height:1.1}
 .card-genre{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(0,0,0,.45);text-transform:uppercase;margin-top:4px}
+.card-votes{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#c86cff;margin-top:5px;display:flex;align-items:center;gap:5px}
+.card-votes-dot{width:5px;height:5px;border-radius:50%;background:#c86cff;display:inline-block}
 .info-panel{margin:0 40px;border-top:1px solid rgba(0,0,0,.1);min-height:220px;display:grid;grid-template-columns:100px 1fr 1fr 200px}
 .info-panel-default{grid-column:1/-1;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:rgba(0,0,0,.2);text-transform:uppercase;gap:12px}
 .info-panel-default::before{content:'↑';font-size:16px;animation:arrowFloat 2s ease-in-out infinite}
@@ -194,6 +196,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
         <div class="info-col">
           <div class="info-stats">
             <div class="info-stat-row"><span class="info-stat-label">Score Top of Talent</span><span class="info-stat-val info-score" id="infoScore"></span></div>
+            <div class="info-stat-row"><span class="info-stat-label">Votos de fans</span><span class="info-stat-val" id="infoVotes" style="color:#c86cff">0 votos</span></div>
             <div class="info-stat-row"><span class="info-stat-label">Ciudad</span><span class="info-stat-val" id="infoCity2"></span></div>
             <div class="info-stat-row"><span class="info-stat-label">Activo desde</span><span class="info-stat-val" id="infoYear"></span></div>
           </div>
@@ -226,28 +229,45 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 </footer>
 </div>
 
+<script src="artistas.js"></script>
 <script>
-var artistFiles=['artista1.html','artista2.html','artista3.html','artista4.html','artista5.html','artista6.html','artista7.html','artista8.html','artista9.html','artista10.html'];
-var artists=[
-  {rank:1,name:'Artista Uno',song:'Cancion Uno',genre:'Indie - Alternativo',city:'Quito',year:2018,score:97,tone:'tone-3',link:'https://www.youtube.com/watch?v=tAsMR1VXb9c&list=RDtAsMR1VXb9c&start_radio=1',bio:'Referente del indie ecuatoriano con una propuesta que mezcla lo urbano con lo atmosferico.'},
-  {rank:2,name:'Artista Dos',song:'Cancion Dos',genre:'Hip-Hop - Trap',city:'Guayaquil',year:2019,score:94,tone:'tone-4',link:'#',bio:'Voz principal del hip-hop porteno. Sus letras documentan la realidad de Guayaquil con honestidad.'},
-  {rank:3,name:'Artista Tres',song:'Cancion Tres',genre:'Electronic - Ambient',city:'Cuenca',year:2020,score:91,tone:'tone-5',link:'#',bio:'Productor que explora los limites del ambient latinoamericano.'},
-  {rank:4,name:'Artista Cuatro',song:'Cancion Cuatro',genre:'Pop - Rock',city:'Quito',year:2017,score:89,tone:'tone-9',link:'#',bio:'Con mas de 8 anos en la escena, un sonido pop que mantiene su caracter.'},
-  {rank:5,name:'Artista Cinco',song:'Cancion Cinco',genre:'R&B - Soul',city:'Guayaquil',year:2021,score:86,tone:'tone-6',link:'#',bio:'Fusiona el R&B con influencias del Pacifico ecuatoriano.'},
-  {rank:6,name:'Artista Seis',song:'Cancion Seis',genre:'Folk - Andino',city:'Ibarra',year:2016,score:83,tone:'tone-7',link:'#',bio:'Recupera los sonidos andinos con una mirada contemporanea.'},
-  {rank:7,name:'Artista Siete',song:'Cancion Siete',genre:'Metal - Rock',city:'Cuenca',year:2015,score:80,tone:'tone-9',link:'#',bio:'La banda de metal mas consistente de la escena sur.'},
-  {rank:8,name:'Artista Ocho',song:'Cancion Ocho',genre:'Jazz - Fusion',city:'Quito',year:2019,score:77,tone:'tone-8',link:'#',bio:'Instrumentista de jazz contemporaneo con estudios en Berklee.'},
-  {rank:9,name:'Artista Nueve',song:'Cancion Nueve',genre:'Reggaeton - Urbano',city:'Guayaquil',year:2022,score:74,tone:'tone-0',link:'#',bio:'Una de las propuestas urbanas mas frescas del momento.'},
-  {rank:10,name:'Artista Diez',song:'Cancion Diez',genre:'Punk - Post-Punk',city:'Loja',year:2020,score:71,tone:'tone-2',link:'#',bio:'Banda de punk desde Loja con energia en vivo imbatible.'}
-];
+// ── VOTOS PÚBLICOS ──
+function getTotalVotes(artistId) {
+  try {
+    var v = JSON.parse(localStorage.getItem('tot_votes') || '{}');
+    var av = v[artistId] || {};
+    return Object.keys(av).reduce(function(sum, u) { return sum + (av[u].total || 0); }, 0);
+  } catch(e) { return 0; }
+}
+
+// Artistas ordenados por votos de fans (dinámico)
+function getSortedArtists() {
+  return TOT_ARTISTAS.slice().sort(function(a, b) {
+    return getTotalVotes(b.id) - getTotalVotes(a.id);
+  }).map(function(a, i) {
+    return Object.assign({}, a, { fanRank: i + 1 });
+  });
+}
 
 function buildCarousel() {
   var track = document.getElementById('carouselTrack');
-  artists.concat(artists).forEach(function(a) {
-    var f = artistFiles[a.rank-1];
+  track.innerHTML = '';
+  var sorted = getSortedArtists();
+  sorted.concat(sorted).forEach(function(a) {
+    var votes = getTotalVotes(a.id);
     var card = document.createElement('div');
     card.className = 'artist-card';
-    card.innerHTML = '<div class="card-photo '+a.tone+'"><a href="'+f+'" class="card-photo-link"><span>Ver Ficha</span></a><span class="card-rank">#'+String(a.rank).padStart(2,'0')+'</span><span class="card-photo-placeholder">'+a.name+'</span></div><div class="card-info"><div class="card-name">'+a.name+'</div><div class="card-genre">'+a.genre+'</div></div>';
+    card.innerHTML =
+      '<div class="card-photo ' + a.tone + '">' +
+        '<a href="' + a.file + '" class="card-photo-link"><span>Ver Ficha</span></a>' +
+        '<span class="card-rank">#' + String(a.fanRank).padStart(2,'0') + '</span>' +
+        '<span class="card-photo-placeholder">' + a.name + '</span>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-name">' + a.name + '</div>' +
+        '<div class="card-genre">' + a.genre + '</div>' +
+        '<div class="card-votes"><span class="card-votes-dot"></span>' + votes + ' votos</div>' +
+      '</div>';
     card.addEventListener('mouseenter', function() { showInfo(a); document.getElementById('carouselTrack').classList.add('paused'); });
     card.addEventListener('mouseleave', function() { document.getElementById('carouselTrack').classList.remove('paused'); });
     track.appendChild(card);
@@ -255,9 +275,10 @@ function buildCarousel() {
 }
 
 function showInfo(a) {
+  var votes = getTotalVotes(a.id);
   document.getElementById('panelDefault').style.display = 'none';
   document.getElementById('panelContent').classList.add('visible');
-  document.getElementById('infoRank').textContent = String(a.rank).padStart(2,'0');
+  document.getElementById('infoRank').textContent = String(a.fanRank).padStart(2,'0');
   document.getElementById('infoName').textContent = a.name;
   document.getElementById('infoGenre').textContent = a.genre;
   document.getElementById('infoCity').textContent = a.city;
@@ -265,16 +286,25 @@ function showInfo(a) {
   document.getElementById('infoScore').textContent = a.score;
   document.getElementById('infoCity2').textContent = a.city + ', Ecuador';
   document.getElementById('infoYear').textContent = a.year;
-  document.getElementById('fichaBtn').href = artistFiles[a.rank-1];
+  document.getElementById('fichaBtn').href = a.file;
+  // votos en panel
+  var vRow = document.getElementById('infoVotes');
+  if (vRow) vRow.textContent = votes + ' votos de fans';
 }
 
 function buildTop7() {
   var list = document.getElementById('top7List');
-  artists.slice(0,7).forEach(function(a) {
+  list.innerHTML = '';
+  // Top 7 = orden editorial (score TOT), no fan votes
+  TOT_ARTISTAS.slice().sort(function(a,b){ return b.score - a.score; }).slice(0,7).forEach(function(a, i) {
     var item = document.createElement('a');
-    item.href = a.link; item.target = '_blank'; item.rel = 'noopener noreferrer';
+    item.href = a.file;
     item.className = 'top7-item';
-    item.innerHTML = '<span class="t7-num">'+String(a.rank).padStart(2,'0')+'</span><div class="t7-song-block"><div class="t7-song">'+a.song+'</div><div class="t7-artist">'+a.name+'</div></div><div class="t7-meta-block"><span class="t7-city">'+a.city+'</span><span class="t7-genre">'+a.genre+'</span></div><span class="t7-score">'+a.score+'</span>';
+    item.innerHTML =
+      '<span class="t7-num">' + String(i+1).padStart(2,'0') + '</span>' +
+      '<div class="t7-song-block"><div class="t7-song">' + a.song + '</div><div class="t7-artist">' + a.name + '</div></div>' +
+      '<div class="t7-meta-block"><span class="t7-city">' + a.city + '</span><span class="t7-genre">' + a.genre + '</span></div>' +
+      '<span class="t7-score">' + a.score + '</span>';
     list.appendChild(item);
   });
 }
@@ -283,8 +313,15 @@ function showView(view) {
   var va=document.getElementById('view-artistas'), vt=document.getElementById('view-top7');
   var ba=document.getElementById('btnArtistas'), bt=document.getElementById('btnTop7');
   var ct=document.getElementById('eyebrowCount');
-  if (view==='artistas') { va.style.display='block'; vt.style.display='none'; ba.classList.add('active'); bt.classList.remove('active'); ct.textContent='10 artistas'; }
-  else { va.style.display='none'; vt.style.display='block'; bt.classList.add('active'); ba.classList.remove('active'); ct.textContent='top 7 del momento'; }
+  if (view==='artistas') {
+    va.style.display='block'; vt.style.display='none';
+    ba.classList.add('active'); bt.classList.remove('active');
+    ct.textContent = TOT_ARTISTAS.length + ' artistas';
+  } else {
+    va.style.display='none'; vt.style.display='block';
+    bt.classList.add('active'); ba.classList.remove('active');
+    ct.textContent='top 7 del momento';
+  }
 }
 
 var cont = document.getElementById('carouselContainer');
@@ -311,6 +348,7 @@ document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeNav
 buildCarousel();
 buildTop7();
 document.getElementById('view-top7').style.display = 'none';
+document.getElementById('eyebrowCount').textContent = TOT_ARTISTAS.length + ' artistas';
 </script>
 <script src="legal.js"></script>
 <script src="auth.js"></script>
