@@ -342,11 +342,14 @@ var css=`
 /* Toast */
 #tot-toast{
   position:fixed;top:74px;left:50%;transform:translateX(-50%) translateY(-12px);z-index:10000;
-  background:linear-gradient(135deg,rgba(200,108,255,.92),rgba(63,169,255,.9));
-  color:#fff;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(8,8,14,.88);
+  border:1px solid rgba(200,108,255,.35);
+  color:#c86cff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;
   padding:11px 28px;border-radius:40px;opacity:0;
   transition:opacity .35s,transform .35s;pointer-events:none;white-space:nowrap;
-  backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(200,108,255,.35);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 0 0 1px rgba(200,108,255,.1),0 8px 32px rgba(0,0,0,.5),0 0 20px rgba(200,108,255,.15);
 }
 #tot-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
