@@ -18,7 +18,7 @@ function esc(s) {
 
 function fmt(val, fallback) {
   var s = (val || '').toString().trim();
-  return s || (fallback || '—');
+  return s || (fallback || '');
 }
 
 function photoEl(url, label, extraClass) {
@@ -98,8 +98,8 @@ async function loadArtist() {
     // ── SPECS TABLE (#paso2) ─────────────────────────────────────
     var specsTbl = document.querySelector('.specs-table');
     if (specsTbl) {
-      var discStr  = Array.isArray(d.discografia)    ? d.discografia.join(' · ')    : (d.discografia    || '—');
-      var colabStr = Array.isArray(d.colaboraciones) ? d.colaboraciones.join(' · ') : (d.colaboraciones || '—');
+      var discStr  = Array.isArray(d.discografia)    ? d.discografia.join(' · ')    : (d.discografia    || '');
+      var colabStr = Array.isArray(d.colaboraciones) ? d.colaboraciones.join(' · ') : (d.colaboraciones || '');
 
       specsTbl.innerHTML =
         '<tr class="fade-up visible"><td>Nombre artístico</td><td>' + esc(nombre) + '</td></tr>' +
@@ -108,8 +108,8 @@ async function loadArtist() {
         '<tr class="fade-up visible"><td>Activo desde</td><td>' + esc(fmt(d.activo_desde)) + '</td></tr>' +
         '<tr class="fade-up visible"><td>Tipo</td><td>' + esc(fmt(d.tipo)) + '</td></tr>' +
         '<tr class="fade-up visible"><td>Sello</td><td>' + esc(fmt(d.sello)) + '</td></tr>' +
-        '<tr class="fade-up visible"><td>Discografía</td><td>' + esc(discStr) + '</td></tr>' +
-        '<tr class="fade-up visible"><td>Colaboraciones</td><td>' + esc(colabStr) + '</td></tr>' +
+        (discStr ? '<tr class="fade-up visible"><td>Discografía</td><td>' + esc(discStr) + '</td></tr>' : '') +
+        (colabStr ? '<tr class="fade-up visible"><td>Colaboraciones</td><td>' + esc(colabStr) + '</td></tr>' : '') +
         (d.score ? '<tr class="fade-up visible"><td>Score Top of Talent</td><td><span class="spec-highlight" style="font-size:20px;font-weight:700">' + esc(String(d.score)) + ' / 100</span></td></tr>' : '');
     }
 
