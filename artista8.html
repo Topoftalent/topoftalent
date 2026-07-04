@@ -65,6 +65,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:500;background:linear-gradien
 .gallery-header{padding:120px 40px 60px;display:flex;align-items:flex-end;justify-content:space-between}
 .gallery-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(56px,9vw,110px);text-transform:uppercase;letter-spacing:-.03em;line-height:1;white-space:nowrap}
 .gallery-note{text-align:right;max-width:280px}
+.gallery-caption{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:.08em;line-height:1.6;font-style:italic;text-align:center;padding:16px 40px 24px;background:var(--black)}
 .gallery-note p{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.08em;line-height:1.6;font-style:italic}
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;flex:1}
 .gallery-photo{background:var(--gray-dim);aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
@@ -169,7 +170,7 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 4
 <section id="paso3" class="snap-section">
   <div class="gallery-header">
     <h2 class="gallery-title fade-up">GALERÍA</h2>
-    <div class="gallery-note"><p>*Las imágenes utilizadas fueron extraídas de las redes sociales de los talentos y pertenecen a sus respectivos creadores.</p></div>
+    <div class="gallery-note"><p>Las imágenes son propiedad de sus respectivos artistas y se utilizan con fines editoriales. Para retiro: legal@topoftalentoficial.com</p></div>
   </div>
   <div class="gallery-grid">
     <div class="gallery-photo"><div class="photo-bg g1"><span class="photo-placeholder-icon">Foto Principal</span></div><span class="photo-label">Foto 01 · Press</span></div>
@@ -178,6 +179,7 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 4
     <div class="gallery-photo"><div class="photo-bg g4"><span class="photo-placeholder-icon">Foto 04</span></div><span class="photo-label">Foto 04 · Event</span></div>
   </div>
 </section>
+<p class="gallery-caption">Las imágenes son propiedad de sus respectivos artistas y se utilizan con fines editoriales. Para retiro: legal@topoftalentoficial.com</p>
 <section id="paso4" class="snap-section">
   <div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:36px;margin-bottom:56px">
     <span class="paso-num" style="color:var(--purple)">04 —</span>
@@ -212,7 +214,7 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 4
     <a href="#" data-legal="cookies">Política de Cookies</a>
     <a href="#" data-legal="aviso">Aviso Legal</a>
   </div>
-  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados</div>
+  <div class="footer-copy-line">Copyright &copy; 2026 topoftalentoficial.com - Todos los derechos reservados<br><span style="font-size:10px;opacity:.7">Las imágenes son propiedad de sus respectivos artistas y se utilizan con fines editoriales. Para retiro: <a href="mailto:legal@topoftalentoficial.com" style="color:inherit">legal@topoftalentoficial.com</a></span></div>
 </footer>
 <script>
 (function() {
