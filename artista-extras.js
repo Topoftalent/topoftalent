@@ -302,7 +302,7 @@ async function buildCommunity() {
       '<p class="upsell-desc">Únete a la comunidad para acceder al ranking, ver comentarios y participar.</p>' +
       '<a href="membresia.html" class="upsell-cta">★ Hazte Miembro</a>' +
       '</div>';
-    rankHTML = upsell;
+    rankHTML = '<p class="empty-state" style="color:#aaa;font-size:11px;letter-spacing:.1em">El ranking se revela a los miembros</p>';
     cmtHTML  = upsell;
   }
 
