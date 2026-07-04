@@ -31,9 +31,9 @@ function photoEl(url, label, extraClass) {
 
 async function loadArtist() {
   var artistId = document.body.dataset.artistId;
-  if (!artistId) return;
 
   try {
+    if (!artistId) return;
     var snap = await getDoc(doc(db, 'artistas', artistId));
 
     if (!snap.exists() || snap.data().active === false) {
@@ -211,8 +211,13 @@ async function loadArtist() {
 
   } catch (err) {
     console.error('[artista-data] Error loading artist data:', err);
-    // Page keeps its static placeholder content — silent fail
+  } finally {
+    document.body.style.opacity = '1';
   }
 }
+
+// Hide body instantly to prevent flash of placeholder HTML
+document.body.style.opacity = '0';
+document.body.style.transition = 'opacity 0.25s';
 
 loadArtist();
