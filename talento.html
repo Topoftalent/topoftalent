@@ -229,15 +229,13 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 </footer>
 </div>
 
-<script src="artistas.js"></script>
 <script>
-// ── VOTOS PÚBLICOS ──
+// TOT_ARTISTAS and getTotalVotes are populated by talento-data.js (ES module).
+// Initialize empty so inline functions don't crash before data loads.
+window.TOT_ARTISTAS = [];
+window.TOT_VOTE_TOTALS = {};
 function getTotalVotes(artistId) {
-  try {
-    var v = JSON.parse(localStorage.getItem('tot_votes') || '{}');
-    var av = v[artistId] || {};
-    return Object.keys(av).reduce(function(sum, u) { return sum + (av[u].total || 0); }, 0);
-  } catch(e) { return 0; }
+  return (window.TOT_VOTE_TOTALS && window.TOT_VOTE_TOTALS[artistId]) || 0;
 }
 
 // Artistas ordenados por votos de fans (dinámico)
@@ -345,12 +343,12 @@ function openNav() { document.getElementById('navOL').classList.add('open'); doc
 function closeNav() { document.getElementById('navOL').classList.remove('open'); document.body.style.overflow=''; }
 document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeNav(); });
 
-buildCarousel();
-buildTop7();
+// buildCarousel() and buildTop7() are called by talento-data.js after Firestore loads
 document.getElementById('view-top7').style.display = 'none';
-document.getElementById('eyebrowCount').textContent = TOT_ARTISTAS.length + ' artistas';
+document.getElementById('eyebrowCount').textContent = '…';
 </script>
 <script src="legal.js"></script>
 <script type="module" src="auth-firebase.js"></script>
+<script type="module" src="talento-data.js"></script>
 </body>
 </html>
