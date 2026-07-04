@@ -47,7 +47,7 @@ async function loadArtistas() {
     var discArr = Array.isArray(data.discografia)
       ? data.discografia
       : (data.discografia ? data.discografia.split('|').map(function(x){ return x.trim(); }) : []);
-    var song = discArr[0] || '—';
+    var song = discArr[0] || '';
 
     artistas.push({
       id:     d.id,
