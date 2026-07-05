@@ -126,23 +126,29 @@ function injectStyles() {
     'background:rgba(0,0,0,.35);border-radius:4px;padding:1px 4px;letter-spacing:.05em}',
     '.empty-state{font-family:"JetBrains Mono",monospace;font-size:11px;color:#aaa;padding:20px 0}',
     /* ── SCORE TOT CARD ── */
-    '.tot-score-card{display:flex;flex-direction:column;gap:20px;padding:28px 28px 24px;border-radius:14px;',
+    '.tot-score-card{display:flex;flex-direction:column;gap:22px;padding:28px 28px 24px;border-radius:14px;',
     'background:rgba(200,108,255,.04);border:1px solid rgba(200,108,255,.15);margin:4px 0}',
-    '.score-top{display:flex;align-items:baseline;gap:12px}',
-    '.score-final-num{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
-    'font-size:48px;letter-spacing:-.03em;color:#c86cff;line-height:1}',
-    '.score-final-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.25em;',
-    'color:#888;text-transform:uppercase}',
-    '.score-breakdown{display:flex;flex-direction:column;gap:10px}',
-    '.score-row{display:grid;grid-template-columns:100px 32px 1fr 36px;align-items:center;gap:10px}',
-    '.score-row-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.1em;',
-    'color:#666;text-transform:uppercase}',
-    '.score-row-val{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;color:#000;text-align:right}',
-    '.score-bar{height:3px;background:rgba(0,0,0,.07);border-radius:2px;overflow:hidden}',
+    '.score-header{display:flex;align-items:center;justify-content:space-between;gap:12px}',
+    '.score-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
+    'font-size:clamp(18px,2.5vw,26px);letter-spacing:-.01em;color:#000;text-transform:uppercase}',
+    '.score-breakdown{display:flex;flex-direction:column;gap:12px}',
+    '.score-row{display:grid;grid-template-columns:110px 1fr 40px;align-items:center;gap:12px}',
+    '.score-row-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;',
+    'color:#555;text-transform:uppercase}',
+    '.score-bar{height:4px;background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden}',
     '.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#c86cff,#7c3aed);',
-    'transition:width .8s cubic-bezier(.34,1.2,.64,1)}',
-    '.score-row-weight{font-family:"JetBrains Mono",monospace;font-size:8px;color:#aaa;letter-spacing:.05em}',
-    '.score-pending{font-family:"JetBrains Mono",monospace;font-size:9px;color:#aaa;font-style:italic}',
+    'transition:width .9s cubic-bezier(.34,1.2,.64,1)}',
+    '.score-row-val{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;',
+    'color:#000;text-align:right;letter-spacing:.02em}',
+    '.score-row-val.fan-val{color:#c86cff}',
+    '.score-footer{display:flex;flex-direction:column;align-items:flex-end;gap:4px;',
+    'padding-top:16px;border-top:1px solid rgba(0,0,0,.07)}',
+    '.score-avg-num{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
+    'font-size:36px;letter-spacing:-.02em;color:#c86cff;line-height:1}',
+    '.score-avg-label{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.2em;',
+    'color:#aaa;text-transform:uppercase}',
+    '.score-pending{font-family:"JetBrains Mono",monospace;font-size:9px;color:#aaa;',
+    'letter-spacing:.04em;text-align:right;margin-top:4px}',
     /* ── INFO BUTTON ── */
     '.comm-col-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
     '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
@@ -337,39 +343,43 @@ function updateScoreBlock(rank, total) {
   var scoreTot      = (typeof sd.tot      === 'number') ? sd.tot      : null;
   var scoreCriticos = (typeof sd.criticos === 'number') ? sd.criticos : null;
 
-  // Fan score: linear scale — rank 1 = 100, last rank = 10
   var n = Math.max(total, 1);
   var scoreFans = Math.round(100 - ((rank - 1) / Math.max(n - 1, 1)) * 90);
 
   var hasFinal = scoreTot !== null && scoreCriticos !== null;
-  var final = hasFinal
+  var avg = hasFinal
     ? Math.round((scoreTot * 0.25 + scoreCriticos * 0.25 + scoreFans * 0.50) * 10) / 10
     : null;
 
-  function row(label, val, weight, isFan) {
+  function row(label, val, isFan) {
     var pct = val !== null ? val : 0;
     return '<div class="score-row">' +
       '<span class="score-row-label">' + label + '</span>' +
-      '<span class="score-row-val"' + (isFan ? ' style="color:#c86cff"' : '') + '>' + (val !== null ? val : '—') + '</span>' +
       '<div class="score-bar"><div class="score-bar-fill" style="width:' + pct + '%"></div></div>' +
-      '<span class="score-row-weight">' + weight + '</span>' +
+      '<span class="score-row-val' + (isFan ? ' fan-val' : '') + '">' + (val !== null ? val : '--') + '</span>' +
     '</div>';
   }
 
+  var infoTooltipText = 'El Score TOT refleja el nivel artistico y proyeccion del artista. Combina la valoracion del equipo editorial de Top of Talent, la opinion de criticos del medio musical ecuatoriano, y el respaldo de los fans a traves de sus votos. Es un promedio ponderado que se actualiza mensualmente.';
+
   block.innerHTML =
     '<div class="tot-score-card">' +
-      '<div class="score-top">' +
-        (hasFinal
-          ? '<span class="score-final-num">' + final + '</span>'
-          : '<span class="score-final-num" style="font-size:32px;color:#bbb">—</span>') +
-        '<span class="score-final-label">Score Top of Talent</span>' +
+      '<div class="score-header">' +
+        '<span class="score-title">Score Top of Talent</span>' +
+        '<div class="info-btn" tabindex="0">i' +
+          '<div class="info-tooltip"><p>' + infoTooltipText + '</p></div>' +
+        '</div>' +
       '</div>' +
       '<div class="score-breakdown">' +
-        row('TOT Editorial', scoreTot, '×25%', false) +
-        row('Críticos', scoreCriticos, '×25%', false) +
-        row('Fans', scoreFans, '×50%', true) +
+        row('TOT Editorial', scoreTot, false) +
+        row('Criticos', scoreCriticos, false) +
+        row('Fans', scoreFans, true) +
       '</div>' +
-      (!hasFinal ? '<p class="score-pending">Puntuación editorial pendiente · se actualiza mensualmente</p>' : '') +
+      '<div class="score-footer">' +
+        '<span class="score-avg-label">Promedio general</span>' +
+        '<span class="score-avg-num">' + (avg !== null ? avg : '--') + '</span>' +
+        (!hasFinal ? '<p class="score-pending">En espera de calificacion de criticos y editores</p>' : '') +
+      '</div>' +
     '</div>';
 }
 
