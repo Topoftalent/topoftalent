@@ -17,7 +17,7 @@ var _unsubCmts = null;
 
 /* ── AUTH ─────────────────────────────────────────────────────── */
 function getUser()     { return window._totCurrentUser || null; }
-function getIsMember() { var u = getUser(); return !!(u && u.isMember); }
+function getIsMember() { var u = getUser(); return !!(u && (u.isMember || u.isAdmin)); }
 function getUsername() { var u = getUser(); return u ? ('@' + u.username) : null; }
 function getUid()      { var u = getUser(); return u ? u.uid : null; }
 
