@@ -89,8 +89,6 @@ async function loadArtist() {
     if (heroName) heroName.textContent = nombre;
 
     // ── HERO — EP label & rank ────────────────────────────────────
-    var epEl = document.querySelector('.hero-ep');
-    if (epEl && d.ep_label) epEl.textContent = d.ep_label;
 
     var rankEl = document.querySelector('.hero-rank');
     if (rankEl && d.ranking) rankEl.textContent = '#' + String(d.ranking).padStart(2, '0') + ' TOP OF TALENT';

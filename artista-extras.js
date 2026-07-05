@@ -414,12 +414,12 @@ async function buildCommunity() {
       '<p class="cmt-limit-note" id="cmtLimitNote">*Máximo ' + CMT_LIMIT + ' comentarios por día · quedan ' + Math.max(0, left) + '</p>';
   } else {
     var upsell = '<div class="member-upsell">' +
-      '<p class="upsell-eye">✦ Acceso exclusivo</p>' +
+      '<p class="upsell-eye">Acceso exclusivo</p>' +
       '<p class="upsell-desc">Los miembros de Top of Talent votan por sus artistas, aparecen en el ranking de fans y dejan su huella en la comunidad.</p>' +
       '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
       '</div>';
     rankHTML = '<div class="member-upsell">' +
-      '<p class="upsell-eye">✦ Solo miembros</p>' +
+      '<p class="upsell-eye">Solo miembros</p>' +
       '<p class="upsell-desc">El ranking de fans más activos solo es visible para los miembros de Top of Talent.</p>' +
       '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
       '</div>';

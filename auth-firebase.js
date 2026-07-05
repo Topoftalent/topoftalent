@@ -293,7 +293,7 @@ var css=`
 .tot-member-upsell-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.7);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
 .tot-member-perks{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .tot-member-perks li{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);padding-left:16px;position:relative;line-height:1.5}
-.tot-member-perks li::before{content:'★';position:absolute;left:0;color:#c86cff;font-size:8px;top:1px}
+.tot-member-perks li::before{content:'·';position:absolute;left:0;color:#c86cff;font-size:8px;top:1px}
 .tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
 .tot-dd-member-status.show{display:block}
 .tot-delete-warn{background:rgba(255,80,80,.05);border:1px solid rgba(255,80,80,.18);border-radius:10px;padding:14px;margin-bottom:18px}
@@ -347,7 +347,7 @@ var HTML=`
     <div class="tot-dd-user">
       <div class="tot-dd-uname" id="tot-dd-uname">–</div>
       <div class="tot-dd-fan" id="tot-dd-fan"></div>
-      <div class="tot-dd-member-status" id="tot-dd-member-status">★ Miembro Activo</div>
+      <div class="tot-dd-member-status" id="tot-dd-member-status">Miembro Activo</div>
     </div>
     <div class="tot-dd-item member-cta" id="tot-dd-member-cta" onclick="window.location.href='membresia.html'">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
@@ -469,7 +469,7 @@ var HTML=`
       <div class="tot-output"><div class="tot-output-label">Nombre de usuario</div><div class="tot-output-val" id="out-user-val">–</div></div>
       <div class="tot-output"><div class="tot-output-label">Fecha de creación</div><div class="tot-output-val" id="out-date-val">–</div></div>
       <div class="tot-member-upsell">
-        <div class="tot-member-upsell-title"><span>★</span> ¿Quieres ser Miembro?</div>
+        <div class="tot-member-upsell-title">¿Quieres ser Miembro?</div>
         <div class="tot-member-upsell-sub">Acceso exclusivo · Fan Premium</div>
         <ul class="tot-member-perks">
           <li>Vota por tu artista favorito cada 8 horas</li>
