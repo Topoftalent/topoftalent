@@ -666,9 +666,17 @@ async function buildCommunity() {
         return '<div class="cmt-card">' +
           '<span class="cmt-uname">' + escapeHTML(cm.u) + '</span>' +
           '<p class="cmt-body">' + escapeHTML(cm.t) + '</p>' +
-          '<button id="rep-' + id + '" class="cmt-report" onclick="TotArtista.reportComment(\'' + id + '\',\'' + escapeHTML(cm.u) + '\')">· Reportar</button>' +
+          '<button class="cmt-report" data-cid="' + escapeHTML(id) + '" data-user="' + escapeHTML(cm.u) + '">· Reportar</button>' +
         '</div>';
       }).join('');
+
+      // Delegated click — safe regardless of username characters
+      ticker.onclick = function(e) {
+        var btn = e.target.closest('.cmt-report');
+        if (!btn || btn.disabled) return;
+        window.TotArtista.reportComment(btn.dataset.cid, btn.dataset.user);
+      };
+
       startTicker();
     });
   }
