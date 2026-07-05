@@ -69,16 +69,13 @@ export function listenTopFans(artistId, cb) {
     orderBy('total', 'desc'),
     limit(15)
   );
-  return onSnapshot(q, async function(snap) {
-    var fans = [];
-    for (var d of snap.docs) {
-      var uid = d.id;
-      // Fetch username from users collection
-      var userSnap = await getDoc(doc(db, 'users', uid));
-      var username = userSnap.exists() ? ('@' + userSnap.data().username) : uid;
-      fans.push({ username, total: d.data().total || 0 });
-    }
-    cb(fans);
+  return onSnapshot(q, function(snap) {
+    Promise.all(snap.docs.map(function(d) {
+      return getDoc(doc(db, 'users', d.id)).then(function(userSnap) {
+        var username = userSnap.exists() ? ('@' + userSnap.data().username) : d.id;
+        return { username: username, total: d.data().total || 0 };
+      });
+    })).then(cb);
   });
 }
 
@@ -117,6 +114,17 @@ export async function getCommentCountToday(userId) {
     if (!d.cmtDaily || d.cmtDaily.date !== today) return 0;
     return d.cmtDaily.count || 0;
   } catch(e) { return 0; }
+}
+
+export async function reportComment(commentId, reportedUser, reportedBy, artistId) {
+  await addDoc(collection(db, 'reports'), {
+    commentId: commentId,
+    reportedUser: reportedUser,
+    reportedBy: reportedBy,
+    artistId: artistId,
+    createdAt: serverTimestamp(),
+    status: 'pending'
+  });
 }
 
 export async function incrementCommentCount(userId) {

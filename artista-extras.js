@@ -4,7 +4,7 @@ import {
   listenTopFans, listenComments,
   addComment as fbAddComment,
   getCommentCountToday, incrementCommentCount,
-  getArtistName
+  getArtistName, reportComment as fbReportComment
 } from './votes-firebase.js';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
@@ -762,7 +762,7 @@ var BAD_WORDS = [
   'monda','mondá','care monda','caremonda',
   'chucha','chuchita','chuche','ch0cha',
   'culiao','culiado','ql','q.l.','culia0',
-  'ql','verga','v3rga','vergota',
+  'verga','v3rga','vergota',
   'mecachis','miechica','mechica','méchica',
   'sapo','sapaso','sapazo',
   'conchetumare','conchetumadre',
@@ -786,9 +786,9 @@ var BAD_WORDS = [
   'zorra','p3rra','perra','p.e.r.r.a',
   'cerdo','cerda',
   'marica','maricon','maricón','mar1ca',
-  'suicidio','matate','matar','muérete','muerete',
+  'suicidio','matate','muérete','muerete','matense','matalo',
   'racista','discriminar','xenofobia',
-  'negro de mierda','india','indio de mierda',
+  'negro de mierda','indio de mierda',
   'fracasado','fracasada','frac4sado',
   'mediocre',
   // ── Inglés ──────────────────────────────────────────────────────
@@ -805,10 +805,10 @@ var BAD_WORDS = [
 
 function normalizeText(t) {
   return t.toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')  // strip accents
-    .replace(/[0@]/, 'o').replace(/1/g, 'i').replace(/3/g, 'e')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[0@]/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e')
     .replace(/4/g, 'a').replace(/5/g, 's').replace(/\$/g, 's')
-    .replace(/[.*,\-_]/g, '');  // strip common obfuscation chars
+    .replace(/[.*,\-_]/g, '');
 }
 
 function containsBadWord(text) {
@@ -876,16 +876,7 @@ window.TotArtista = {
     var uid = getUid();
     if (!uid) return;
     try {
-      var { db } = await import('./firebase-config.js');
-      var { addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      await addDoc(collection(db, 'reports'), {
-        commentId: commentId,
-        reportedUser: reportedUser,
-        reportedBy: uid,
-        artistId: artistId,
-        createdAt: serverTimestamp(),
-        status: 'pending'
-      });
+      await fbReportComment(commentId, reportedUser, uid, artistId);
       var btn = document.getElementById('rep-' + commentId);
       if (btn) { btn.textContent = 'Reportado'; btn.disabled = true; btn.style.color = '#dc2626'; }
     } catch(e) { console.error('Error al reportar:', e); }
