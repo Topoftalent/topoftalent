@@ -84,7 +84,7 @@ export function listenComments(artistId, cb) {
   );
   return onSnapshot(q, function(snap) {
     var comments = snap.docs.map(function(d) {
-      return { u: d.data().username, t: d.data().text };
+      return { id: d.id, u: d.data().username, t: d.data().text };
     });
     cb(comments);
   });
