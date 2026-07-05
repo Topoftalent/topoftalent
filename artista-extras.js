@@ -754,22 +754,69 @@ function startTicker() {
 
 /* ── BAD WORD FILTER ─────────────────────────────────────────── */
 var BAD_WORDS = [
-  'idiota','imbécil','imbecil','estúpido','estupido','mierda','puta','puto','maldito','maldita',
-  'cabrón','cabron','pendejo','pendeja','maricón','maricon','marica','imbécil','imbecil',
-  'hdp','hijodeputa','hijo de puta','vergüenza','bastardo','bastarda','inútil','inutil',
-  'odio','asco','terrible','horrible','feo','fea','basura','trash','hate','fuck','shit',
-  'asshole','bitch','cunt','damn','loser','retard','idiota','animal','bestia',
-  'gordo','gorda','negro de mierda','racista','discriminar','muerto','matar','suicidio',
-  'imbeciles','estupida','malparido','malparida','gonorrea','hp','hijueputa',
-  'desgraciado','desgraciada','zorra','perra','vaca','cerdo','cerda',
-  'no sirve','no vale','pésimo','pesimo','mediocre','fracasado','fracasada',
+  // ── Ecuatorianas / jerga local ──────────────────────────────────
+  'mmvrg','mvrg','mamaverga','mama verga','mama v','mam4verga',
+  'hijueputa','hijuepcha','hijuep','h1jueputa','hp','h.p.','h,p',
+  'gonorrea','gonore','g0norrea',
+  'malparido','malparida','malpari',
+  'monda','mondá','care monda','caremonda',
+  'chucha','chuchita','chuche','ch0cha',
+  'culiao','culiado','ql','q.l.','culia0',
+  'ql','verga','v3rga','vergota',
+  'mecachis','miechica','mechica','méchica',
+  'sapo','sapaso','sapazo',
+  'conchetumare','conchetumadre',
+  'huevon','huevón','weon','weón','huevas','hueva','hu3von',
+  'pichurria','pichurri',
+  'pendejo','pendeja','pend3jo',
+  'ñaño malo','ladrón','ladron',
+  // ── Generales español ───────────────────────────────────────────
+  'idiota','idiot4','1diota',
+  'imbecil','imbécil','imb3cil',
+  'estupido','estúpido','3stupido',
+  'mierda','mi3rda','mrd','mrda',
+  'puta','put4','p.u.t.a','puto','put0',
+  'maldito','maldita','maldit0',
+  'cabron','cabrón','cabr0n',
+  'hdp','hijodeputa','hijo de puta','hijadeputa',
+  'bastardo','bastarda',
+  'inutil','inútil',
+  'malparido','malparida',
+  'desgraciado','desgraciada',
+  'zorra','p3rra','perra','p.e.r.r.a',
+  'cerdo','cerda',
+  'marica','maricon','maricón','mar1ca',
+  'suicidio','matate','matar','muérete','muerete',
+  'racista','discriminar','xenofobia',
+  'negro de mierda','india','indio de mierda',
+  'fracasado','fracasada','frac4sado',
+  'mediocre',
+  // ── Inglés ──────────────────────────────────────────────────────
+  'fuck','f.u.c.k','fck','f*ck','fu*k',
+  'shit','sh1t','sh*t',
+  'bitch','b1tch','b*tch',
+  'asshole','a**hole','a55hole',
+  'cunt','c*nt',
+  'retard','ret4rd',
+  'loser','l0ser',
+  'hate','h8',
+  'kill yourself','kys',
 ];
 
+function normalizeText(t) {
+  return t.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')  // strip accents
+    .replace(/[0@]/, 'o').replace(/1/g, 'i').replace(/3/g, 'e')
+    .replace(/4/g, 'a').replace(/5/g, 's').replace(/\$/g, 's')
+    .replace(/[.*,\-_]/g, '');  // strip common obfuscation chars
+}
+
 function containsBadWord(text) {
-  var lower = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  var normalized = normalizeText(text);
+  var plain      = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   return BAD_WORDS.some(function(w) {
-    var norm = w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-    return lower.includes(norm);
+    var nw = normalizeText(w);
+    return normalized.includes(nw) || plain.includes(nw);
   });
 }
 
