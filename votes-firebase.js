@@ -54,6 +54,14 @@ export async function getAllVoteTotals() {
   return totals;
 }
 
+// Get a single artist's name from Firestore
+export async function getArtistName(artistId) {
+  try {
+    var snap = await getDoc(doc(db, 'artistas', artistId));
+    return snap.exists() ? (snap.data().nombre || artistId) : artistId;
+  } catch(e) { return artistId; }
+}
+
 // Real-time top fans listener (calls cb with array of {username, total})
 export function listenTopFans(artistId, cb) {
   var q = query(

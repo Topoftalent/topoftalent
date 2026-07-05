@@ -3,7 +3,8 @@ import {
   getMyVoteData, castVote, getTotalVotes, getAllVoteTotals,
   listenTopFans, listenComments,
   addComment as fbAddComment,
-  getCommentCountToday, incrementCommentCount
+  getCommentCountToday, incrementCommentCount,
+  getArtistName
 } from './votes-firebase.js';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
@@ -332,7 +333,30 @@ async function updateHeroRank() {
     var el = document.querySelector('.hero-rank');
     if (el) { el.textContent = '#' + String(rank).padStart(2, '0') + ' TOP OF TALENT'; el.style.visibility = 'visible'; }
     updateScoreBlock(rank, sorted.length);
+    updateNextArtist(sorted, rank);
   } catch(e) { /* keep hidden */ }
+}
+
+async function updateNextArtist(sorted, rank) {
+  // Next in vote order (wraps to first if current is last)
+  var nextId = sorted[rank % sorted.length];
+  if (!nextId || nextId === artistId) return;
+  var nombre = await getArtistName(nextId);
+
+  var btnNext = document.querySelector('.btn-next');
+  if (btnNext) {
+    btnNext.href = nextId + '.html';
+    btnNext.textContent = 'Siguiente: ' + nombre + ' →';
+    btnNext.style.display = '';
+  }
+
+  var nextArtistEl = document.querySelector('a.next-artist');
+  if (nextArtistEl) {
+    nextArtistEl.href = nextId + '.html';
+    var nextName = nextArtistEl.querySelector('.next-name');
+    if (nextName) nextName.textContent = nombre;
+    nextArtistEl.style.display = '';
+  }
 }
 
 function updateScoreBlock(rank, total) {
