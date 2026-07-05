@@ -180,9 +180,8 @@ async function buildVoteArea() {
   var ph = p2.querySelector('.paso-header');
   if (!ph) return;
 
-  // Remove previous vote-area if rebuilding
-  var prev = ph.querySelector('.vote-area');
-  if (prev) prev.remove();
+  // Remove ALL vote-areas to prevent race-condition duplicates
+  ph.querySelectorAll('.vote-area').forEach(function(el) { el.remove(); });
 
   // Build ph-left once
   var phLeft = ph.querySelector('.ph-left');
@@ -235,9 +234,8 @@ async function buildVoteArea() {
       }
     });
   } else {
-    area.innerHTML =
-      '<a href="membresia.html" class="vote-btn vote-upsell-btn"><span class="vote-star">★</span>Hazte Miembro para Votar</a>' +
-      '<p class="vote-legend">*Se restablece cada 8 horas</p>';
+    // Non-members: solo contador — el CTA de membresía ya está en paso5
+    area.innerHTML = '';
   }
 
   area.appendChild(publicCounter);
