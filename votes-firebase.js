@@ -59,7 +59,7 @@ export function listenTopFans(artistId, cb) {
   var q = query(
     collection(db, 'votes', artistId, 'fans'),
     orderBy('total', 'desc'),
-    limit(10)
+    limit(15)
   );
   return onSnapshot(q, async function(snap) {
     var fans = [];

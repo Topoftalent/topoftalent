@@ -101,12 +101,29 @@ function injectStyles() {
     '.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;position:relative;z-index:1}',
     '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
     'letter-spacing:-.01em;color:#000;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
-    '.fan-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.05)}',
-    '.fan-row:last-child{border-bottom:none}',
-    '.fan-pos{font-size:15px;width:28px;text-align:center;flex-shrink:0}',
-    '.rank-num{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;color:#999}',
-    '.fan-name{font-family:"JetBrains Mono",monospace;font-size:12px;color:#000;flex:1}',
-    '.fan-votes{font-family:"JetBrains Mono",monospace;font-size:11px;color:#c86cff;font-weight:700;white-space:nowrap}',
+    /* ── TOP FANS AVATAR GRID ── */
+    '.fan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 12px;',
+    'max-height:420px;overflow-y:auto;padding-right:4px}',
+    '.fan-grid::-webkit-scrollbar{width:3px}',
+    '.fan-grid::-webkit-scrollbar-track{background:transparent}',
+    '.fan-grid::-webkit-scrollbar-thumb{background:rgba(200,108,255,.3);border-radius:3px}',
+    '.fan-item{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}',
+    '.fan-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;',
+    'font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:20px;font-weight:700;color:#fff;',
+    'position:relative;flex-shrink:0;transition:transform .2s}',
+    '.fan-avatar:hover{transform:scale(1.08)}',
+    '.fan-avatar::after{content:"";position:absolute;inset:-2px;border-radius:50%;',
+    'background:inherit;filter:blur(8px);opacity:.35;z-index:-1}',
+    '.fan-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;',
+    'background:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;',
+    'box-shadow:0 2px 6px rgba(0,0,0,.15)}',
+    '.fan-uname{font-family:"JetBrains Mono",monospace;font-size:9px;color:#333;letter-spacing:.04em;',
+    'text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.fan-count{font-family:"JetBrains Mono",monospace;font-size:8px;color:#c86cff;font-weight:700;',
+    'letter-spacing:.06em;text-align:center}',
+    '.fan-pos-num{position:absolute;top:-5px;left:50%;transform:translateX(-50%);',
+    'font-family:"JetBrains Mono",monospace;font-size:8px;font-weight:700;color:rgba(255,255,255,.7);',
+    'background:rgba(0,0,0,.35);border-radius:4px;padding:1px 4px;letter-spacing:.05em}',
     '.empty-state{font-family:"JetBrains Mono",monospace;font-size:11px;color:#aaa;padding:20px 0}',
     '.cmt-ticker-wrap{height:300px;overflow:hidden;position:relative}',
     '.cmt-ticker-wrap::after{content:"";position:absolute;bottom:0;left:0;right:0;height:60px;',
@@ -448,7 +465,7 @@ async function buildCommunity() {
     '<div class="community-grid">' +
       '<div class="community-col">' +
         '<p class="comm-col-title">Top Fans</p>' +
-        '<div class="ranking-list" id="rankingList">' + rankHTML + '</div>' +
+        '<div class="fan-grid" id="rankingList">' + rankHTML + '</div>' +
       '</div>' +
       '<div class="community-col">' +
         '<p class="comm-col-title">Comentarios de Fans</p>' +
@@ -466,16 +483,42 @@ async function buildCommunity() {
 
   if (getIsMember()) {
     // Real-time ranking
+    var AVATAR_GRADIENTS = [
+      'linear-gradient(135deg,#c86cff,#7c3aed)',
+      'linear-gradient(135deg,#f472b6,#c026d3)',
+      'linear-gradient(135deg,#818cf8,#6d28d9)',
+      'linear-gradient(135deg,#e879f9,#9333ea)',
+      'linear-gradient(135deg,#a78bfa,#7c3aed)',
+      'linear-gradient(135deg,#f0abfc,#c86cff)',
+      'linear-gradient(135deg,#c084fc,#7e22ce)',
+      'linear-gradient(135deg,#d946ef,#9333ea)',
+      'linear-gradient(135deg,#a855f7,#6d28d9)',
+      'linear-gradient(135deg,#e879f9,#7c3aed)',
+      'linear-gradient(135deg,#c026d3,#9333ea)',
+      'linear-gradient(135deg,#7c3aed,#4c1d95)',
+      'linear-gradient(135deg,#9d4edd,#5b21b6)',
+      'linear-gradient(135deg,#c86cff,#6d28d9)',
+      'linear-gradient(135deg,#d8b4fe,#9333ea)',
+    ];
+    var TOP_BADGES = ['🥇','🥈','🥉'];
+
     _unsubFans = listenTopFans(artistId, function (fans) {
-      var medals = ['🥇','🥈','🥉'];
       var rl = document.getElementById('rankingList');
       if (!rl) return;
       if (!fans.length) { rl.innerHTML = '<p class="empty-state">Sé el primero en votar</p>'; return; }
       rl.innerHTML = fans.map(function (f, i) {
-        var pos = i < 3 ? medals[i] : '<span class="rank-num">#' + (i+1) + '</span>';
-        return '<div class="fan-row"><span class="fan-pos">' + pos + '</span>' +
-          '<span class="fan-name">' + escapeHTML(f.username) + '</span>' +
-          '<span class="fan-votes">' + f.total + ' votos</span></div>';
+        var letter = (f.username || '?').replace(/^@/, '')[0].toUpperCase();
+        var grad   = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
+        var badge  = i < 3 ? '<span class="fan-badge">' + TOP_BADGES[i] + '</span>' : '';
+        var uname  = escapeHTML(f.username || '?');
+        return '<div class="fan-item">' +
+          badge +
+          '<div class="fan-avatar" style="background:' + grad + ';box-shadow:0 4px 18px rgba(200,108,255,.35),inset 0 1px 0 rgba(255,255,255,.25)">' +
+            letter +
+          '</div>' +
+          '<span class="fan-uname">' + uname + '</span>' +
+          '<span class="fan-count">' + f.total + ' voto' + (f.total !== 1 ? 's' : '') + '</span>' +
+        '</div>';
       }).join('');
     });
 
