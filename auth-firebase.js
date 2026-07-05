@@ -161,7 +161,7 @@ var css=`
 .tot-mh-logo{width:34px;height:34px;border-radius:50%;border:1px solid rgba(200,108,255,.3);display:flex;align-items:center;justify-content:center;margin-bottom:12px;background:rgba(200,108,255,.07)}
 .tot-mh-logo img{width:20px;height:20px;object-fit:contain;filter:invert(1)}
 .tot-mh-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.32em;color:#c86cff;text-transform:uppercase;margin-bottom:4px}
-.tot-mh-title{font-weight:700;font-size:22px;color:#fff;letter-spacing:-.015em;line-height:1.1}
+.tot-mh-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:22px;color:#fff;letter-spacing:-.015em;line-height:1.1}
 .tot-mh-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.05em;margin-top:6px}
 .tot-close{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:50%;color:rgba(255,255,255,.4);font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-top:2px}
 .tot-close:hover{border-color:#c86cff;color:#c86cff;background:rgba(200,108,255,.12)}
