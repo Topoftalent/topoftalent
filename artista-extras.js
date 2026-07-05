@@ -950,12 +950,10 @@ window.TotArtista = {
     if (!(window._totCurrentUser && window._totCurrentUser.isAdmin)) return;
     var modal = document.getElementById('tot-admin-modal');
     if (!modal) return;
-    var input = modal.querySelector('.admin-modal-input');
-    var err   = modal.querySelector('.admin-modal-err');
-    input.value = '';
-    err.textContent = '';
+    modal.querySelectorAll('.admin-modal-input').forEach(function(i){ i.value = ''; });
+    modal.querySelector('.admin-modal-err').textContent = '';
     modal.style.display = 'flex';
-    input.focus();
+    modal.querySelector('.admin-modal-input').focus();
   }
 };
 
@@ -978,8 +976,9 @@ function buildAdminPanel() {
   modal.innerHTML =
     '<div class="admin-modal-box">' +
       '<p class="admin-modal-title">Confirmar reset de votos</p>' +
-      '<p class="admin-modal-sub">Ingresa el codigo de verificacion para reiniciar los votos de <strong>' + artistId + '</strong> a cero.</p>' +
-      '<input class="admin-modal-input" type="password" placeholder="Codigo de verificacion">' +
+      '<p class="admin-modal-sub">Reiniciar votos de <strong>' + artistId + '</strong> a cero. Ambos campos son obligatorios.</p>' +
+      '<input class="admin-modal-input" id="admin-input-who" type="text" placeholder="Quien reinicia (ej. CAMILA SC)">' +
+      '<input class="admin-modal-input" id="admin-input-pwd" type="password" placeholder="Contrasena de verificacion" style="margin-top:10px">' +
       '<p class="admin-modal-err"></p>' +
       '<div class="admin-modal-actions">' +
         '<button class="admin-modal-cancel">Cancelar</button>' +
@@ -997,12 +996,14 @@ function buildAdminPanel() {
   };
 
   modal.querySelector('.admin-modal-confirm').onclick = async function() {
-    var input = modal.querySelector('.admin-modal-input');
-    var err   = modal.querySelector('.admin-modal-err');
-    var RESET_CODE = 'TOT-RESET-2026';
-    if (input.value.trim() !== RESET_CODE) {
-      err.textContent = 'Codigo incorrecto.';
-      input.focus();
+    var whoInput = modal.querySelector('#admin-input-who');
+    var pwdInput = modal.querySelector('#admin-input-pwd');
+    var err      = modal.querySelector('.admin-modal-err');
+    var WHO      = 'CAMILA SC';
+    var PWD      = 'TOTRESETEOVOTOSCONFIRM';
+    if (whoInput.value.trim() !== WHO || pwdInput.value.trim() !== PWD) {
+      err.textContent = 'Datos incorrectos. Verifica ambos campos.';
+      whoInput.focus();
       return;
     }
     var confirmBtn = modal.querySelector('.admin-modal-confirm');
