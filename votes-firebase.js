@@ -43,6 +43,17 @@ export async function getTotalVotes(artistId) {
   } catch(e) { return 0; }
 }
 
+// Returns {artistId: totalVotes} for all artists
+export async function getAllVoteTotals() {
+  var ids = ['artista1','artista2','artista3','artista4','artista5',
+             'artista6','artista7','artista8','artista9','artista10'];
+  var totals = {};
+  await Promise.all(ids.map(async function(id) {
+    totals[id] = await getTotalVotes(id);
+  }));
+  return totals;
+}
+
 // Real-time top fans listener (calls cb with array of {username, total})
 export function listenTopFans(artistId, cb) {
   var q = query(

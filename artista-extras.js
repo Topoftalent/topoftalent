@@ -1,6 +1,6 @@
 // artista-extras.js — ES Module, Firestore-backed votes & comments
 import {
-  getMyVoteData, castVote, getTotalVotes,
+  getMyVoteData, castVote, getTotalVotes, getAllVoteTotals,
   listenTopFans, listenComments,
   addComment as fbAddComment,
   getCommentCountToday, incrementCommentCount
@@ -256,6 +256,19 @@ function startVoteDotMatrix(card) {
   resize(); draw();
 }
 
+async function updateHeroRank() {
+  try {
+    var totals = await getAllVoteTotals();
+    var sorted = Object.keys(totals).sort(function(a, b) {
+      return (totals[b] || 0) - (totals[a] || 0);
+    });
+    var rank = sorted.indexOf(artistId) + 1;
+    if (rank < 1) rank = sorted.length;
+    var el = document.querySelector('.hero-rank');
+    if (el) el.textContent = '#' + String(rank).padStart(2, '0') + ' TOP OF TALENT';
+  } catch(e) { /* keep static value on error */ }
+}
+
 var _voteToken = null;
 async function buildVoteArea() {
   var token = {};
@@ -312,10 +325,11 @@ async function buildVoteArea() {
         vBtn.textContent = 'Votando…';
         try {
           await castVote(artistId, uid);
-          // Update counter
+          // Update counter and rank
           var newTotal = await getTotalVotes(artistId);
           var pc = document.getElementById('tot-public-votes');
           if (pc) pc.textContent = newTotal;
+          updateHeroRank();
           // Swap to invite state
           vBtn.remove();
           var legend = card.querySelector('.va-legend');
@@ -609,6 +623,7 @@ async function init() {
   }
   await buildVoteArea();
   await buildCommunity();
+  updateHeroRank();
 }
 
 // Rebuild UI when auth state changes (login / logout)
