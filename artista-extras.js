@@ -555,7 +555,7 @@ async function buildCommunity() {
         '<div class="comm-col-header">' +
           '<p class="comm-col-title">Top Fans</p>' +
           '<div class="info-btn" tabindex="0">ⓘ' +
-            '<div class="info-tooltip"><p>Los fans que más votan por este artista aparecen aquí. Cada voto cuenta — mientras más apoyes, más visible serás para tu artista y su comunidad.</p></div>' +
+            '<div class="info-tooltip"><p>Los fans que más votan por este artista aparecen aquí. Cada voto cuenta, mientras más apoyes, más visible serás para tu artista y su comunidad.</p></div>' +
           '</div>' +
         '</div>' +
         (getIsMember()
