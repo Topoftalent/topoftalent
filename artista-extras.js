@@ -163,7 +163,7 @@ function injectStyles() {
     'background:#fff;border:1px solid rgba(200,108,255,.25);border-radius:10px;',
     'box-shadow:0 8px 32px rgba(0,0,0,.12),0 0 20px rgba(200,108,255,.1);',
     'padding:14px 16px;z-index:100;display:none}',
-    '.info-tooltip p{font-family:"JetBrains Mono",monospace;font-size:10px;color:#444;line-height:1.7;margin:0}',
+    '.info-tooltip p{font-family:"JetBrains Mono",monospace;font-size:10px;color:#444;line-height:1.7;margin:0;text-transform:none;letter-spacing:normal}',
     '.info-btn:hover .info-tooltip,.info-btn:focus .info-tooltip{display:block}',
     /* ── COMMENT ALERT ── */
     '.cmt-alert{display:none;font-family:"JetBrains Mono",monospace;font-size:10px;color:#dc2626;',
@@ -390,7 +390,7 @@ function updateScoreBlock(rank, total) {
     '<div class="tot-score-card">' +
       '<div class="score-header">' +
         '<span class="score-title">Score Top of Talent</span>' +
-        '<div class="info-btn" tabindex="0">i' +
+        '<div class="info-btn" tabindex="0">ⓘ' +
           '<div class="info-tooltip"><p>' + infoTooltipText + '</p></div>' +
         '</div>' +
       '</div>' +
