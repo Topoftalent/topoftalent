@@ -99,8 +99,8 @@ function injectStyles() {
     'animation:border-glow 3s ease-in-out infinite alternate}',
     '@keyframes border-glow{0%{opacity:.4;filter:blur(0px)}100%{opacity:1;filter:blur(1px)}}',
     '.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;position:relative;z-index:1}',
-    '.comm-col-title{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.25em;color:#444;',
-    'text-transform:uppercase;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
+    '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
+    'letter-spacing:-.01em;color:#000;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
     '.fan-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.05)}',
     '.fan-row:last-child{border-bottom:none}',
     '.fan-pos{font-size:15px;width:28px;text-align:center;flex-shrink:0}',
@@ -395,7 +395,7 @@ async function buildCommunity() {
   var ctaInner = ctaEl ? ctaEl.innerHTML : '';
 
   paso5.className = 'snap-section community-section';
-  paso5.style.cssText = 'background:#fff;color:#000;padding:120px 40px 80px;display:flex;flex-direction:column';
+  paso5.style.cssText = 'background:#fff;color:#000;padding:80px 40px 80px;display:flex;flex-direction:column';
 
   var rankHTML, cmtHTML;
 
@@ -416,14 +416,18 @@ async function buildCommunity() {
     var upsell = '<div class="member-upsell">' +
       '<p class="upsell-eye">✦ Acceso exclusivo</p>' +
       '<p class="upsell-desc">Los miembros de Top of Talent votan por sus artistas, aparecen en el ranking de fans y dejan su huella en la comunidad.</p>' +
-      '<a href="membresia.html" class="upsell-cta"><span style="font-size:13px;line-height:1">★</span> Hazte Miembro</a>' +
+      '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
       '</div>';
-    rankHTML = '<p class="empty-state" style="color:#aaa;font-size:11px;letter-spacing:.1em">El ranking se revela a los miembros</p>';
+    rankHTML = '<div class="member-upsell">' +
+      '<p class="upsell-eye">✦ Solo miembros</p>' +
+      '<p class="upsell-desc">El ranking de fans más activos solo es visible para los miembros de Top of Talent.</p>' +
+      '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
+      '</div>';
     cmtHTML  = upsell;
   }
 
   paso5.innerHTML =
-    '<div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:36px;margin-bottom:56px">' +
+    '<div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:24px;margin-bottom:28px">' +
       '<span class="paso-num" style="color:#c86cff">05 —</span>' +
       '<h2 class="paso-title" style="color:#000">Comunidad de Fans</h2>' +
     '</div>' +
