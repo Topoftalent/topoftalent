@@ -7,7 +7,7 @@ import {
   getArtistName, reportComment as fbReportComment,
   deleteComment as fbDeleteComment,
   resetArtistVotes as fbResetArtistVotes
-} from './votes-firebase.js';
+} from './votes-firebase.js?v=6';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
 var CMT_LIMIT = 5;
