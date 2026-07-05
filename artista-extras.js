@@ -35,30 +35,45 @@ function injectStyles() {
   var s = document.createElement('style');
   s.id = 'tot-artista-styles';
   s.textContent = [
-    '.vote-area{margin-top:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px}',
-    '.vote-btn{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:11px;font-weight:700;',
-    'letter-spacing:.18em;text-transform:uppercase;padding:13px 26px;border:none;border-radius:4px;',
-    'cursor:none!important;display:inline-flex;align-items:center;gap:7px;position:relative;',
-    'color:#c86cff;background:rgba(200,108,255,.08);',
-    'box-shadow:0 0 0 1px rgba(200,108,255,.3),inset 0 1px 0 rgba(255,255,255,.18),',
-    '0 4px 20px rgba(0,0,0,.12),0 0 18px rgba(200,108,255,.18);',
-    'backdrop-filter:blur(14px);transition:all .3s cubic-bezier(.34,1.2,.64,1);',
-    'animation:vpulse 3s ease-in-out infinite}',
-    '.vote-btn::before{content:"";position:absolute;top:0;left:15%;right:15%;height:1px;',
-    'background:linear-gradient(to right,transparent,rgba(255,255,255,.5),transparent);border-radius:50%}',
-    '.vote-btn:not([disabled]):hover{background:rgba(200,108,255,.16);transform:translateY(-1px);',
-    'box-shadow:0 0 0 1px rgba(200,108,255,.55),inset 0 1px 0 rgba(255,255,255,.25),',
-    '0 4px 24px rgba(0,0,0,.18),0 0 32px rgba(200,108,255,.38)}',
-    '.vote-btn:not([disabled]):active{transform:translateY(1px) scale(.99)}',
-    '.vote-btn[disabled]{opacity:.45;animation:none;cursor:not-allowed!important}',
-    '.vote-upsell-btn{opacity:1}',
-    '@keyframes vpulse{0%,100%{box-shadow:0 0 0 1px rgba(200,108,255,.3),inset 0 1px 0 rgba(255,255,255,.18),0 4px 20px rgba(0,0,0,.12),0 0 14px rgba(200,108,255,.16)}',
-    '50%{box-shadow:0 0 0 1px rgba(200,108,255,.52),inset 0 1px 0 rgba(255,255,255,.2),0 4px 20px rgba(0,0,0,.14),0 0 28px rgba(200,108,255,.34)}}',
-    '.vote-star{font-size:13px;line-height:1}',
-    '.vote-legend{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.13em;',
-    'color:#888;text-transform:uppercase;text-align:right}',
-    '.vote-my{font-family:"JetBrains Mono",monospace;font-size:10px;color:#c86cff;text-align:right}',
-    '.vote-my strong{font-size:13px}',
+    /* ── VOTE CARD (paso2) ── */
+    '.vote-area{position:relative;margin-top:0;display:flex;flex-direction:column;align-items:center;gap:14px;',
+    'padding:28px 28px 22px;border-radius:14px;min-width:220px;overflow:hidden;',
+    'background:rgba(8,6,16,.92);',
+    'box-shadow:0 0 0 1px rgba(200,108,255,.25),0 12px 40px rgba(0,0,0,.55),0 0 40px rgba(200,108,255,.12);}',
+    '.vote-counter{font-family:"JetBrains Mono",monospace;color:#fff;text-align:center;margin:0;',
+    'display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;z-index:1}',
+    '.vote-counter strong{font-size:32px;font-weight:700;color:#c86cff;letter-spacing:-.02em;line-height:1}',
+    '.vote-counter-label{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.45)}',
+    /* ── LIQUID GLASS BUTTON (dark bg version) ── */
+    '.va-btn{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:11px;font-weight:700;',
+    'letter-spacing:.18em;text-transform:uppercase;padding:13px 26px;border:none;border-radius:10px;',
+    'cursor:none!important;display:inline-flex;align-items:center;justify-content:center;gap:7px;',
+    'position:relative;z-index:1;text-decoration:none;',
+    'color:#fff;background:rgba(200,108,255,.15);backdrop-filter:blur(20px);',
+    'box-shadow:inset 2px 2px 0.5px -2px rgba(255,255,255,.55),inset -2px -2px 0.5px -2px rgba(255,255,255,.18),',
+    'inset 1px 1px 1px -0.5px rgba(255,255,255,.45),inset -1px -1px 1px -0.5px rgba(255,255,255,.22),',
+    'inset 0 0 8px 4px rgba(200,108,255,.1),0 8px 32px rgba(0,0,0,.5),',
+    '0 0 0 1px rgba(200,108,255,.35),0 0 24px rgba(200,108,255,.25);',
+    'transition:all .35s cubic-bezier(.34,1.2,.64,1);animation:vapulse 3s ease-in-out infinite;',
+    'white-space:nowrap}',
+    '.va-btn::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;',
+    'background:linear-gradient(to right,transparent,rgba(255,255,255,.55),transparent);border-radius:50%}',
+    '.va-btn:hover{background:rgba(200,108,255,.28);transform:translateY(-2px);',
+    'box-shadow:inset 2px 2px 0.5px -2px rgba(255,255,255,.65),inset 0 0 12px 4px rgba(200,108,255,.16),',
+    '0 0 0 1px rgba(200,108,255,.6),0 10px 36px rgba(0,0,0,.5),0 0 40px rgba(200,108,255,.4)}',
+    '.va-btn:active{transform:translateY(0) scale(.98)}',
+    '.va-btn[disabled]{opacity:.4;animation:none;cursor:not-allowed!important}',
+    '.va-btn-copied{background:rgba(76,255,145,.18)!important;color:#4cff91!important;animation:none!important;',
+    'box-shadow:inset 2px 2px 0.5px -2px rgba(255,255,255,.5),0 0 0 1px rgba(76,255,145,.5),',
+    '0 0 24px rgba(76,255,145,.25)!important}',
+    '@keyframes vapulse{0%,100%{box-shadow:inset 2px 2px 0.5px -2px rgba(255,255,255,.55),',
+    'inset 0 0 8px 4px rgba(200,108,255,.1),0 8px 32px rgba(0,0,0,.5),',
+    '0 0 0 1px rgba(200,108,255,.3),0 0 18px rgba(200,108,255,.18)}',
+    '50%{box-shadow:inset 2px 2px 0.5px -2px rgba(255,255,255,.6),',
+    'inset 0 0 10px 5px rgba(200,108,255,.16),0 8px 32px rgba(0,0,0,.5),',
+    '0 0 0 1px rgba(200,108,255,.55),0 0 34px rgba(200,108,255,.38)}}',
+    '.va-legend{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.12em;',
+    'color:rgba(255,255,255,.35);text-transform:uppercase;text-align:center;margin:0;position:relative;z-index:1}',
     '#paso2 .paso-header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}',
     '.ph-left{display:flex;align-items:baseline;gap:24px}',
     '.resumen-block{margin-top:72px;padding-top:56px;border-top:1px solid rgba(0,0,0,.1);',
@@ -160,15 +175,7 @@ function injectStyles() {
     '  0 0 50px rgba(200,108,255,.45)}',
     '.upsell-cta:active{transform:translateY(0) scale(.99)}',
     '.community-cta{position:relative;z-index:1}',
-    '.vote-total-public{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;',
-    'color:#c86cff;text-align:right;display:flex;align-items:center;gap:7px}',
-    '.vote-total-public strong{font-size:16px;font-weight:700}',
-    '.share-btn{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:10px;font-weight:700;',
-    'letter-spacing:.18em;text-transform:uppercase;padding:10px 18px;border:1px solid rgba(255,255,255,.18);',
-    'background:transparent;color:rgba(255,255,255,.55);border-radius:4px;cursor:none!important;',
-    'transition:all .25s;display:inline-flex;align-items:center;gap:7px}',
-    '.share-btn:hover{border-color:#c86cff;color:#c86cff;background:rgba(200,108,255,.08)}',
-    '.share-btn.copied{border-color:#4cff91;color:#4cff91;background:rgba(76,255,145,.06)}',
+    '.vote-total-public{display:none}',
     '@media(max-width:768px){.community-grid{grid-template-columns:1fr;gap:40px}',
     '.cmt-ticker-wrap{height:220px}.vote-area{align-items:flex-start}',
     '.vote-legend{text-align:left}.resumen-quote-big{font-size:clamp(18px,5vw,28px)}}',
@@ -206,16 +213,56 @@ function buildShareBtn(container) {
 }
 
 /* ── 1. VOTE BUTTON ──────────────────────────────────────────── */
+function startVoteDotMatrix(card) {
+  var prev = card.querySelector('canvas');
+  if (prev) prev.remove();
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.15;border-radius:14px';
+  card.insertBefore(canvas, card.firstChild);
+  var ctx = canvas.getContext('2d');
+  var DOT = 2.5, GRID = 18;
+  var cols, rows, dots = [], startTime = Date.now(), running = true;
+  function resize() {
+    var rect = card.getBoundingClientRect();
+    canvas.width = rect.width; canvas.height = rect.height;
+    cols = Math.ceil(rect.width / GRID); rows = Math.ceil(rect.height / GRID);
+    dots = [];
+    var cx = cols / 2, cy = rows / 2;
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+      var d = Math.sqrt(Math.pow(c - cx, 2) + Math.pow(r - cy, 2));
+      dots.push({ c: c, r: r, delay: d * .05 + Math.random() * .4, target: .2 + Math.random() * .8 });
+    }
+  }
+  function draw() {
+    if (!running || !canvas.isConnected) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var t = (Date.now() - startTime) / 1000;
+    for (var i = 0; i < dots.length; i++) {
+      var d = dots[i];
+      var p = Math.max(0, Math.min(1, (t - d.delay) * 1.8));
+      var op = p * d.target;
+      if (op < .01) continue;
+      if (t > d.delay + 3 + Math.random() * 2) { d.target = .2 + Math.random() * .8; d.delay = t + Math.random() * .5; }
+      ctx.beginPath();
+      ctx.arc(d.c * GRID + GRID / 2, d.r * GRID + GRID / 2, DOT / 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200,108,255,' + Math.min(1, op) + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+}
+
 async function buildVoteArea() {
   var p2 = document.getElementById('paso2');
   if (!p2) return;
   var ph = p2.querySelector('.paso-header');
   if (!ph) return;
 
-  // Remove ALL vote-areas to prevent race-condition duplicates
+  // Prevent race-condition duplicates
   ph.querySelectorAll('.vote-area').forEach(function(el) { el.remove(); });
 
-  // Build ph-left once
+  // Keep title on the left
   var phLeft = ph.querySelector('.ph-left');
   if (!phLeft) {
     phLeft = document.createElement('div');
@@ -224,55 +271,84 @@ async function buildVoteArea() {
     ph.appendChild(phLeft);
   }
 
-  var area = document.createElement('div');
-  area.className = 'vote-area';
-
-  // Public counter (always visible)
   var total = await getTotalVotes(artistId);
-  var publicCounter = document.createElement('p');
-  publicCounter.className = 'vote-total-public';
-  publicCounter.innerHTML = '★ <strong id="tot-public-votes">' + total + '</strong> votos totales';
+  var isMember = getIsMember();
 
-  if (getIsMember()) {
-    var uid  = getUid();
+  // Build the card
+  var card = document.createElement('div');
+  card.className = 'vote-area';
+
+  var counterHTML = '<p class="vote-counter"><strong id="tot-public-votes">' + total + '</strong><span class="vote-counter-label">votos totales</span></p>';
+
+  if (isMember) {
+    var uid   = getUid();
     var vdata = await getMyVoteData(artistId, uid);
+    var canVote = vdata.canVote;
 
-    area.innerHTML =
-      '<button id="voteBtn" class="vote-btn"' + (vdata.canVote ? '' : ' disabled') + '>' +
-        '<span class="vote-star">★</span>' + (vdata.canVote ? 'Votar' : 'Votaste hoy') +
-      '</button>' +
-      '<p class="vote-legend">*Se restablece cada 8 horas</p>' +
-      (vdata.total > 0 ? '<p class="vote-my">Tus votos: <strong>' + vdata.total + '</strong></p>' : '');
+    if (canVote) {
+      card.innerHTML = counterHTML +
+        '<button id="voteBtn" class="va-btn va-btn-vote">Votar</button>';
+    } else {
+      card.innerHTML = counterHTML +
+        '<button id="inviteBtn" class="va-btn va-btn-invite">Copiar link para invitar</button>' +
+        '<p class="va-legend">Se reactiva cada 8 horas</p>';
+    }
 
-    var btn = area.querySelector('#voteBtn');
-    if (btn) btn.addEventListener('click', async function () {
-      this.disabled = true;
-      this.innerHTML = '<span class="vote-star">★</span>Votando…';
-      try {
-        await castVote(artistId, uid);
-        this.innerHTML = '<span class="vote-star">★</span>¡Votaste!';
-        // Update my-votes display
-        var newData = await getMyVoteData(artistId, uid);
-        var mv = area.querySelector('.vote-my');
-        if (mv) mv.innerHTML = 'Tus votos: <strong>' + newData.total + '</strong>';
-        else area.insertAdjacentHTML('afterbegin', '<p class="vote-my">Tus votos: <strong>' + newData.total + '</strong></p>');
-        // Update public counter
-        var newTotal = await getTotalVotes(artistId);
-        var pc = document.getElementById('tot-public-votes');
-        if (pc) pc.textContent = newTotal;
-      } catch(e) {
-        this.disabled = false;
-        this.innerHTML = '<span class="vote-star">★</span>Votar';
-      }
-    });
+    // Wire up vote button
+    var vBtn = card.querySelector('#voteBtn');
+    if (vBtn) {
+      vBtn.addEventListener('click', async function () {
+        vBtn.disabled = true;
+        vBtn.textContent = 'Votando…';
+        try {
+          await castVote(artistId, uid);
+          // Update counter
+          var newTotal = await getTotalVotes(artistId);
+          var pc = document.getElementById('tot-public-votes');
+          if (pc) pc.textContent = newTotal;
+          // Swap to invite state
+          vBtn.remove();
+          var legend = card.querySelector('.va-legend');
+          if (legend) legend.remove();
+          var invBtn = document.createElement('button');
+          invBtn.id = 'inviteBtn';
+          invBtn.className = 'va-btn va-btn-invite';
+          invBtn.textContent = 'Copiar link para invitar';
+          card.appendChild(invBtn);
+          card.insertAdjacentHTML('beforeend', '<p class="va-legend">Se reactiva cada 8 horas</p>');
+          wireInvite(invBtn);
+        } catch(e) {
+          vBtn.disabled = false;
+          vBtn.textContent = 'Votar';
+        }
+      });
+    }
+
+    // Wire up invite button if already voted
+    var iBtn = card.querySelector('#inviteBtn');
+    if (iBtn) wireInvite(iBtn);
+
   } else {
-    // Non-members: solo contador — el CTA de membresía ya está en paso5
-    area.innerHTML = '';
+    card.innerHTML = counterHTML +
+      '<a href="membresia.html" class="va-btn va-btn-member">Hazte Miembro</a>' +
+      '<p class="va-legend">Solo los miembros pueden votar</p>';
   }
 
-  area.appendChild(publicCounter);
-  buildShareBtn(area);
-  ph.appendChild(area);
+  ph.appendChild(card);
+  startVoteDotMatrix(card);
+}
+
+function wireInvite(btn) {
+  btn.addEventListener('click', function () {
+    navigator.clipboard.writeText(window.location.href).then(function () {
+      btn.textContent = 'Link copiado';
+      btn.classList.add('va-btn-copied');
+      setTimeout(function () {
+        btn.textContent = 'Copiar link para invitar';
+        btn.classList.remove('va-btn-copied');
+      }, 2500);
+    });
+  });
 }
 
 /* ── 2. RESUMEN DE CARRERA ───────────────────────────────────── */
