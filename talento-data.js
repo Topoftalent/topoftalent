@@ -6,8 +6,11 @@
 
 import { db } from './firebase-config.js';
 import {
-  collection, getDocs, collectionGroup, query, orderBy
+  collection, getDocs, query, orderBy
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+var ARTIST_IDS = ['artista1','artista2','artista3','artista4','artista5',
+                  'artista6','artista7','artista8','artista9','artista10'];
 
 // Tone classes cycle for cards that have no photo
 var TONES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-1','tone-2','tone-3','tone-4'];
@@ -15,17 +18,13 @@ var TONES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-1','ton
 async function getVoteTotals() {
   var totals = {};
   try {
-    var snap = await getDocs(collectionGroup(db, 'fans'));
-    snap.forEach(function(d) {
-      // Path: votes/{artistId}/fans/{userId}
-      var artistId = d.ref.parent.parent.id;
-      var data = d.data();
-      var v = data.total || data.votes || 1;
-      totals[artistId] = (totals[artistId] || 0) + v;
-    });
-  } catch(e) {
-    // votes unavailable — return empty
-  }
+    await Promise.all(ARTIST_IDS.map(async function(id) {
+      var snap = await getDocs(collection(db, 'votes', id, 'fans'));
+      var t = 0;
+      snap.forEach(function(d) { t += (d.data().total || 0); });
+      totals[id] = t;
+    }));
+  } catch(e) { /* votes unavailable */ }
   return totals;
 }
 
