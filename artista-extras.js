@@ -369,7 +369,7 @@ function updateScoreBlock(rank, total) {
         row('Críticos', scoreCriticos, '×25%', false) +
         row('Fans', scoreFans, '×50%', true) +
       '</div>' +
-      (!hasFinal ? '<p class="score-pending">Puntuación editorial pendiente · próxima actualización Q3 2026</p>' : '') +
+      (!hasFinal ? '<p class="score-pending">Puntuación editorial pendiente · se actualiza mensualmente</p>' : '') +
     '</div>';
 }
 
