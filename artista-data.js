@@ -90,8 +90,9 @@ async function loadArtist() {
 
     // ── HERO — EP label & rank ────────────────────────────────────
 
+    // Rank is set dynamically by artista-extras.js (based on live votes)
     var rankEl = document.querySelector('.hero-rank');
-    if (rankEl && d.ranking) rankEl.textContent = '#' + String(d.ranking).padStart(2, '0') + ' TOP OF TALENT';
+    if (rankEl) rankEl.style.visibility = 'hidden';
 
     // ── SPECS TABLE (#paso2) ─────────────────────────────────────
     var specsTbl = document.querySelector('.specs-table');

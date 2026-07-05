@@ -17,14 +17,14 @@ var TONES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-1','ton
 
 async function getVoteTotals() {
   var totals = {};
-  try {
-    await Promise.all(ARTIST_IDS.map(async function(id) {
+  await Promise.all(ARTIST_IDS.map(async function(id) {
+    try {
       var snap = await getDocs(collection(db, 'votes', id, 'fans'));
       var t = 0;
       snap.forEach(function(d) { t += (d.data().total || 0); });
       totals[id] = t;
-    }));
-  } catch(e) { /* votes unavailable */ }
+    } catch(e) { totals[id] = 0; }
+  }));
   return totals;
 }
 

@@ -265,7 +265,7 @@ async function updateHeroRank() {
     var rank = sorted.indexOf(artistId) + 1;
     if (rank < 1) rank = sorted.length;
     var el = document.querySelector('.hero-rank');
-    if (el) el.textContent = '#' + String(rank).padStart(2, '0') + ' TOP OF TALENT';
+    if (el) { el.textContent = '#' + String(rank).padStart(2, '0') + ' TOP OF TALENT'; el.style.visibility = 'visible'; }
   } catch(e) { /* keep static value on error */ }
 }
 
