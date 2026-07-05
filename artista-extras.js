@@ -5,7 +5,8 @@ import {
   addComment as fbAddComment,
   getCommentCountToday, incrementCommentCount,
   getArtistName, reportComment as fbReportComment,
-  deleteComment as fbDeleteComment
+  deleteComment as fbDeleteComment,
+  resetArtistVotes as fbResetArtistVotes
 } from './votes-firebase.js';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
@@ -175,11 +176,40 @@ function injectStyles() {
     'color:#bbb;background:none;border:none;cursor:none!important;padding:2px 0;',
     'text-transform:uppercase;transition:color .2s;display:block;margin-top:4px}',
     '.cmt-report:hover{color:#dc2626}',
-    '.cmt-actions{display:flex;gap:10px}',
+    '.cmt-actions{display:flex;gap:10px;align-items:center}',
     '.cmt-delete{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.1em;',
     'color:#bbb;background:none;border:none;cursor:pointer;padding:2px 0;',
     'text-transform:uppercase;transition:color .2s;display:block;margin-top:4px}',
     '.cmt-delete:hover{color:#c86cff}',
+    /* ── ADMIN BAR ── */
+    '#tot-admin-bar{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:12px;',
+    'background:rgba(200,108,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(200,108,255,.35);',
+    'border-radius:12px;padding:10px 16px;box-shadow:0 4px 24px rgba(200,108,255,.2)}',
+    '.admin-bar-label{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.3em;',
+    'color:#c86cff;text-transform:uppercase}',
+    '.admin-bar-btn{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.1em;',
+    'text-transform:uppercase;background:rgba(200,108,255,.15);color:#c86cff;border:1px solid rgba(200,108,255,.4);',
+    'border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .2s}',
+    '.admin-bar-btn:hover{background:rgba(200,108,255,.28)}',
+    /* ── ADMIN MODAL ── */
+    '#tot-admin-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;',
+    'background:rgba(0,0,0,.45);backdrop-filter:blur(6px)}',
+    '.admin-modal-box{background:#fff;border-radius:16px;padding:32px;width:min(90vw,420px);',
+    'box-shadow:0 20px 60px rgba(0,0,0,.2),0 0 0 1px rgba(200,108,255,.2)}',
+    '.admin-modal-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;font-size:16px;margin:0 0 8px}',
+    '.admin-modal-sub{font-family:"JetBrains Mono",monospace;font-size:11px;color:#666;margin:0 0 20px;line-height:1.6}',
+    '.admin-modal-input{width:100%;box-sizing:border-box;font-family:"JetBrains Mono",monospace;font-size:13px;',
+    'border:1px solid rgba(200,108,255,.4);border-radius:8px;padding:10px 14px;outline:none;',
+    'transition:border .2s;margin-bottom:6px}',
+    '.admin-modal-input:focus{border-color:#c86cff}',
+    '.admin-modal-err{font-family:"JetBrains Mono",monospace;font-size:10px;color:#dc2626;min-height:16px;margin-bottom:16px}',
+    '.admin-modal-actions{display:flex;gap:10px;justify-content:flex-end}',
+    '.admin-modal-cancel{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;',
+    'background:none;border:1px solid #ddd;border-radius:8px;padding:8px 16px;cursor:pointer;color:#666;transition:all .2s}',
+    '.admin-modal-cancel:hover{border-color:#999;color:#333}',
+    '.admin-modal-confirm{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;',
+    'background:#c86cff;color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;transition:all .2s}',
+    '.admin-modal-confirm:hover{background:#b44ee8}.admin-modal-confirm:disabled{opacity:.5;cursor:not-allowed}',
     '.cmt-ticker-wrap{height:300px;overflow:hidden;position:relative}',
     '.cmt-ticker-wrap::after{content:"";position:absolute;bottom:0;left:0;right:0;height:60px;',
     'background:linear-gradient(to top,#fff,transparent);pointer-events:none}',
@@ -914,8 +944,86 @@ window.TotArtista = {
     try {
       await fbDeleteComment(artistId, commentId);
     } catch(e) { console.error('Error al eliminar comentario:', e); }
+  },
+
+  resetVotes: async function() {
+    if (!(window._totCurrentUser && window._totCurrentUser.isAdmin)) return;
+    var modal = document.getElementById('tot-admin-modal');
+    if (!modal) return;
+    var input = modal.querySelector('.admin-modal-input');
+    var err   = modal.querySelector('.admin-modal-err');
+    input.value = '';
+    err.textContent = '';
+    modal.style.display = 'flex';
+    input.focus();
   }
 };
+
+/* ── ADMIN PANEL ─────────────────────────────────────────────── */
+function buildAdminPanel() {
+  if (!( window._totCurrentUser && window._totCurrentUser.isAdmin)) return;
+  if (document.getElementById('tot-admin-bar')) return;
+
+  // Floating bar
+  var bar = document.createElement('div');
+  bar.id = 'tot-admin-bar';
+  bar.innerHTML =
+    '<span class="admin-bar-label">ADMIN</span>' +
+    '<button class="admin-bar-btn" id="tot-btn-reset-votes">Resetear votos · ' + artistId + '</button>';
+  document.body.appendChild(bar);
+
+  // Modal overlay
+  var modal = document.createElement('div');
+  modal.id = 'tot-admin-modal';
+  modal.innerHTML =
+    '<div class="admin-modal-box">' +
+      '<p class="admin-modal-title">Confirmar reset de votos</p>' +
+      '<p class="admin-modal-sub">Ingresa el codigo de verificacion para reiniciar los votos de <strong>' + artistId + '</strong> a cero.</p>' +
+      '<input class="admin-modal-input" type="password" placeholder="Codigo de verificacion">' +
+      '<p class="admin-modal-err"></p>' +
+      '<div class="admin-modal-actions">' +
+        '<button class="admin-modal-cancel">Cancelar</button>' +
+        '<button class="admin-modal-confirm">Confirmar reset</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  document.getElementById('tot-btn-reset-votes').onclick = function() {
+    window.TotArtista.resetVotes();
+  };
+
+  modal.querySelector('.admin-modal-cancel').onclick = function() {
+    modal.style.display = 'none';
+  };
+
+  modal.querySelector('.admin-modal-confirm').onclick = async function() {
+    var input = modal.querySelector('.admin-modal-input');
+    var err   = modal.querySelector('.admin-modal-err');
+    var RESET_CODE = 'TOT-RESET-2026';
+    if (input.value.trim() !== RESET_CODE) {
+      err.textContent = 'Codigo incorrecto.';
+      input.focus();
+      return;
+    }
+    var confirmBtn = modal.querySelector('.admin-modal-confirm');
+    confirmBtn.textContent = 'Reseteando...';
+    confirmBtn.disabled = true;
+    try {
+      await fbResetArtistVotes(artistId);
+      modal.style.display = 'none';
+      confirmBtn.textContent = 'Confirmar reset';
+      confirmBtn.disabled = false;
+    } catch(e) {
+      err.textContent = 'Error al resetear. Intenta de nuevo.';
+      confirmBtn.textContent = 'Confirmar reset';
+      confirmBtn.disabled = false;
+    }
+  };
+
+  modal.onclick = function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+}
 
 /* ── INIT ────────────────────────────────────────────────────── */
 var _initialized = false;
@@ -929,6 +1037,7 @@ async function init() {
   await buildVoteArea();
   await buildCommunity();
   updateHeroRank();
+  buildAdminPanel();
 }
 
 // Rebuild UI when auth state changes (login / logout)

@@ -131,6 +131,13 @@ export async function deleteComment(artistId, commentId) {
   await deleteDoc(doc(db, 'comments', artistId, 'list', commentId));
 }
 
+export async function resetArtistVotes(artistId) {
+  var fansSnap = await getDocs(collection(db, 'votes', artistId, 'fans'));
+  await Promise.all(fansSnap.docs.map(function(d) {
+    return deleteDoc(doc(db, 'votes', artistId, 'fans', d.id));
+  }));
+}
+
 export async function incrementCommentCount(userId) {
   var today = new Date().toISOString().split('T')[0];
   var current = await getCommentCountToday(userId);
