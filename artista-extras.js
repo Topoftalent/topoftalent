@@ -977,7 +977,7 @@ function buildAdminPanel() {
     '<div class="admin-modal-box">' +
       '<p class="admin-modal-title">Confirmar reset de votos</p>' +
       '<p class="admin-modal-sub">Reiniciar votos de <strong>' + artistId + '</strong> a cero. Ambos campos son obligatorios.</p>' +
-      '<input class="admin-modal-input" id="admin-input-who" type="text" placeholder="Quien reinicia (ej. CAMILA SC)">' +
+      '<input class="admin-modal-input" id="admin-input-who" type="text" placeholder="Quien reinicia">' +
       '<input class="admin-modal-input" id="admin-input-pwd" type="password" placeholder="Contrasena de verificacion" style="margin-top:10px">' +
       '<p class="admin-modal-err"></p>' +
       '<div class="admin-modal-actions">' +
