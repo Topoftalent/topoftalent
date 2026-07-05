@@ -99,8 +99,6 @@ function injectStyles() {
     'animation:border-glow 3s ease-in-out infinite alternate}',
     '@keyframes border-glow{0%{opacity:.4;filter:blur(0px)}100%{opacity:1;filter:blur(1px)}}',
     '.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;position:relative;z-index:1}',
-    '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
-    'letter-spacing:-.01em;color:#000;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
     /* ── TOP FANS AVATAR GRID ── */
     '.fan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 12px;',
     'max-height:420px;overflow-y:auto;padding-right:4px}',
@@ -108,8 +106,8 @@ function injectStyles() {
     '.fan-grid::-webkit-scrollbar-track{background:transparent}',
     '.fan-grid::-webkit-scrollbar-thumb{background:rgba(200,108,255,.3);border-radius:3px}',
     '.fan-item{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}',
-    '.fan-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;',
-    'font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:20px;font-weight:700;color:#fff;',
+    '.fan-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;',
+    'font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:16px;font-weight:700;color:#fff;',
     'position:relative;flex-shrink:0;transition:transform .2s}',
     '.fan-avatar:hover{transform:scale(1.08)}',
     '.fan-avatar.top-glow{animation:top-pulse 2.4s ease-in-out infinite alternate}',
@@ -127,6 +125,30 @@ function injectStyles() {
     'font-family:"JetBrains Mono",monospace;font-size:8px;font-weight:700;color:rgba(255,255,255,.7);',
     'background:rgba(0,0,0,.35);border-radius:4px;padding:1px 4px;letter-spacing:.05em}',
     '.empty-state{font-family:"JetBrains Mono",monospace;font-size:11px;color:#aaa;padding:20px 0}',
+    /* ── INFO BUTTON ── */
+    '.comm-col-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
+    '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
+    'letter-spacing:-.01em;color:#000;padding-bottom:0;border-bottom:none;margin-bottom:0}',
+    '.info-btn{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(200,108,255,.5);',
+    'background:rgba(200,108,255,.08);color:#c86cff;font-size:11px;font-weight:700;',
+    'cursor:none!important;display:flex;align-items:center;justify-content:center;',
+    'position:relative;flex-shrink:0;transition:all .2s}',
+    '.info-btn:hover{background:rgba(200,108,255,.18);border-color:#c86cff}',
+    '.info-tooltip{position:absolute;top:28px;right:0;width:220px;',
+    'background:#fff;border:1px solid rgba(200,108,255,.25);border-radius:10px;',
+    'box-shadow:0 8px 32px rgba(0,0,0,.12),0 0 20px rgba(200,108,255,.1);',
+    'padding:14px 16px;z-index:100;display:none}',
+    '.info-tooltip p{font-family:"JetBrains Mono",monospace;font-size:10px;color:#444;line-height:1.7;margin:0}',
+    '.info-btn:hover .info-tooltip,.info-btn:focus .info-tooltip{display:block}',
+    /* ── COMMENT ALERT ── */
+    '.cmt-alert{display:none;font-family:"JetBrains Mono",monospace;font-size:10px;color:#dc2626;',
+    'background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.25);border-radius:8px;',
+    'padding:10px 14px;margin-top:8px;letter-spacing:.02em;line-height:1.5}',
+    /* ── REPORT BUTTON ── */
+    '.cmt-report{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.1em;',
+    'color:#bbb;background:none;border:none;cursor:none!important;padding:2px 0;',
+    'text-transform:uppercase;transition:color .2s;display:block;margin-top:4px}',
+    '.cmt-report:hover{color:#dc2626}',
     '.cmt-ticker-wrap{height:300px;overflow:hidden;position:relative}',
     '.cmt-ticker-wrap::after{content:"";position:absolute;bottom:0;left:0;right:0;height:60px;',
     'background:linear-gradient(to top,#fff,transparent);pointer-events:none}',
@@ -444,6 +466,7 @@ async function buildCommunity() {
         '<input id="cmtInput" class="cmt-input" type="text" placeholder="Escribe tu comentario..." maxlength="200"' + (left <= 0 ? ' disabled' : '') + '>' +
         '<button id="cmtBtn" class="cmt-btn" onclick="TotArtista.addComment()"' + (left <= 0 ? ' disabled' : '') + '>Comentar →</button>' +
       '</div>' +
+      '<div class="cmt-alert" id="cmtAlert"></div>' +
       '<p class="cmt-limit-note" id="cmtLimitNote">*Máximo ' + CMT_LIMIT + ' comentarios por día · quedan ' + Math.max(0, left) + '</p>';
   } else {
     var upsell = '<div class="member-upsell">' +
@@ -466,13 +489,23 @@ async function buildCommunity() {
     '</div>' +
     '<div class="community-grid">' +
       '<div class="community-col">' +
-        '<p class="comm-col-title">Top Fans</p>' +
+        '<div class="comm-col-header">' +
+          '<p class="comm-col-title">Top Fans</p>' +
+          '<div class="info-btn" tabindex="0">ⓘ' +
+            '<div class="info-tooltip"><p>Los fans que más votan por este artista aparecen aquí. Cada voto cuenta — mientras más apoyes, más visible serás para tu artista y su comunidad.</p></div>' +
+          '</div>' +
+        '</div>' +
         (getIsMember()
           ? '<div class="fan-grid" id="rankingList">' + rankHTML + '</div>'
           : '<div id="rankingList">' + rankHTML + '</div>') +
       '</div>' +
       '<div class="community-col">' +
-        '<p class="comm-col-title">Comentarios de Fans</p>' +
+        '<div class="comm-col-header">' +
+          '<p class="comm-col-title">Comentarios de Fans</p>' +
+          '<div class="info-btn" tabindex="0">ⓘ' +
+            '<div class="info-tooltip"><p>Este espacio es para apoyar al artista, compartir tus experiencias y mostrar amor a su música. Los comentarios positivos pueden beneficiar su carrera. No se permite el odio ni el irrespeto de ningún tipo.</p></div>' +
+          '</div>' +
+        '</div>' +
         '<div class="comments-area">' + cmtHTML + '</div>' +
       '</div>' +
     '</div>' +
@@ -531,9 +564,13 @@ async function buildCommunity() {
         ticker.innerHTML = '<p class="empty-state">Sé el primero en comentar</p>';
         return;
       }
-      var doubled = comments.concat(comments);
-      ticker.innerHTML = doubled.map(function (cm) {
-        return '<div class="cmt-card"><span class="cmt-uname">' + escapeHTML(cm.u) + '</span><p class="cmt-body">' + escapeHTML(cm.t) + '</p></div>';
+      ticker.innerHTML = comments.map(function (cm) {
+        var id = cm.id || Math.random().toString(36).slice(2);
+        return '<div class="cmt-card">' +
+          '<span class="cmt-uname">' + escapeHTML(cm.u) + '</span>' +
+          '<p class="cmt-body">' + escapeHTML(cm.t) + '</p>' +
+          '<button id="rep-' + id + '" class="cmt-report" onclick="TotArtista.reportComment(\'' + id + '\',\'' + escapeHTML(cm.u) + '\')">· Reportar</button>' +
+        '</div>';
       }).join('');
       startTicker();
     });
@@ -618,6 +655,36 @@ function startTicker() {
   }, 400);
 }
 
+/* ── BAD WORD FILTER ─────────────────────────────────────────── */
+var BAD_WORDS = [
+  'idiota','imbécil','imbecil','estúpido','estupido','mierda','puta','puto','maldito','maldita',
+  'cabrón','cabron','pendejo','pendeja','maricón','maricon','marica','imbécil','imbecil',
+  'hdp','hijodeputa','hijo de puta','vergüenza','bastardo','bastarda','inútil','inutil',
+  'odio','asco','terrible','horrible','feo','fea','basura','trash','hate','fuck','shit',
+  'asshole','bitch','cunt','damn','loser','retard','idiota','animal','bestia',
+  'gordo','gorda','negro de mierda','racista','discriminar','muerto','matar','suicidio',
+  'imbeciles','estupida','malparido','malparida','gonorrea','hp','hijueputa',
+  'desgraciado','desgraciada','zorra','perra','vaca','cerdo','cerda',
+  'no sirve','no vale','pésimo','pesimo','mediocre','fracasado','fracasada',
+];
+
+function containsBadWord(text) {
+  var lower = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return BAD_WORDS.some(function(w) {
+    var norm = w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    return lower.includes(norm);
+  });
+}
+
+function showCmtAlert(msg) {
+  var el = document.getElementById('cmtAlert');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._hide);
+  el._hide = setTimeout(function() { el.style.display = 'none'; }, 5000);
+}
+
 /* ── PUBLIC API ──────────────────────────────────────────────── */
 window.TotArtista = {
   addComment: async function () {
@@ -629,10 +696,16 @@ window.TotArtista = {
     var btn   = document.getElementById('cmtBtn');
     if (!input || !input.value.trim()) return;
 
+    var text = input.value.trim();
+
+    if (containsBadWord(text)) {
+      showCmtAlert('Este comentario contiene lenguaje inapropiado. Por favor mantén un ambiente de respeto.');
+      return;
+    }
+
     var used = await getCommentCountToday(uid);
     if (used >= CMT_LIMIT) return;
 
-    var text = input.value.trim();
     input.value = '';
     if (btn) btn.disabled = true;
 
@@ -653,6 +726,25 @@ window.TotArtista = {
       if (btn) btn.disabled = false;
       console.error('Error al comentar:', e);
     }
+  },
+
+  reportComment: async function(commentId, reportedUser) {
+    var uid = getUid();
+    if (!uid) return;
+    try {
+      var { db } = await import('./firebase-config.js');
+      var { addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      await addDoc(collection(db, 'reports'), {
+        commentId: commentId,
+        reportedUser: reportedUser,
+        reportedBy: uid,
+        artistId: artistId,
+        createdAt: serverTimestamp(),
+        status: 'pending'
+      });
+      var btn = document.getElementById('rep-' + commentId);
+      if (btn) { btn.textContent = 'Reportado'; btn.disabled = true; btn.style.color = '#dc2626'; }
+    } catch(e) { console.error('Error al reportar:', e); }
   }
 };
 
