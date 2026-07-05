@@ -217,12 +217,9 @@ async function loadArtist() {
   } catch (err) {
     console.error('[artista-data] Error loading artist data:', err);
   } finally {
+    document.body.style.transition = 'opacity 0.25s';
     document.body.style.opacity = '1';
   }
 }
-
-// Hide body instantly to prevent flash of placeholder HTML
-document.body.style.opacity = '0';
-document.body.style.transition = 'opacity 0.25s';
 
 loadArtist();
