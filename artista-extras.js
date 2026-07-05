@@ -4,7 +4,8 @@ import {
   listenTopFans, listenComments,
   addComment as fbAddComment,
   getCommentCountToday, incrementCommentCount,
-  getArtistName, reportComment as fbReportComment
+  getArtistName, reportComment as fbReportComment,
+  deleteComment as fbDeleteComment
 } from './votes-firebase.js';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
@@ -174,6 +175,11 @@ function injectStyles() {
     'color:#bbb;background:none;border:none;cursor:none!important;padding:2px 0;',
     'text-transform:uppercase;transition:color .2s;display:block;margin-top:4px}',
     '.cmt-report:hover{color:#dc2626}',
+    '.cmt-actions{display:flex;gap:10px}',
+    '.cmt-delete{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.1em;',
+    'color:#bbb;background:none;border:none;cursor:pointer;padding:2px 0;',
+    'text-transform:uppercase;transition:color .2s;display:block;margin-top:4px}',
+    '.cmt-delete:hover{color:#c86cff}',
     '.cmt-ticker-wrap{height:300px;overflow:hidden;position:relative}',
     '.cmt-ticker-wrap::after{content:"";position:absolute;bottom:0;left:0;right:0;height:60px;',
     'background:linear-gradient(to top,#fff,transparent);pointer-events:none}',
@@ -661,20 +667,33 @@ async function buildCommunity() {
         ticker.innerHTML = '<p class="empty-state">Sé el primero en comentar</p>';
         return;
       }
+      var isAdmin = !!(window._totCurrentUser && window._totCurrentUser.isAdmin);
       ticker.innerHTML = comments.map(function (cm) {
         var id = cm.id || Math.random().toString(36).slice(2);
+        var deletBtn = isAdmin
+          ? '<button class="cmt-delete" data-cid="' + escapeHTML(id) + '">· Eliminar</button>'
+          : '';
         return '<div class="cmt-card">' +
           '<span class="cmt-uname">' + escapeHTML(cm.u) + '</span>' +
           '<p class="cmt-body">' + escapeHTML(cm.t) + '</p>' +
-          '<button class="cmt-report" data-cid="' + escapeHTML(id) + '" data-user="' + escapeHTML(cm.u) + '">· Reportar</button>' +
+          '<div class="cmt-actions">' +
+            '<button class="cmt-report" data-cid="' + escapeHTML(id) + '" data-user="' + escapeHTML(cm.u) + '">· Reportar</button>' +
+            deletBtn +
+          '</div>' +
         '</div>';
       }).join('');
 
       // Delegated click — safe regardless of username characters
       ticker.onclick = function(e) {
-        var btn = e.target.closest('.cmt-report');
-        if (!btn || btn.disabled) return;
-        window.TotArtista.reportComment(btn.dataset.cid, btn.dataset.user);
+        var reportBtn = e.target.closest('.cmt-report');
+        if (reportBtn && !reportBtn.disabled) {
+          window.TotArtista.reportComment(reportBtn.dataset.cid, reportBtn.dataset.user);
+          return;
+        }
+        var delBtn = e.target.closest('.cmt-delete');
+        if (delBtn && !delBtn.disabled) {
+          window.TotArtista.deleteComment(delBtn.dataset.cid);
+        }
       };
 
       startTicker();
@@ -888,6 +907,13 @@ window.TotArtista = {
       var btn = document.getElementById('rep-' + commentId);
       if (btn) { btn.textContent = 'Reportado'; btn.disabled = true; btn.style.color = '#dc2626'; }
     } catch(e) { console.error('Error al reportar:', e); }
+  },
+
+  deleteComment: async function(commentId) {
+    if (!(window._totCurrentUser && window._totCurrentUser.isAdmin)) return;
+    try {
+      await fbDeleteComment(artistId, commentId);
+    } catch(e) { console.error('Error al eliminar comentario:', e); }
   }
 };
 

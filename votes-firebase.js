@@ -9,7 +9,7 @@ import { db } from './firebase-config.js';
 import {
   doc, getDoc, setDoc, updateDoc, increment,
   collection, addDoc, query, orderBy, limit,
-  onSnapshot, serverTimestamp, getDocs
+  onSnapshot, serverTimestamp, getDocs, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ── VOTE ─────────────────────────────────────────────────────────
@@ -125,6 +125,10 @@ export async function reportComment(commentId, reportedUser, reportedBy, artistI
     createdAt: serverTimestamp(),
     status: 'pending'
   });
+}
+
+export async function deleteComment(artistId, commentId) {
+  await deleteDoc(doc(db, 'comments', artistId, 'list', commentId));
 }
 
 export async function incrementCommentCount(userId) {
