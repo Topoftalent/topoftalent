@@ -114,12 +114,12 @@ function injectStyles() {
     '.fan-avatar:hover{transform:scale(1.08)}',
     '.fan-avatar::after{content:"";position:absolute;inset:-2px;border-radius:50%;',
     'background:inherit;filter:blur(8px);opacity:.35;z-index:-1}',
-    '.fan-avatar.top-glow{animation:top-pulse 2s ease-in-out infinite alternate}',
-    '@keyframes top-pulse{0%{box-shadow:0 0 12px 4px rgba(200,108,255,.55),inset 0 1px 0 rgba(255,255,255,.3)}',
-    '100%{box-shadow:0 0 28px 10px rgba(200,108,255,.85),inset 0 1px 0 rgba(255,255,255,.5)}}',
-    '.fan-avatar.top-1{animation-duration:1.6s}',
-    '.fan-avatar.top-2{animation-duration:2s}',
-    '.fan-avatar.top-3{animation-duration:2.4s}',
+    '.fan-avatar.top-glow{animation:top-pulse 2.4s ease-in-out infinite alternate}',
+    '@keyframes top-pulse{0%{box-shadow:0 0 6px 2px rgba(200,108,255,.3),inset 0 1px 0 rgba(255,255,255,.25)}',
+    '100%{box-shadow:0 0 16px 6px rgba(200,108,255,.55),inset 0 1px 0 rgba(255,255,255,.4)}}',
+    '.fan-avatar.top-1{animation-duration:1.8s}',
+    '.fan-avatar.top-2{animation-duration:2.4s}',
+    '.fan-avatar.top-3{animation-duration:3s}',
     '.fan-uname{font-family:"JetBrains Mono",monospace;font-size:9px;color:#333;letter-spacing:.04em;',
     'text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.fan-count{font-family:"JetBrains Mono",monospace;font-size:8px;color:#c86cff;font-weight:700;',
@@ -468,7 +468,9 @@ async function buildCommunity() {
     '<div class="community-grid">' +
       '<div class="community-col">' +
         '<p class="comm-col-title">Top Fans</p>' +
-        '<div class="fan-grid" id="rankingList">' + rankHTML + '</div>' +
+        (getIsMember()
+          ? '<div class="fan-grid" id="rankingList">' + rankHTML + '</div>'
+          : '<div id="rankingList">' + rankHTML + '</div>') +
       '</div>' +
       '<div class="community-col">' +
         '<p class="comm-col-title">Comentarios de Fans</p>' +
