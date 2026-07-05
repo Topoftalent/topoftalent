@@ -114,9 +114,12 @@ function injectStyles() {
     '.fan-avatar:hover{transform:scale(1.08)}',
     '.fan-avatar::after{content:"";position:absolute;inset:-2px;border-radius:50%;',
     'background:inherit;filter:blur(8px);opacity:.35;z-index:-1}',
-    '.fan-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;',
-    'background:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;',
-    'box-shadow:0 2px 6px rgba(0,0,0,.15)}',
+    '.fan-avatar.top-glow{animation:top-pulse 2s ease-in-out infinite alternate}',
+    '@keyframes top-pulse{0%{box-shadow:0 0 12px 4px rgba(200,108,255,.55),inset 0 1px 0 rgba(255,255,255,.3)}',
+    '100%{box-shadow:0 0 28px 10px rgba(200,108,255,.85),inset 0 1px 0 rgba(255,255,255,.5)}}',
+    '.fan-avatar.top-1{animation-duration:1.6s}',
+    '.fan-avatar.top-2{animation-duration:2s}',
+    '.fan-avatar.top-3{animation-duration:2.4s}',
     '.fan-uname{font-family:"JetBrains Mono",monospace;font-size:9px;color:#333;letter-spacing:.04em;',
     'text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.fan-count{font-family:"JetBrains Mono",monospace;font-size:8px;color:#c86cff;font-weight:700;',
@@ -500,20 +503,17 @@ async function buildCommunity() {
       'linear-gradient(135deg,#c86cff,#6d28d9)',
       'linear-gradient(135deg,#d8b4fe,#9333ea)',
     ];
-    var TOP_BADGES = ['🥇','🥈','🥉'];
-
     _unsubFans = listenTopFans(artistId, function (fans) {
       var rl = document.getElementById('rankingList');
       if (!rl) return;
       if (!fans.length) { rl.innerHTML = '<p class="empty-state">Sé el primero en votar</p>'; return; }
       rl.innerHTML = fans.map(function (f, i) {
-        var letter = (f.username || '?').replace(/^@/, '')[0].toUpperCase();
-        var grad   = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
-        var badge  = i < 3 ? '<span class="fan-badge">' + TOP_BADGES[i] + '</span>' : '';
-        var uname  = escapeHTML(f.username || '?');
+        var letter    = (f.username || '?').replace(/^@/, '')[0].toUpperCase();
+        var grad      = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
+        var glowClass = i < 3 ? ' top-glow top-' + (i + 1) : '';
+        var uname     = escapeHTML(f.username || '?');
         return '<div class="fan-item">' +
-          badge +
-          '<div class="fan-avatar" style="background:' + grad + ';box-shadow:0 4px 18px rgba(200,108,255,.35),inset 0 1px 0 rgba(255,255,255,.25)">' +
+          '<div class="fan-avatar' + glowClass + '" style="background:' + grad + '">' +
             letter +
           '</div>' +
           '<span class="fan-uname">' + uname + '</span>' +
