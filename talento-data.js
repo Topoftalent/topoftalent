@@ -68,33 +68,49 @@ async function loadArtistas() {
   return artistas;
 }
 
+function applyVotesAndRender(artistas, voteTotals) {
+  window.TOT_ARTISTAS = artistas;
+  window.TOT_VOTE_TOTALS = voteTotals;
+
+  window.getTotalVotes = function(artistId) {
+    return window.TOT_VOTE_TOTALS[artistId] || 0;
+  };
+
+  // Sort by vote total descending, fall back to Firestore order
+  artistas.sort(function(a, b) {
+    var va = voteTotals[a.id] || 0;
+    var vb = voteTotals[b.id] || 0;
+    return vb - va || a.ranking - b.ranking;
+  });
+
+  var ct = document.getElementById('eyebrowCount');
+  if (ct) ct.textContent = artistas.length + ' artistas';
+
+  if (typeof buildCarousel === 'function') buildCarousel();
+  if (typeof buildTop7     === 'function') buildTop7();
+}
+
+async function refreshVotes() {
+  try {
+    var totals = await getVoteTotals();
+    applyVotesAndRender(window.TOT_ARTISTAS || [], totals);
+  } catch(e) { /* silently ignore */ }
+}
+
 async function init() {
   try {
     var [artistas, voteTotals] = await Promise.all([loadArtistas(), getVoteTotals()]);
-
-    // Expose globally so inline functions in talento.html can access them
-    window.TOT_ARTISTAS = artistas;
-    window.TOT_VOTE_TOTALS = voteTotals;
-
-    // Override the old localStorage-based getTotalVotes
-    window.getTotalVotes = function(artistId) {
-      return window.TOT_VOTE_TOTALS[artistId] || 0;
-    };
-
-    // Update count label
-    var ct = document.getElementById('eyebrowCount');
-    if (ct) ct.textContent = artistas.length + ' artistas';
-
-    // Build UI
-    if (typeof buildCarousel === 'function') buildCarousel();
-    if (typeof buildTop7     === 'function') buildTop7();
-
+    applyVotesAndRender(artistas, voteTotals);
   } catch(e) {
     console.error('[talento-data] Error cargando artistas:', e);
-    // Fallback: keep whatever TOT_ARTISTAS was (empty array)
     if (typeof buildCarousel === 'function') buildCarousel();
     if (typeof buildTop7     === 'function') buildTop7();
   }
 }
+
+// Refresh vote counts when user returns to this tab (e.g. after voting on an artista page)
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible' && window.TOT_ARTISTAS) refreshVotes();
+});
 
 init();

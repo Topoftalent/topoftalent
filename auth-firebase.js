@@ -52,7 +52,7 @@ var css=`
 
 /* USER ICON */
 #tot-user-btn{
-  position:fixed;top:20px;right:40px;z-index:500;
+  position:fixed;top:20px;right:40px;z-index:9990;
   width:38px;height:38px;border-radius:50%;
   background:rgba(200,108,255,.08);border:1.5px solid rgba(200,108,255,.35);
   display:flex;align-items:center;justify-content:center;
@@ -67,7 +67,7 @@ var css=`
 
 /* DROPDOWN */
 #tot-dropdown{
-  position:fixed;top:66px;right:40px;z-index:499;
+  position:fixed;top:66px;right:40px;z-index:9989;
   background:rgba(8,8,14,.92);border:1px solid rgba(200,108,255,.2);
   min-width:240px;border-radius:16px;overflow:hidden;
   opacity:0;transform:translateY(-8px) scale(.97);
