@@ -125,6 +125,24 @@ function injectStyles() {
     'font-family:"JetBrains Mono",monospace;font-size:8px;font-weight:700;color:rgba(255,255,255,.7);',
     'background:rgba(0,0,0,.35);border-radius:4px;padding:1px 4px;letter-spacing:.05em}',
     '.empty-state{font-family:"JetBrains Mono",monospace;font-size:11px;color:#aaa;padding:20px 0}',
+    /* ── SCORE TOT CARD ── */
+    '.tot-score-card{display:flex;flex-direction:column;gap:20px;padding:28px 28px 24px;border-radius:14px;',
+    'background:rgba(200,108,255,.04);border:1px solid rgba(200,108,255,.15);margin:4px 0}',
+    '.score-top{display:flex;align-items:baseline;gap:12px}',
+    '.score-final-num{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
+    'font-size:48px;letter-spacing:-.03em;color:#c86cff;line-height:1}',
+    '.score-final-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.25em;',
+    'color:#888;text-transform:uppercase}',
+    '.score-breakdown{display:flex;flex-direction:column;gap:10px}',
+    '.score-row{display:grid;grid-template-columns:100px 32px 1fr 36px;align-items:center;gap:10px}',
+    '.score-row-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.1em;',
+    'color:#666;text-transform:uppercase}',
+    '.score-row-val{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;color:#000;text-align:right}',
+    '.score-bar{height:3px;background:rgba(0,0,0,.07);border-radius:2px;overflow:hidden}',
+    '.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#c86cff,#7c3aed);',
+    'transition:width .8s cubic-bezier(.34,1.2,.64,1)}',
+    '.score-row-weight{font-family:"JetBrains Mono",monospace;font-size:8px;color:#aaa;letter-spacing:.05em}',
+    '.score-pending{font-family:"JetBrains Mono",monospace;font-size:9px;color:#aaa;font-style:italic}',
     /* ── INFO BUTTON ── */
     '.comm-col-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
     '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
@@ -307,7 +325,52 @@ async function updateHeroRank() {
     if (rank < 1) rank = sorted.length;
     var el = document.querySelector('.hero-rank');
     if (el) { el.textContent = '#' + String(rank).padStart(2, '0') + ' TOP OF TALENT'; el.style.visibility = 'visible'; }
-  } catch(e) { /* keep static value on error */ }
+    updateScoreBlock(rank, sorted.length);
+  } catch(e) { /* keep hidden */ }
+}
+
+function updateScoreBlock(rank, total) {
+  var block = document.getElementById('tot-score-block');
+  if (!block) return;
+
+  var sd = window._totScoreData || {};
+  var scoreTot      = (typeof sd.tot      === 'number') ? sd.tot      : null;
+  var scoreCriticos = (typeof sd.criticos === 'number') ? sd.criticos : null;
+
+  // Fan score: linear scale — rank 1 = 100, last rank = 10
+  var n = Math.max(total, 1);
+  var scoreFans = Math.round(100 - ((rank - 1) / Math.max(n - 1, 1)) * 90);
+
+  var hasFinal = scoreTot !== null && scoreCriticos !== null;
+  var final = hasFinal
+    ? Math.round((scoreTot * 0.25 + scoreCriticos * 0.25 + scoreFans * 0.50) * 10) / 10
+    : null;
+
+  function row(label, val, weight, isFan) {
+    var pct = val !== null ? val : 0;
+    return '<div class="score-row">' +
+      '<span class="score-row-label">' + label + '</span>' +
+      '<span class="score-row-val"' + (isFan ? ' style="color:#c86cff"' : '') + '>' + (val !== null ? val : '—') + '</span>' +
+      '<div class="score-bar"><div class="score-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<span class="score-row-weight">' + weight + '</span>' +
+    '</div>';
+  }
+
+  block.innerHTML =
+    '<div class="tot-score-card">' +
+      '<div class="score-top">' +
+        (hasFinal
+          ? '<span class="score-final-num">' + final + '</span>'
+          : '<span class="score-final-num" style="font-size:32px;color:#bbb">—</span>') +
+        '<span class="score-final-label">Score Top of Talent</span>' +
+      '</div>' +
+      '<div class="score-breakdown">' +
+        row('TOT Editorial', scoreTot, '×25%', false) +
+        row('Críticos', scoreCriticos, '×25%', false) +
+        row('Fans', scoreFans, '×50%', true) +
+      '</div>' +
+      (!hasFinal ? '<p class="score-pending">Puntuación editorial pendiente · próxima actualización Q3 2026</p>' : '') +
+    '</div>';
 }
 
 var _voteToken = null;

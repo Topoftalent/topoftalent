@@ -109,7 +109,13 @@ async function loadArtist() {
         '<tr class="fade-up visible"><td>Sello</td><td>' + esc(fmt(d.sello)) + '</td></tr>' +
         (discStr ? '<tr class="fade-up visible"><td>Discografía</td><td>' + esc(discStr) + '</td></tr>' : '') +
         (colabStr ? '<tr class="fade-up visible"><td>Colaboraciones</td><td>' + esc(colabStr) + '</td></tr>' : '') +
-        (d.score ? '<tr class="fade-up visible"><td>Score Top of Talent</td><td><span class="spec-highlight" style="font-size:20px;font-weight:700">' + esc(String(d.score)) + ' / 100</span></td></tr>' : '');
+        '<tr class="fade-up visible"><td colspan="2"><div id="tot-score-block"></div></td></tr>';
+
+    // Store editorial scores for artista-extras.js to combine with fan votes
+    window._totScoreData = {
+      tot:      (typeof d.score_tot      === 'number') ? d.score_tot      : null,
+      criticos: (typeof d.score_criticos === 'number') ? d.score_criticos : null,
+    };
     }
 
     // ── GALLERY (#paso3) ─────────────────────────────────────────
