@@ -29,7 +29,13 @@ body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--cr
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none}
 .logo-icon{width:32px;height:32px;flex-shrink:0}
 .logo-text{font-weight:700;font-size:10px;letter-spacing:.2em;color:var(--black);text-transform:uppercase;line-height:1.35}
-header{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;background:rgba(240,237,232,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.08)}
+header{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;background:rgba(240,237,232,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.08);transition:background .35s,border-color .35s}
+header.dark{background:rgba(0,0,0,.92);border-bottom-color:rgba(255,255,255,.08)}
+header.dark .logo-text{color:#fff}
+header.dark nav.h-nav a{color:rgba(255,255,255,.38)}
+header.dark nav.h-nav a:hover{color:#c86cff}
+header.dark nav.h-nav a.active{color:#fff}
+header.dark .mob-btn{color:#fff}
 nav.h-nav{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center}
 nav.h-nav a{font-size:11px;font-weight:400;letter-spacing:.22em;color:rgba(0,0,0,.38);text-decoration:none;text-transform:uppercase;padding:6px 22px;transition:color .2s;position:relative}
 nav.h-nav a:not(:last-child)::after{content:'|';position:absolute;right:0;top:50%;transform:translateY(-50%);color:rgba(0,0,0,.12);pointer-events:none}
@@ -106,10 +112,9 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 /* ── TOP 7 — sección negra ── */
 #view-top7{background:#000;margin-top:0;padding-bottom:0}
 .top7-masthead{padding:48px 40px 32px;border-bottom:1px solid rgba(255,255,255,.08)}
-.top7-masthead-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.35em;color:#c86cff;text-transform:uppercase;margin-bottom:10px}
-.top7-masthead-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);text-transform:uppercase;letter-spacing:-.03em;color:#fff;line-height:.95}
-.top7-masthead-title span{color:#c86cff}
-.top7-masthead-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:12px}
+.top7-masthead-eyebrow{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(28px,4vw,56px);text-transform:uppercase;letter-spacing:-.02em;color:#fff;line-height:1;margin-bottom:4px}
+.top7-masthead-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(13px,1.4vw,18px);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.45);line-height:1.2;margin-bottom:14px}
+.top7-masthead-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase}
 .top7-header{display:grid;grid-template-columns:72px 1fr 200px 180px;gap:32px;padding:14px 40px;border-bottom:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03)}
 .top7-hcol{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.35);text-transform:uppercase;font-weight:700}
 .top7-hcol-right{text-align:right}
@@ -230,8 +235,8 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 
   <div id="view-top7">
     <div class="top7-masthead">
-      <p class="top7-masthead-eyebrow">Top of Talent · Seleccion Editorial</p>
-      <h2 class="top7-masthead-title">Los 7 Mejores<br><span>Lanzamientos</span></h2>
+      <h2 class="top7-masthead-eyebrow">Talento Nacional — Top 7 Mejores Artistas</h2>
+      <p class="top7-masthead-title">Lanzamientos</p>
       <p class="top7-masthead-sub">Los mejores lanzamientos del talento nacional · Haz click para escuchar</p>
     </div>
     <div class="top7-header">
@@ -367,14 +372,17 @@ function showView(view) {
   var va=document.getElementById('view-artistas'), vt=document.getElementById('view-top7');
   var ba=document.getElementById('btnArtistas'), bt=document.getElementById('btnTop7');
   var ct=document.getElementById('eyebrowCount');
+  var hdr=document.querySelector('header');
   if (view==='artistas') {
     va.style.display='block'; vt.style.display='none';
     ba.classList.add('active'); bt.classList.remove('active');
     ct.textContent = TOT_ARTISTAS.length + ' artistas';
+    if(hdr) hdr.classList.remove('dark');
   } else {
     va.style.display='none'; vt.style.display='block';
     bt.classList.add('active'); ba.classList.remove('active');
     ct.textContent='top 7 del momento';
+    if(hdr) hdr.classList.add('dark');
   }
 }
 
