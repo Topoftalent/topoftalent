@@ -23,7 +23,17 @@
 :root{--purple:#c86cff;--blue:#3fa9ff;--black:#000;--white:#fff;--cream:#f0ede8;--cream-dark:#e2ddd8}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 *{cursor:none!important}
-body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--black);overflow-x:hidden}
+body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--black);overflow-x:hidden;transition:background .35s,color .35s}
+body.dark-mode{background:#000;color:#fff}
+body.dark-mode .view-toggle{background:#000}
+body.dark-mode .section-eyebrow{background:#000}
+body.dark-mode .eyebrow-num{color:#c86cff}
+body.dark-mode .eyebrow-sep,.body.dark-mode .eyebrow-count{color:rgba(255,255,255,.3)}
+body.dark-mode .toggle-btn{color:rgba(255,255,255,.3);border-color:rgba(255,255,255,.15);background:transparent}
+body.dark-mode #btnTop7.active{background:#c86cff;color:#fff;border-color:#c86cff}
+body.dark-mode footer{background:#000;border-top-color:rgba(255,255,255,.1)}
+body.dark-mode .footer-legal a,body.dark-mode .footer-legal span,body.dark-mode .footer-copy-line{color:rgba(255,255,255,.25)}
+body.dark-mode .footer-legal a:hover{color:#c86cff}
 #cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0;will-change:transform}
 #crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.6);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;will-change:transform;transition:width .15s,height .15s}
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none}
@@ -116,7 +126,7 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .top7-masthead-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(13px,1.4vw,18px);text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.45);line-height:1.2;margin-bottom:14px}
 .top7-masthead-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase}
 .top7-header{display:grid;grid-template-columns:72px 1fr 200px 180px;gap:32px;padding:14px 40px;border-bottom:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03)}
-.top7-hcol{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.35);text-transform:uppercase;font-weight:700}
+.top7-hcol{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:.18em;color:#c86cff;text-transform:uppercase;font-weight:700}
 .top7-hcol-right{text-align:right}
 .top7-list{padding:0 0 0;display:flex;flex-direction:column}
 .top7-item{display:grid;grid-template-columns:72px 1fr 200px 180px;align-items:center;gap:32px;padding:22px 40px;border-bottom:1px solid rgba(255,255,255,.06);transition:background .2s;position:relative;text-decoration:none;color:inherit}
@@ -134,16 +144,15 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .t7-genre{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.25);text-transform:uppercase}
 .t7-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .t7-score{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em;color:#c86cff;line-height:1}
-.t7-score-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;text-align:right}
+.t7-score-label{display:none}
 .t7-yt-btn{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:5px 10px;text-decoration:none;transition:all .2s;white-space:nowrap}
 .t7-yt-btn:hover{background:#ff0000;border-color:#ff0000;color:#fff}
 .t7-yt-btn svg{width:10px;height:10px;fill:currentColor;flex-shrink:0}
 /* disclaimer */
-.top7-disclaimer{padding:28px 40px;border-top:1px solid rgba(255,255,255,.08);background:#000}
-.top7-disclaimer-main{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.35);line-height:1.8;text-transform:uppercase;max-width:700px}
-.top7-disclaimer-removal{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.15);line-height:1.7;margin-top:14px;max-width:600px}
-.top7-disclaimer-removal a{color:rgba(200,108,255,.4);text-decoration:none}
-.top7-disclaimer-removal a:hover{color:#c86cff}
+.top7-disclaimer{padding:40px;border-top:1px solid rgba(255,255,255,.08);background:#000;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.top7-disclaimer-main{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.4);line-height:1.9;text-transform:uppercase;max-width:760px}
+.top7-disclaimer-main a{color:rgba(200,108,255,.7);text-decoration:none}
+.top7-disclaimer-main a:hover{color:#c86cff}
 footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,0,0,.1);padding:24px 40px 20px}
 .footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
 .footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(0,0,0,.3);text-decoration:none;text-transform:uppercase;transition:color .2s}
@@ -235,7 +244,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 
   <div id="view-top7">
     <div class="top7-masthead">
-      <h2 class="top7-masthead-eyebrow">Talento Nacional — Top 7 Mejores Artistas</h2>
+      <h2 class="top7-masthead-eyebrow">Top 7 Mejores Canciones</h2>
       <p class="top7-masthead-title">Lanzamientos</p>
       <p class="top7-masthead-sub">Los mejores lanzamientos del talento nacional · Haz click para escuchar</p>
     </div>
@@ -247,8 +256,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
     </div>
     <div class="top7-list" id="top7List"></div>
     <div class="top7-disclaimer">
-      <p class="top7-disclaimer-main">Este ranking tiene como objetivo generar visibilidad, reproducciones y vistas para los artistas del talento nacional ecuatoriano. Los enlaces a YouTube son de caracter promocional y pertenecen a sus respectivos creadores.</p>
-      <p class="top7-disclaimer-removal">Si eres titular de los derechos y deseas solicitar la retirada de tu contenido, escribe a <a href="mailto:contactoftalent@gmail.com">contactoftalent@gmail.com</a> y gestionamos tu solicitud a la brevedad.</p>
+      <p class="top7-disclaimer-main">Este ranking tiene como objetivo generar visibilidad, reproducciones y vistas para los artistas del talento nacional ecuatoriano. Los enlaces a YouTube son de caracter promocional y pertenecen a sus respectivos creadores. Si eres titular de los derechos y deseas solicitar la retirada de tu contenido, escribe a <a href="mailto:contactoftalent@gmail.com">contactoftalent@gmail.com</a> y gestionamos tu solicitud a la brevedad.</p>
     </div>
   </div>
 
@@ -378,11 +386,13 @@ function showView(view) {
     ba.classList.add('active'); bt.classList.remove('active');
     ct.textContent = TOT_ARTISTAS.length + ' artistas';
     if(hdr) hdr.classList.remove('dark');
+    document.body.classList.remove('dark-mode');
   } else {
     va.style.display='none'; vt.style.display='block';
     bt.classList.add('active'); ba.classList.remove('active');
     ct.textContent='top 7 del momento';
     if(hdr) hdr.classList.add('dark');
+    document.body.classList.add('dark-mode');
   }
 }
 
