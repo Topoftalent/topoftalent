@@ -103,22 +103,42 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .info-cta{display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-top:16px}
 .btn-ficha{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:12px 20px;transition:background .2s}
 .btn-ficha:hover{background:var(--purple)}
-.top7-note{padding:28px 40px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;color:rgba(0,0,0,.4);font-style:italic}
-.top7-header{display:grid;grid-template-columns:64px 1fr 220px 100px;gap:32px;padding:12px 40px;border-top:1px solid rgba(0,0,0,.1);border-bottom:1px solid rgba(0,0,0,.15)}
-.top7-hcol{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;color:rgba(0,0,0,.3);text-transform:uppercase;font-weight:700}
+/* ── TOP 7 — sección negra ── */
+#view-top7{background:#000;margin-top:0;padding-bottom:0}
+.top7-masthead{padding:48px 40px 32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.top7-masthead-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.35em;color:#c86cff;text-transform:uppercase;margin-bottom:10px}
+.top7-masthead-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);text-transform:uppercase;letter-spacing:-.03em;color:#fff;line-height:.95}
+.top7-masthead-title span{color:#c86cff}
+.top7-masthead-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:12px}
+.top7-header{display:grid;grid-template-columns:72px 1fr 200px 180px;gap:32px;padding:14px 40px;border-bottom:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03)}
+.top7-hcol{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.35);text-transform:uppercase;font-weight:700}
 .top7-hcol-right{text-align:right}
-.top7-list{padding:0 40px 80px;display:flex;flex-direction:column}
-.top7-item{display:grid;grid-template-columns:64px 1fr 220px 100px;align-items:center;gap:32px;padding:22px 0;border-bottom:1px solid rgba(0,0,0,.08);transition:padding-left .3s;text-decoration:none;color:inherit}
-.top7-item:hover{padding-left:12px;background:rgba(200,108,255,.04)}
-.top7-item:hover .t7-num{color:var(--purple)}
-.t7-num{font-weight:700;font-size:40px;letter-spacing:-.03em;color:rgba(0,0,0,.12);transition:color .2s;line-height:1}
-.t7-song-block{display:flex;flex-direction:column;gap:5px}
-.t7-song{font-weight:700;font-size:clamp(16px,2vw,24px);text-transform:uppercase;letter-spacing:-.01em}
-.t7-artist{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(0,0,0,.5)}
-.t7-meta-block{display:flex;flex-direction:column;gap:3px}
-.t7-city{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(0,0,0,.5);text-transform:uppercase}
-.t7-genre{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(0,0,0,.35);text-transform:uppercase}
-.t7-score{font-weight:700;font-size:28px;letter-spacing:-.02em;background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:right}
+.top7-list{padding:0 0 0;display:flex;flex-direction:column}
+.top7-item{display:grid;grid-template-columns:72px 1fr 200px 180px;align-items:center;gap:32px;padding:22px 40px;border-bottom:1px solid rgba(255,255,255,.06);transition:background .2s;position:relative;text-decoration:none;color:inherit}
+.top7-item:hover{background:rgba(200,108,255,.06)}
+.top7-item:hover .t7-num{color:#c86cff;-webkit-text-fill-color:#c86cff}
+.top7-item.top7-rank1{background:linear-gradient(90deg,rgba(200,108,255,.08) 0%,transparent 60%)}
+.top7-item.top7-rank1 .t7-num{color:rgba(200,108,255,.4);-webkit-text-fill-color:rgba(200,108,255,.4)}
+.t7-num{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:48px;letter-spacing:-.04em;color:rgba(255,255,255,.1);transition:color .2s;line-height:1;-webkit-text-fill-color:rgba(255,255,255,.1)}
+.t7-song-block{display:flex;flex-direction:column;gap:6px}
+.t7-song{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(15px,1.8vw,22px);text-transform:uppercase;letter-spacing:-.01em;color:#fff;line-height:1.1}
+.t7-artist-link{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#c86cff;text-decoration:none;text-transform:uppercase;transition:color .2s;display:inline-block}
+.t7-artist-link:hover{color:#fff;text-decoration:underline}
+.t7-meta-block{display:flex;flex-direction:column;gap:4px}
+.t7-city{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.4);text-transform:uppercase}
+.t7-genre{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.25);text-transform:uppercase}
+.t7-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.t7-score{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em;color:#c86cff;line-height:1}
+.t7-score-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;text-align:right}
+.t7-yt-btn{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:5px 10px;text-decoration:none;transition:all .2s;white-space:nowrap}
+.t7-yt-btn:hover{background:#ff0000;border-color:#ff0000;color:#fff}
+.t7-yt-btn svg{width:10px;height:10px;fill:currentColor;flex-shrink:0}
+/* disclaimer */
+.top7-disclaimer{padding:28px 40px;border-top:1px solid rgba(255,255,255,.08);background:#000}
+.top7-disclaimer-main{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.35);line-height:1.8;text-transform:uppercase;max-width:700px}
+.top7-disclaimer-removal{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.15);line-height:1.7;margin-top:14px;max-width:600px}
+.top7-disclaimer-removal a{color:rgba(200,108,255,.4);text-decoration:none}
+.top7-disclaimer-removal a:hover{color:#c86cff}
 footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,0,0,.1);padding:24px 40px 20px}
 .footer-legal{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
 .footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(0,0,0,.3);text-decoration:none;text-transform:uppercase;transition:color .2s}
@@ -197,7 +217,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
         <div class="info-col"><p class="info-bio" id="infoBio"></p></div>
         <div class="info-col">
           <div class="info-stats">
-            <div class="info-stat-row"><span class="info-stat-label">Score Top of Talent</span><span class="info-stat-val info-score" id="infoScore"></span></div>
+            <div class="info-stat-row"><span class="info-stat-label" id="infoScoreLabel">Score Top of Talent</span><span class="info-stat-val info-score" id="infoScore"></span></div>
             <div class="info-stat-row"><span class="info-stat-label">Votos de fans</span><span class="info-stat-val" id="infoVotes" style="color:#c86cff">0 votos</span></div>
             <div class="info-stat-row"><span class="info-stat-label">Ciudad</span><span class="info-stat-val" id="infoCity2"></span></div>
             <div class="info-stat-row"><span class="info-stat-label">Activo desde</span><span class="info-stat-val" id="infoYear"></span></div>
@@ -209,7 +229,11 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
   </div>
 
   <div id="view-top7">
-    <p class="top7-note">* Haz click para conocer mas</p>
+    <div class="top7-masthead">
+      <p class="top7-masthead-eyebrow">Top of Talent · Seleccion Editorial</p>
+      <h2 class="top7-masthead-title">Los 7 Mejores<br><span>Lanzamientos</span></h2>
+      <p class="top7-masthead-sub">Los mejores lanzamientos del talento nacional · Haz click para escuchar</p>
+    </div>
     <div class="top7-header">
       <span class="top7-hcol">#</span>
       <span class="top7-hcol">Cancion / Artista</span>
@@ -217,6 +241,10 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
       <span class="top7-hcol top7-hcol-right">Score TOT</span>
     </div>
     <div class="top7-list" id="top7List"></div>
+    <div class="top7-disclaimer">
+      <p class="top7-disclaimer-main">Este ranking tiene como objetivo generar visibilidad, reproducciones y vistas para los artistas del talento nacional ecuatoriano. Los enlaces a YouTube son de caracter promocional y pertenecen a sus respectivos creadores.</p>
+      <p class="top7-disclaimer-removal">Si eres titular de los derechos y deseas solicitar la retirada de tu contenido, escribe a <a href="mailto:contactoftalent@gmail.com">contactoftalent@gmail.com</a> y gestionamos tu solicitud a la brevedad.</p>
+    </div>
   </div>
 
   <footer>
@@ -284,6 +312,8 @@ function showInfo(a) {
   document.getElementById('infoCity').textContent = a.city;
   document.getElementById('infoBio').textContent = a.bio;
   document.getElementById('infoScore').textContent = a.score;
+  var lbl = document.getElementById('infoScoreLabel');
+  if (lbl) lbl.textContent = 'Score TOT · ' + a.name;
   document.getElementById('infoCity2').textContent = a.city + ', Ecuador';
   document.getElementById('infoYear').textContent = a.year;
   document.getElementById('fichaBtn').href = a.file;
@@ -295,16 +325,40 @@ function showInfo(a) {
 function buildTop7() {
   var list = document.getElementById('top7List');
   list.innerHTML = '';
-  // Top 7 = orden editorial (score TOT), no fan votes
   TOT_ARTISTAS.slice().sort(function(a,b){ return b.score - a.score; }).slice(0,7).forEach(function(a, i) {
-    var item = document.createElement('a');
-    item.href = a.file;
-    item.className = 'top7-item';
+    var item = document.createElement('div');
+    item.className = 'top7-item' + (i === 0 ? ' top7-rank1' : '');
+
+    var ytBtn = a.yt
+      ? '<a href="' + a.yt + '" target="_blank" rel="noopener" class="t7-yt-btn" onclick="event.stopPropagation()">' +
+          '<svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>' +
+          'Ver en YouTube</a>'
+      : '';
+
     item.innerHTML =
       '<span class="t7-num">' + String(i+1).padStart(2,'0') + '</span>' +
-      '<div class="t7-song-block"><div class="t7-song">' + a.song + '</div><div class="t7-artist">' + a.name + '</div></div>' +
+      '<div class="t7-song-block">' +
+        '<div class="t7-song">' + a.song + '</div>' +
+        '<a href="' + a.file + '" class="t7-artist-link" onclick="event.stopPropagation()">' + a.name + '</a>' +
+      '</div>' +
       '<div class="t7-meta-block"><span class="t7-city">' + a.city + '</span><span class="t7-genre">' + a.genre + '</span></div>' +
-      '<span class="t7-score">' + a.score + '</span>';
+      '<div class="t7-actions">' +
+        '<span class="t7-score">' + a.score + '</span>' +
+        '<span class="t7-score-label">Score TOT · ' + a.name + '</span>' +
+        ytBtn +
+      '</div>';
+
+    if (a.yt) {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function(e) {
+        if (!e.target.closest('.t7-artist-link') && !e.target.closest('.t7-yt-btn')) {
+          window.open(a.yt, '_blank', 'noopener');
+        }
+      });
+    } else {
+      item.style.cursor = 'default';
+    }
+
     list.appendChild(item);
   });
 }

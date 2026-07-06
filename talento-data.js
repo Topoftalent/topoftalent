@@ -61,6 +61,7 @@ async function loadArtistas() {
       bio:    bio,
       foto:   data.foto_principal || '',
       ranking: data.ranking || data.order || 0,
+      yt:     data.yt_link || '',
     });
   });
 
