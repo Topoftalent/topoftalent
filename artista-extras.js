@@ -7,7 +7,8 @@ import {
   getCommentCountToday, incrementCommentCount,
   getArtistName, reportComment as fbReportComment,
   deleteComment as fbDeleteComment,
-  resetArtistVotes as fbResetArtistVotes
+  resetArtistVotes as fbResetArtistVotes,
+  setArtistScores as fbSetArtistScores
 } from './votes-firebase.js?v=6';
 
 var artistId  = document.body.dataset.artistId || 'artista1';
@@ -984,8 +985,72 @@ function buildAdminPanel() {
   bar.id = 'tot-admin-bar';
   bar.innerHTML =
     '<span class="admin-bar-label">ADMIN</span>' +
+    '<button class="admin-bar-btn" id="tot-btn-scores">Puntajes · ' + artistId + '</button>' +
     '<button class="admin-bar-btn" id="tot-btn-reset-votes">Resetear votos · ' + artistId + '</button>';
   document.body.appendChild(bar);
+
+  // Scores modal (Editorial + Criticos)
+  var sd0 = window._totScoreData || {};
+  var scoresModal = document.createElement('div');
+  scoresModal.id = 'tot-scores-modal';
+  scoresModal.style.cssText = 'display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.55)';
+  scoresModal.innerHTML =
+    '<div class="admin-modal-box">' +
+      '<p class="admin-modal-title">Puntajes de ' + artistId + '</p>' +
+      '<p class="admin-modal-sub">Ingresa 0 a 100. Se combinan con el voto de fans (Editorial 25% + Criticos 25% + Fans 50%). Deja en blanco para no modificar.</p>' +
+      '<input class="admin-modal-input" id="admin-score-editorial" type="number" min="0" max="100" placeholder="TOT Editorial (0-100)" value="' + (typeof sd0.tot === 'number' ? sd0.tot : '') + '">' +
+      '<input class="admin-modal-input" id="admin-score-criticos" type="number" min="0" max="100" placeholder="Criticos (0-100)" style="margin-top:10px" value="' + (typeof sd0.criticos === 'number' ? sd0.criticos : '') + '">' +
+      '<p class="admin-modal-err"></p>' +
+      '<div class="admin-modal-actions">' +
+        '<button class="admin-modal-cancel">Cancelar</button>' +
+        '<button class="admin-modal-confirm">Guardar puntajes</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(scoresModal);
+
+  document.getElementById('tot-btn-scores').onclick = function() {
+    scoresModal.querySelector('.admin-modal-err').textContent = '';
+    scoresModal.style.display = 'flex';
+    scoresModal.querySelector('#admin-score-editorial').focus();
+  };
+  scoresModal.querySelector('.admin-modal-cancel').onclick = function() { scoresModal.style.display = 'none'; };
+  scoresModal.onclick = function(e) { if (e.target === scoresModal) scoresModal.style.display = 'none'; };
+  scoresModal.querySelector('.admin-modal-confirm').onclick = async function() {
+    var edEl = scoresModal.querySelector('#admin-score-editorial');
+    var crEl = scoresModal.querySelector('#admin-score-criticos');
+    var err  = scoresModal.querySelector('.admin-modal-err');
+    var btn  = scoresModal.querySelector('.admin-modal-confirm');
+    function parse(v) {
+      v = v.trim();
+      if (v === '') return null;
+      var n = Number(v);
+      if (isNaN(n) || n < 0 || n > 100) return NaN;
+      return n;
+    }
+    var ed = parse(edEl.value), cr = parse(crEl.value);
+    if (ed !== null && isNaN(ed) || cr !== null && isNaN(cr)) {
+      err.textContent = 'Los puntajes deben ser numeros entre 0 y 100.';
+      return;
+    }
+    if (ed === null && cr === null) {
+      err.textContent = 'Ingresa al menos un puntaje.';
+      return;
+    }
+    btn.textContent = 'Guardando...'; btn.disabled = true;
+    try {
+      await fbSetArtistScores(artistId, ed, cr);
+      // reflect locally and re-render score block immediately
+      window._totScoreData = window._totScoreData || {};
+      if (ed !== null) window._totScoreData.tot = ed;
+      if (cr !== null) window._totScoreData.criticos = cr;
+      updateHeroRank();
+      scoresModal.style.display = 'none';
+      btn.textContent = 'Guardar puntajes'; btn.disabled = false;
+    } catch(e) {
+      err.textContent = 'Error al guardar. Intenta de nuevo.';
+      btn.textContent = 'Guardar puntajes'; btn.disabled = false;
+    }
+  };
 
   // Modal overlay
   var modal = document.createElement('div');

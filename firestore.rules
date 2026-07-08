@@ -2,43 +2,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper: check if the requesting user is admin
+    function isAdmin() {
+      return request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
     // ── USERS ────────────────────────────────────────────────────
-    // Only the owner can read/write their own user doc
     match /users/{userId} {
       allow read:   if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
       allow update: if request.auth != null && request.auth.uid == userId
-                    // Prevent client from setting isMember = true (only backend can)
                     && !('isMember' in request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
 
     // ── VOTES ────────────────────────────────────────────────────
-    // Anyone can read vote totals (public counter)
-    // Only authenticated users can write their own vote doc
     match /votes/{artistId}/fans/{userId} {
       allow read:   if true;
       allow write:  if request.auth != null && request.auth.uid == userId
-                    // Prevent manipulating lastVote manually
                     && request.resource.data.lastVote == request.time;
+      allow delete: if isAdmin();
     }
 
     // ── COMMENTS ─────────────────────────────────────────────────
-    // Anyone can read comments
-    // Only authenticated members can write (isMember checked server-side ideally)
     match /comments/{artistId}/list/{commentId} {
       allow read:   if true;
       allow create: if request.auth != null
                     && request.resource.data.userId == request.auth.uid
                     && request.resource.data.text.size() <= 200;
-      allow update, delete: if false; // Comments are immutable
+      allow delete: if isAdmin();
     }
 
     // ── ARTISTAS (future) ────────────────────────────────────────
-    // Public read, admin-only write (managed via Firebase Console)
+    // Public read. Admins may edit ONLY the score fields (editorial /
+    // criticos) from the admin panel; everything else stays Console-only.
     match /artistas/{artistId} {
       allow read: if true;
-      allow write: if false;
+      allow update: if isAdmin()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['score_tot', 'score_criticos']);
+      allow create, delete: if false;
     }
 
     // ── OTROS TALENTOS ───────────────────────────────────────────

@@ -157,6 +157,16 @@ export async function deleteComment(artistId, commentId) {
   await deleteDoc(doc(db, 'comments', artistId, 'list', commentId));
 }
 
+// Admin: set editorial (score_tot) and/or criticos (score_criticos) scores.
+// Pass a number to set, or null to leave that field untouched.
+export async function setArtistScores(artistId, scoreTot, scoreCriticos) {
+  var payload = {};
+  if (typeof scoreTot === 'number')      payload.score_tot      = scoreTot;
+  if (typeof scoreCriticos === 'number') payload.score_criticos = scoreCriticos;
+  if (Object.keys(payload).length === 0) return;
+  await updateDoc(doc(db, 'artistas', artistId), payload);
+}
+
 export async function resetArtistVotes(artistId) {
   var fansSnap = await getDocs(collection(db, 'votes', artistId, 'fans'));
   await Promise.all(fansSnap.docs.map(function(d) {
