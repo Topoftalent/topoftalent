@@ -337,11 +337,11 @@ function showInfo(a) {
 var TOP7_ORDER = [
   { id:'artista4', song:'Masalveo',          yt:'https://www.youtube.com/watch?v=tAsMR1VXb9c' },
   { id:'artista1', song:'Fuiste',            yt:'https://www.youtube.com/watch?v=-zIkozpXk8Y' },
-  { id:'artista2', song:'Grita Fuerte',      yt:'https://www.youtube.com/watch?v=PHNQRJ00NwM' },
+  { id:'artista2', song:'Grita Fuerte',      yt:'https://www.youtube.com/watch?v=PHNQRJ00NwM', feat:'Don Medardo y sus Players' },
   { id:'artista5', song:'ZAZZA',             yt:'https://www.youtube.com/watch?v=TKOjqz-fhEw' },
   { id:'artista6', song:'Tiempo Sin Verte',  yt:'https://www.youtube.com/watch?v=bVcU3uQyDcs' },
   { id:'artista3', song:'Tú Me Hiciste Así', yt:'https://www.youtube.com/watch?v=8ug7oc5Y_V8' },
-  { id:'artista9', song:'Quédate',           yt:'https://www.youtube.com/watch?v=jYWsjwKHEUQ' }
+  { id:'artista9', song:'Quédate',           yt:'https://www.youtube.com/watch?v=jYWsjwKHEUQ', feat:'Maykel' }
 ];
 
 function buildTop7() {
@@ -363,6 +363,7 @@ function buildTop7() {
       '<div class="t7-song-block">' +
         '<div class="t7-song">' + entry.song + '</div>' +
         '<a href="' + entry.id + '.html" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
+        (entry.feat ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-left:6px">ft. ' + entry.feat + '</span>' : '') +
       '</div>' +
       '<div class="t7-meta-block"><span class="t7-city">' + (a.city || '') + '</span><span class="t7-genre">' + (a.genre || '') + '</span></div>' +
       '<div class="t7-actions">' +
