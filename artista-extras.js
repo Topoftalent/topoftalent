@@ -359,13 +359,21 @@ function startVoteDotMatrix(card) {
   resize(); draw();
 }
 
+// Fixed catalog order — final tiebreaker when votes and lastVoteAt are
+// both equal (e.g. two artists with 0 votes), so the ranking is stable
+// across page loads instead of depending on Firestore query race timing.
+var ARTIST_CATALOG_ORDER = ['artista1','artista2','artista3','artista4','artista5',
+                             'artista6','artista7','artista8','artista9','artista10'];
+
 async function updateHeroRank() {
   try {
     var totals = await getAllVoteTotalsWithTiebreak();
-    var sorted = Object.keys(totals).sort(function(a, b) {
+    var sorted = ARTIST_CATALOG_ORDER.slice().sort(function(a, b) {
       var va = totals[a] || { total: 0, lastVoteAt: Infinity };
       var vb = totals[b] || { total: 0, lastVoteAt: Infinity };
-      return (vb.total - va.total) || (va.lastVoteAt - vb.lastVoteAt);
+      if (vb.total !== va.total) return vb.total - va.total;
+      if (va.lastVoteAt !== vb.lastVoteAt) return va.lastVoteAt - vb.lastVoteAt;
+      return 0; // stable sort keeps catalog order for a true tie
     });
     var rank = sorted.indexOf(artistId) + 1;
     if (rank < 1) rank = sorted.length;
