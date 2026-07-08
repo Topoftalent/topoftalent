@@ -334,42 +334,49 @@ function showInfo(a) {
   if (vRow) vRow.textContent = votes + ' votos de fans';
 }
 
+var TOP7_ORDER = [
+  { id:'artista4', song:'Masalveo',          yt:'https://www.youtube.com/watch?v=tAsMR1VXb9c' },
+  { id:'artista1', song:'Fuiste',            yt:'https://www.youtube.com/watch?v=-zIkozpXk8Y' },
+  { id:'artista2', song:'Grita Fuerte',      yt:'https://www.youtube.com/watch?v=PHNQRJ00NwM' },
+  { id:'artista5', song:'ZAZZA',             yt:'https://www.youtube.com/watch?v=TKOjqz-fhEw' },
+  { id:'artista6', song:'Tiempo Sin Verte',  yt:'https://www.youtube.com/watch?v=bVcU3uQyDcs' },
+  { id:'artista3', song:'Tú Me Hiciste Así', yt:'https://www.youtube.com/watch?v=8ug7oc5Y_V8' },
+  { id:'artista9', song:'Quédate',           yt:'https://www.youtube.com/watch?v=jYWsjwKHEUQ' }
+];
+
 function buildTop7() {
   var list = document.getElementById('top7List');
   list.innerHTML = '';
-  TOT_ARTISTAS.slice().sort(function(a,b){ return b.score - a.score; }).slice(0,7).forEach(function(a, i) {
+  var artistMap = {};
+  (window.TOT_ARTISTAS || []).forEach(function(a) { artistMap[a.id] = a; });
+
+  TOP7_ORDER.forEach(function(entry, i) {
+    var a = artistMap[entry.id] || {};
     var item = document.createElement('div');
     item.className = 'top7-item' + (i === 0 ? ' top7-rank1' : '');
 
-    var ytBtn = a.yt
-      ? '<a href="' + a.yt + '" target="_blank" rel="noopener" class="t7-yt-btn" onclick="event.stopPropagation()">' +
-          '<svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>' +
-          'Ver en YouTube</a>'
-      : '';
+    var ytSvg = '<svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>';
+    var ytBtn = '<a href="' + entry.yt + '" target="_blank" rel="noopener" class="t7-yt-btn" onclick="event.stopPropagation()">' + ytSvg + 'Ver en YouTube</a>';
 
     item.innerHTML =
       '<span class="t7-num">' + String(i+1).padStart(2,'0') + '</span>' +
       '<div class="t7-song-block">' +
-        '<div class="t7-song">' + a.song + '</div>' +
-        '<a href="' + a.file + '" class="t7-artist-link" onclick="event.stopPropagation()">' + a.name + '</a>' +
+        '<div class="t7-song">' + entry.song + '</div>' +
+        '<a href="' + entry.id + '.html" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
       '</div>' +
-      '<div class="t7-meta-block"><span class="t7-city">' + a.city + '</span><span class="t7-genre">' + a.genre + '</span></div>' +
+      '<div class="t7-meta-block"><span class="t7-city">' + (a.city || '') + '</span><span class="t7-genre">' + (a.genre || '') + '</span></div>' +
       '<div class="t7-actions">' +
-        '<span class="t7-score">' + a.score + '</span>' +
-        '<span class="t7-score-label">Score TOT · ' + a.name + '</span>' +
+        '<span class="t7-score">' + (a.score || '') + '</span>' +
+        '<span class="t7-score-label">Score TOT · ' + (a.name || '') + '</span>' +
         ytBtn +
       '</div>';
 
-    if (a.yt) {
-      item.style.cursor = 'pointer';
-      item.addEventListener('click', function(e) {
-        if (!e.target.closest('.t7-artist-link') && !e.target.closest('.t7-yt-btn')) {
-          window.open(a.yt, '_blank', 'noopener');
-        }
-      });
-    } else {
-      item.style.cursor = 'default';
-    }
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function(e) {
+      if (!e.target.closest('.t7-artist-link') && !e.target.closest('.t7-yt-btn')) {
+        window.open(entry.yt, '_blank', 'noopener');
+      }
+    });
 
     list.appendChild(item);
   });
