@@ -20,10 +20,15 @@ async function getVoteTotals() {
   await Promise.all(ARTIST_IDS.map(async function(id) {
     try {
       var snap = await getDocs(collection(db, 'votes', id, 'fans'));
-      var t = 0;
-      snap.forEach(function(d) { t += (d.data().total || 0); });
-      totals[id] = t;
-    } catch(e) { totals[id] = 0; }
+      var t = 0, lastVoteAt = 0;
+      snap.forEach(function(d) {
+        var data = d.data();
+        t += (data.total || 0);
+        var ts = data.lastVote ? data.lastVote.toMillis() : 0;
+        if (ts > lastVoteAt) lastVoteAt = ts;
+      });
+      totals[id] = { total: t, lastVoteAt: lastVoteAt || Infinity };
+    } catch(e) { totals[id] = { total: 0, lastVoteAt: Infinity }; }
   }));
   return totals;
 }
@@ -70,17 +75,24 @@ async function loadArtistas() {
 
 function applyVotesAndRender(artistas, voteTotals) {
   window.TOT_ARTISTAS = artistas;
-  window.TOT_VOTE_TOTALS = voteTotals;
+
+  // Plain numbers for display/consumers that just need the vote count.
+  var plainTotals = {};
+  Object.keys(voteTotals).forEach(function(id) {
+    plainTotals[id] = voteTotals[id].total || 0;
+  });
+  window.TOT_VOTE_TOTALS = plainTotals;
 
   window.getTotalVotes = function(artistId) {
     return window.TOT_VOTE_TOTALS[artistId] || 0;
   };
 
-  // Sort by vote total descending, fall back to Firestore order
+  // Sort by vote total descending; ties broken by whoever reached that
+  // count first (earlier lastVoteAt), same rule used on artista fichas.
   artistas.sort(function(a, b) {
-    var va = voteTotals[a.id] || 0;
-    var vb = voteTotals[b.id] || 0;
-    return vb - va || a.ranking - b.ranking;
+    var va = voteTotals[a.id] || { total: 0, lastVoteAt: Infinity };
+    var vb = voteTotals[b.id] || { total: 0, lastVoteAt: Infinity };
+    return (vb.total - va.total) || (va.lastVoteAt - vb.lastVoteAt) || (a.ranking - b.ranking);
   });
 
   var ct = document.getElementById('eyebrowCount');

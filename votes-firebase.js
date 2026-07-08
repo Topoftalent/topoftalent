@@ -54,6 +54,32 @@ export async function getAllVoteTotals() {
   return totals;
 }
 
+// Returns {artistId: {total, lastVoteAt}} for all artists.
+// lastVoteAt = timestamp (ms) of the most recent vote that pushed the
+// artist to their current total — used to break ties: whoever reached
+// the tied vote count earlier (lower lastVoteAt) ranks higher.
+export async function getAllVoteTotalsWithTiebreak() {
+  var ids = ['artista1','artista2','artista3','artista4','artista5',
+             'artista6','artista7','artista8','artista9','artista10'];
+  var result = {};
+  await Promise.all(ids.map(async function(id) {
+    try {
+      var snap = await getDocs(collection(db, 'votes', id, 'fans'));
+      var total = 0, lastVoteAt = 0;
+      snap.forEach(function(d) {
+        var data = d.data();
+        total += (data.total || 0);
+        var t = data.lastVote ? data.lastVote.toMillis() : 0;
+        if (t > lastVoteAt) lastVoteAt = t;
+      });
+      result[id] = { total: total, lastVoteAt: lastVoteAt || Infinity };
+    } catch(e) {
+      result[id] = { total: 0, lastVoteAt: Infinity };
+    }
+  }));
+  return result;
+}
+
 // Get a single artist's name from Firestore
 export async function getArtistName(artistId) {
   try {

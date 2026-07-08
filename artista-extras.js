@@ -1,6 +1,7 @@
 // artista-extras.js — ES Module, Firestore-backed votes & comments
 import {
   getMyVoteData, castVote, getTotalVotes, getAllVoteTotals,
+  getAllVoteTotalsWithTiebreak,
   listenTopFans, listenComments,
   addComment as fbAddComment,
   getCommentCountToday, incrementCommentCount,
@@ -360,9 +361,11 @@ function startVoteDotMatrix(card) {
 
 async function updateHeroRank() {
   try {
-    var totals = await getAllVoteTotals();
+    var totals = await getAllVoteTotalsWithTiebreak();
     var sorted = Object.keys(totals).sort(function(a, b) {
-      return (totals[b] || 0) - (totals[a] || 0);
+      var va = totals[a] || { total: 0, lastVoteAt: Infinity };
+      var vb = totals[b] || { total: 0, lastVoteAt: Infinity };
+      return (vb.total - va.total) || (va.lastVoteAt - vb.lastVoteAt);
     });
     var rank = sorted.indexOf(artistId) + 1;
     if (rank < 1) rank = sorted.length;
