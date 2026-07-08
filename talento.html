@@ -363,7 +363,7 @@ function buildTop7() {
       '<div class="t7-song-block">' +
         '<div class="t7-song">' + entry.song + '</div>' +
         '<a href="' + entry.id + '.html" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
-        (entry.feat ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-left:6px">ft. ' + entry.feat + '</span>' : '') +
+        (entry.feat ? '<span class="t7-artist-link" style="color:rgba(200,108,255,.35);pointer-events:none;margin-left:0"> ft. ' + entry.feat + '</span>' : '') +
       '</div>' +
       '<div class="t7-meta-block"><span class="t7-city">' + (a.city || '') + '</span><span class="t7-genre">' + (a.genre || '') + '</span></div>' +
       '<div class="t7-actions">' +
