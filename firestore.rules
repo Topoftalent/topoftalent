@@ -36,12 +36,18 @@ service cloud.firestore {
       allow create: if isMemberOrAdmin()
                     && request.auth.uid == userId
                     && request.resource.data.total == 1
-                    && request.resource.data.lastVote == request.time;
+                    && request.resource.data.lastVote == request.time
+                    && (!('username' in request.resource.data)
+                        || (request.resource.data.username is string
+                            && request.resource.data.username.size() <= 40));
       allow update: if isMemberOrAdmin()
                     && request.auth.uid == userId
                     && request.resource.data.total == resource.data.total + 1
                     && request.resource.data.lastVote == request.time
-                    && request.time > resource.data.lastVote + duration.value(8, 'h');
+                    && request.time > resource.data.lastVote + duration.value(8, 'h')
+                    && (!('username' in request.resource.data)
+                        || (request.resource.data.username is string
+                            && request.resource.data.username.size() <= 40));
       allow delete: if isAdmin();
     }
 

@@ -1,2 +1,6 @@
 .DS_Store
 .Rhistory
+# Firebase Admin SDK service account (NUNCA subir: acceso total al proyecto)
+*adminsdk*.json
+*serviceaccount*.json
+top-of-talent-firebase-adminsdk-*.json

@@ -25,12 +25,18 @@ export async function getMyVoteData(artistId, userId) {
   } catch(e) { return { canVote: false, total: 0, lastVote: null }; }
 }
 
-export async function castVote(artistId, userId) {
+export async function castVote(artistId, userId, username) {
   var fanRef = doc(db, 'votes', artistId, 'fans', userId);
-  await setDoc(fanRef, {
+  var payload = {
     total: increment(1),
     lastVote: serverTimestamp()
-  }, { merge: true });
+  };
+  // Denormalize username into the (public) vote doc so the fan ranking never
+  // has to read other users' private docs (which would leak their email).
+  if (typeof username === 'string' && username) {
+    payload.username = username.slice(0, 40);
+  }
+  await setDoc(fanRef, payload, { merge: true });
 }
 
 // Returns total votes across all fans for an artist (for public counter)
@@ -96,12 +102,13 @@ export function listenTopFans(artistId, cb) {
     limit(15)
   );
   return onSnapshot(q, function(snap) {
-    Promise.all(snap.docs.map(function(d) {
-      return getDoc(doc(db, 'users', d.id)).then(function(userSnap) {
-        var username = userSnap.exists() ? ('@' + userSnap.data().username) : d.id;
-        return { username: username, total: d.data().total || 0 };
-      });
-    })).then(cb);
+    // Read the username straight from the public vote doc — no cross-user
+    // reads, so members' private data is never exposed to build the ranking.
+    var fans = snap.docs.map(function(d) {
+      var uname = d.data().username;
+      return { username: uname ? ('@' + uname) : 'Fan', total: d.data().total || 0 };
+    });
+    cb(fans);
   });
 }
 
@@ -155,6 +162,22 @@ export async function reportComment(commentId, reportedUser, reportedBy, artistI
 
 export async function deleteComment(artistId, commentId) {
   await deleteDoc(doc(db, 'comments', artistId, 'list', commentId));
+}
+
+// Admin: read the most recent audit-log entries (admin-only per rules).
+export async function getAdminLog(max) {
+  var q = query(collection(db, 'admin_log'), orderBy('at', 'desc'), limit(max || 60));
+  var snap = await getDocs(q);
+  return snap.docs.map(function(d) {
+    var x = d.data();
+    return {
+      action:    x.action || '',
+      signature: x.signature || '',
+      artistId:  x.artistId || '',
+      detail:    x.detail || '',
+      at:        x.at && x.at.toDate ? x.at.toDate() : null
+    };
+  });
 }
 
 // Admin: append an immutable audit-log entry (who did what, when).

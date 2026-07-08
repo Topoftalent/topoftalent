@@ -9,7 +9,8 @@ import {
   deleteComment as fbDeleteComment,
   resetArtistVotes as fbResetArtistVotes,
   setArtistScores as fbSetArtistScores,
-  logAdminAction as fbLogAdminAction
+  logAdminAction as fbLogAdminAction,
+  getAdminLog as fbGetAdminLog
 } from './votes-firebase.js?v=6';
 
 // Admin confirmation: allowed signers + per-action passwords.
@@ -526,7 +527,7 @@ async function buildVoteArea() {
         vBtn.disabled = true;
         vBtn.textContent = 'Votando…';
         try {
-          await castVote(artistId, uid);
+          await castVote(artistId, uid, (getUser() && getUser().username) || '');
           // Update counter and rank
           var newTotal = await getTotalVotes(artistId);
           var pc = document.getElementById('tot-public-votes');
@@ -703,7 +704,7 @@ async function buildCommunity() {
       if (!rl) return;
       if (!fans.length) { rl.innerHTML = '<p class="empty-state">Sé el primero en votar</p>'; return; }
       rl.innerHTML = fans.map(function (f, i) {
-        var letter    = (f.username || '?').replace(/^@/, '')[0].toUpperCase();
+        var letter    = escapeHTML((((f.username || '?').replace(/^@/, '')[0]) || '?').toUpperCase());
         var grad      = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
         var glowClass = i < 3 ? ' top-glow top-' + (i + 1) : '';
         var uname     = escapeHTML(f.username || '?');
@@ -995,9 +996,49 @@ function buildAdminPanel() {
   bar.id = 'tot-admin-bar';
   bar.innerHTML =
     '<span class="admin-bar-label">ADMIN</span>' +
+    '<button class="admin-bar-btn" id="tot-btn-log">Historial</button>' +
     '<button class="admin-bar-btn" id="tot-btn-scores">Puntajes · ' + artistId + '</button>' +
     '<button class="admin-bar-btn" id="tot-btn-reset-votes">Resetear votos · ' + artistId + '</button>';
   document.body.appendChild(bar);
+
+  // Audit-log viewer modal
+  var logModal = document.createElement('div');
+  logModal.id = 'tot-log-modal';
+  logModal.style.cssText = 'display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.55)';
+  logModal.innerHTML =
+    '<div class="admin-modal-box" style="max-width:560px">' +
+      '<p class="admin-modal-title">Historial de acciones admin</p>' +
+      '<p class="admin-modal-sub">Registro inmutable de resets de votos y cambios de puntajes.</p>' +
+      '<div id="tot-log-list" style="max-height:340px;overflow-y:auto;font-family:\'JetBrains Mono\',monospace;font-size:11px;line-height:1.5"></div>' +
+      '<div class="admin-modal-actions" style="margin-top:16px">' +
+        '<button class="admin-modal-cancel">Cerrar</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(logModal);
+
+  document.getElementById('tot-btn-log').onclick = async function() {
+    var list = logModal.querySelector('#tot-log-list');
+    list.innerHTML = '<p style="color:#888">Cargando…</p>';
+    logModal.style.display = 'flex';
+    try {
+      var rows = await fbGetAdminLog(80);
+      if (!rows.length) { list.innerHTML = '<p style="color:#888">Sin registros todavia.</p>'; return; }
+      var labels = { reset_votes: 'Reset de votos', set_scores: 'Puntajes' };
+      list.innerHTML = rows.map(function(r) {
+        var when = r.at ? r.at.toLocaleString('es-EC') : 's/f';
+        var act  = labels[r.action] || r.action;
+        return '<div style="padding:9px 0;border-bottom:1px solid rgba(0,0,0,.08)">' +
+            '<strong>' + escapeHTML(act) + '</strong> · ' + escapeHTML(r.artistId) +
+            '<br><span style="color:#c86cff">' + escapeHTML(r.signature) + '</span> · <span style="color:#888">' + escapeHTML(when) + '</span>' +
+            (r.detail ? '<br><span style="color:#666">' + escapeHTML(r.detail) + '</span>' : '') +
+          '</div>';
+      }).join('');
+    } catch(e) {
+      list.innerHTML = '<p style="color:#dc2626">No se pudo cargar el historial (¿sesion admin activa?).</p>';
+    }
+  };
+  logModal.querySelector('.admin-modal-cancel').onclick = function() { logModal.style.display = 'none'; };
+  logModal.onclick = function(e) { if (e.target === logModal) logModal.style.display = 'none'; };
 
   // Scores modal (Editorial + Criticos)
   var sd0 = window._totScoreData || {};
