@@ -8,8 +8,18 @@ import {
   getArtistName, reportComment as fbReportComment,
   deleteComment as fbDeleteComment,
   resetArtistVotes as fbResetArtistVotes,
-  setArtistScores as fbSetArtistScores
+  setArtistScores as fbSetArtistScores,
+  logAdminAction as fbLogAdminAction
 } from './votes-firebase.js?v=6';
+
+// Admin confirmation: allowed signers + per-action passwords.
+// NOTE: these live in client JS and are readable in source — they are a
+// friction/audit layer, NOT the security boundary. Real enforcement is in
+// Firestore rules (admin-only writes) + the admin Firebase account.
+var ADMIN_SIGNERS = ['CAMILA SC', 'SEBAS OG'];
+var PWD_RESET_VOTES = 'TOTresetvotes$2000';
+var PWD_SCORES      = 'TOTscorescore$7000';
+function validSigner(name) { return ADMIN_SIGNERS.indexOf((name || '').trim().toUpperCase()) !== -1; }
 
 var artistId  = document.body.dataset.artistId || 'artista1';
 var CMT_LIMIT = 5;
@@ -1000,6 +1010,8 @@ function buildAdminPanel() {
       '<p class="admin-modal-sub">Ingresa 0 a 100. Se combinan con el voto de fans (Editorial 25% + Criticos 25% + Fans 50%). Deja en blanco para no modificar.</p>' +
       '<input class="admin-modal-input" id="admin-score-editorial" type="number" min="0" max="100" placeholder="TOT Editorial (0-100)" value="' + (typeof sd0.tot === 'number' ? sd0.tot : '') + '">' +
       '<input class="admin-modal-input" id="admin-score-criticos" type="number" min="0" max="100" placeholder="Criticos (0-100)" style="margin-top:10px" value="' + (typeof sd0.criticos === 'number' ? sd0.criticos : '') + '">' +
+      '<input class="admin-modal-input" id="admin-score-signer" type="text" placeholder="Firma: CAMILA SC o SEBAS OG" style="margin-top:10px">' +
+      '<input class="admin-modal-input" id="admin-score-pwd" type="password" placeholder="Contrasena de puntajes" style="margin-top:10px">' +
       '<p class="admin-modal-err"></p>' +
       '<div class="admin-modal-actions">' +
         '<button class="admin-modal-cancel">Cancelar</button>' +
@@ -1027,6 +1039,8 @@ function buildAdminPanel() {
       if (isNaN(n) || n < 0 || n > 100) return NaN;
       return n;
     }
+    var signer = scoresModal.querySelector('#admin-score-signer').value;
+    var pwd    = scoresModal.querySelector('#admin-score-pwd').value;
     var ed = parse(edEl.value), cr = parse(crEl.value);
     if (ed !== null && isNaN(ed) || cr !== null && isNaN(cr)) {
       err.textContent = 'Los puntajes deben ser numeros entre 0 y 100.';
@@ -1036,14 +1050,24 @@ function buildAdminPanel() {
       err.textContent = 'Ingresa al menos un puntaje.';
       return;
     }
+    if (!validSigner(signer) || pwd !== PWD_SCORES) {
+      err.textContent = 'Firma o contrasena incorrecta. Firma: CAMILA SC o SEBAS OG.';
+      return;
+    }
+    var signature = signer.trim().toUpperCase();
     btn.textContent = 'Guardando...'; btn.disabled = true;
     try {
       await fbSetArtistScores(artistId, ed, cr);
+      var det = [];
+      if (ed !== null) det.push('editorial=' + ed);
+      if (cr !== null) det.push('criticos=' + cr);
+      try { await fbLogAdminAction('set_scores', signature, artistId, det.join(', ')); } catch(e) {}
       // reflect locally and re-render score block immediately
       window._totScoreData = window._totScoreData || {};
       if (ed !== null) window._totScoreData.tot = ed;
       if (cr !== null) window._totScoreData.criticos = cr;
       updateHeroRank();
+      scoresModal.querySelector('#admin-score-pwd').value = '';
       scoresModal.style.display = 'none';
       btn.textContent = 'Guardar puntajes'; btn.disabled = false;
     } catch(e) {
@@ -1058,9 +1082,9 @@ function buildAdminPanel() {
   modal.innerHTML =
     '<div class="admin-modal-box">' +
       '<p class="admin-modal-title">Confirmar reset de votos</p>' +
-      '<p class="admin-modal-sub">Reiniciar votos de <strong>' + artistId + '</strong> a cero. Ambos campos son obligatorios.</p>' +
-      '<input class="admin-modal-input" id="admin-input-who" type="text" placeholder="Quien reinicia">' +
-      '<input class="admin-modal-input" id="admin-input-pwd" type="password" placeholder="Contrasena de verificacion" style="margin-top:10px">' +
+      '<p class="admin-modal-sub">Reiniciar votos de <strong>' + artistId + '</strong> a cero. Firma con tu nombre autorizado y la contrasena. Queda registrado.</p>' +
+      '<input class="admin-modal-input" id="admin-input-who" type="text" placeholder="Firma: CAMILA SC o SEBAS OG">' +
+      '<input class="admin-modal-input" id="admin-input-pwd" type="password" placeholder="Contrasena de reset" style="margin-top:10px">' +
       '<p class="admin-modal-err"></p>' +
       '<div class="admin-modal-actions">' +
         '<button class="admin-modal-cancel">Cancelar</button>' +
@@ -1081,18 +1105,19 @@ function buildAdminPanel() {
     var whoInput = modal.querySelector('#admin-input-who');
     var pwdInput = modal.querySelector('#admin-input-pwd');
     var err      = modal.querySelector('.admin-modal-err');
-    var WHO      = 'CAMILA SC';
-    var PWD      = 'TOTRESETEOVOTOSCONFIRM';
-    if (whoInput.value.trim() !== WHO || pwdInput.value.trim() !== PWD) {
-      err.textContent = 'Datos incorrectos. Verifica ambos campos.';
+    if (!validSigner(whoInput.value) || pwdInput.value !== PWD_RESET_VOTES) {
+      err.textContent = 'Firma o contrasena incorrecta. Firma: CAMILA SC o SEBAS OG.';
       whoInput.focus();
       return;
     }
+    var signature = whoInput.value.trim().toUpperCase();
     var confirmBtn = modal.querySelector('.admin-modal-confirm');
     confirmBtn.textContent = 'Reseteando...';
     confirmBtn.disabled = true;
     try {
       await fbResetArtistVotes(artistId);
+      try { await fbLogAdminAction('reset_votes', signature, artistId, 'votos reiniciados a 0'); } catch(e) {}
+      pwdInput.value = '';
       modal.style.display = 'none';
       confirmBtn.textContent = 'Confirmar reset';
       confirmBtn.disabled = false;

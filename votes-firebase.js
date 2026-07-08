@@ -157,6 +157,17 @@ export async function deleteComment(artistId, commentId) {
   await deleteDoc(doc(db, 'comments', artistId, 'list', commentId));
 }
 
+// Admin: append an immutable audit-log entry (who did what, when).
+export async function logAdminAction(action, signature, artistId, detail) {
+  await addDoc(collection(db, 'admin_log'), {
+    action:    action,
+    signature: signature,
+    artistId:  artistId || null,
+    detail:    detail || '',
+    at:        serverTimestamp()
+  });
+}
+
 // Admin: set editorial (score_tot) and/or criticos (score_criticos) scores.
 // Pass a number to set, or null to leave that field untouched.
 export async function setArtistScores(artistId, scoreTot, scoreCriticos) {

@@ -2,39 +2,77 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: check if the requesting user is admin
+    // Helper: requesting user is an admin
     function isAdmin() {
       return request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
+    }
+
+    // Helper: requesting user is a paying member (admins count too)
+    function isMemberOrAdmin() {
+      return request.auth != null
+        && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isMember', false) == true
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true);
     }
 
     // ── USERS ────────────────────────────────────────────────────
     match /users/{userId} {
       allow read:   if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
+      // Users can update their own doc but NOT their membership/admin flags
       allow update: if request.auth != null && request.auth.uid == userId
-                    && !('isMember' in request.resource.data.diff(resource.data).affectedKeys());
+                    && !('isMember' in request.resource.data.diff(resource.data).affectedKeys())
+                    && !('isAdmin'  in request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
 
     // ── VOTES ────────────────────────────────────────────────────
+    // Public read. Only a MEMBER may vote, only on their own doc, one vote
+    // starts at 1, each later vote increments by exactly +1 and only after
+    // 8h. lastVote must be the server time. This makes the 8h cooldown and
+    // single-increment impossible to bypass from the client.
     match /votes/{artistId}/fans/{userId} {
       allow read:   if true;
-      allow write:  if request.auth != null && request.auth.uid == userId
+      allow create: if isMemberOrAdmin()
+                    && request.auth.uid == userId
+                    && request.resource.data.total == 1
                     && request.resource.data.lastVote == request.time;
+      allow update: if isMemberOrAdmin()
+                    && request.auth.uid == userId
+                    && request.resource.data.total == resource.data.total + 1
+                    && request.resource.data.lastVote == request.time
+                    && request.time > resource.data.lastVote + duration.value(8, 'h');
       allow delete: if isAdmin();
     }
 
     // ── COMMENTS ─────────────────────────────────────────────────
+    // Public read. Only a MEMBER may comment, only as themselves, max 200 chars.
     match /comments/{artistId}/list/{commentId} {
       allow read:   if true;
-      allow create: if request.auth != null
+      allow create: if isMemberOrAdmin()
                     && request.resource.data.userId == request.auth.uid
                     && request.resource.data.text.size() <= 200;
+      allow update: if false;
       allow delete: if isAdmin();
     }
 
-    // ── ARTISTAS (future) ────────────────────────────────────────
+    // ── REPORTS (comment reports) ────────────────────────────────
+    match /reports/{reportId} {
+      allow read:   if isAdmin();
+      allow create: if request.auth != null
+                    && request.resource.data.reportedBy == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── ADMIN LOG (audit trail) ──────────────────────────────────
+    // Admin-only, append-only, immutable. Records who reset votes / edited scores.
+    match /admin_log/{logId} {
+      allow read:   if isAdmin();
+      allow create: if isAdmin() && request.resource.data.at == request.time;
+      allow update, delete: if false;
+    }
+
+    // ── ARTISTAS ─────────────────────────────────────────────────
     // Public read. Admins may edit ONLY the score fields (editorial /
     // criticos) from the admin panel; everything else stays Console-only.
     match /artistas/{artistId} {
@@ -46,14 +84,14 @@ service cloud.firestore {
     }
 
     // ── OTROS TALENTOS ───────────────────────────────────────────
-    // Public read — managed exclusively via Firebase Console (CRM)
+    // Public read - managed exclusively via Firebase Console (CRM)
     match /otros_talentos/{talentId} {
       allow read: if true;
       allow write: if false;
     }
 
     // ── COMENTARIOS EDITORIALES ──────────────────────────────────
-    // Public read — managed exclusively via script o Firebase Console
+    // Public read - managed exclusively via script o Firebase Console
     match /editorial_comments/{commentId} {
       allow read: if true;
       allow write: if false;
@@ -63,6 +101,12 @@ service cloud.firestore {
     match /eventos/{eventoId} {
       allow read: if true;
       allow write: if false;
+    }
+
+    // ── DEFAULT DENY ─────────────────────────────────────────────
+    // Any collection not matched above is locked down.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
