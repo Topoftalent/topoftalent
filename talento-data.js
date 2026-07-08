@@ -62,6 +62,8 @@ async function loadArtistas() {
       city:   data.ciudad  || '',
       year:   data.activo_desde || '',
       score:  data.score   || 0,
+      score_tot:      (typeof data.score_tot      === 'number') ? data.score_tot      : null,
+      score_criticos: (typeof data.score_criticos === 'number') ? data.score_criticos : null,
       tone:   TONES[(data.order || 1) - 1] || 'tone-1',
       bio:    bio,
       foto:   data.foto_principal || '',

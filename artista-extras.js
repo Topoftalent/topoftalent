@@ -417,10 +417,16 @@ function updateScoreBlock(rank, total) {
   var n = Math.max(total, 1);
   var scoreFans = Math.round(100 - ((rank - 1) / Math.max(n - 1, 1)) * 90);
 
+  // Score TOT = weighted avg: Editorial 25% + Criticos 25% + Fans 50%.
+  // Components not yet loaded are excluded and the weights renormalize,
+  // so while only fans exists the final score equals the fans score.
   var hasFinal = scoreTot !== null && scoreCriticos !== null;
-  var avg = hasFinal
-    ? Math.round((scoreTot * 0.25 + scoreCriticos * 0.25 + scoreFans * 0.50) * 10) / 10
-    : null;
+  var parts = [], weights = [];
+  if (scoreTot !== null)      { parts.push(scoreTot);      weights.push(0.25); }
+  if (scoreCriticos !== null) { parts.push(scoreCriticos); weights.push(0.25); }
+  parts.push(scoreFans); weights.push(0.50);
+  var wsum = weights.reduce(function(a, b) { return a + b; }, 0);
+  var avg = Math.round((parts.reduce(function(a, p, i) { return a + p * weights[i]; }, 0) / wsum) * 10) / 10;
 
   function row(label, val, isFan) {
     var pct = val !== null ? val : 0;
@@ -448,8 +454,8 @@ function updateScoreBlock(rank, total) {
       '</div>' +
       '<div class="score-footer">' +
         '<span class="score-avg-label">Promedio general</span>' +
-        '<span class="score-avg-num">' + (avg !== null ? avg : '--') + '</span>' +
-        (!hasFinal ? '<p class="score-pending">En espera de calificacion de criticos y editores</p>' : '') +
+        '<span class="score-avg-num">' + avg + '</span>' +
+        (!hasFinal ? '<p class="score-pending">Calificacion provisional · basada en votos de fans, pendiente editorial y criticos</p>' : '') +
       '</div>' +
     '</div>';
 }

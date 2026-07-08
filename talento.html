@@ -281,6 +281,19 @@ function getTotalVotes(artistId) {
   return (window.TOT_VOTE_TOTALS && window.TOT_VOTE_TOTALS[artistId]) || 0;
 }
 
+// Score TOT: Editorial 25% + Criticos 25% + Fans 50%.
+// Missing editorial/criticos are excluded (weights renormalize), so while
+// only fans exists the score equals the fans score. Same rule as la ficha.
+function computeTotScore(a, fanRank, n) {
+  var fans = Math.round(100 - ((fanRank - 1) / Math.max(n - 1, 1)) * 90);
+  var parts = [], w = [];
+  if (typeof a.score_tot === 'number')      { parts.push(a.score_tot);      w.push(0.25); }
+  if (typeof a.score_criticos === 'number') { parts.push(a.score_criticos); w.push(0.25); }
+  parts.push(fans); w.push(0.50);
+  var wsum = w.reduce(function(x, y) { return x + y; }, 0);
+  return Math.round((parts.reduce(function(x, p, i) { return x + p * w[i]; }, 0) / wsum) * 10) / 10;
+}
+
 // Artistas ordenados por votos de fans (dinámico)
 function getSortedArtists() {
   return TOT_ARTISTAS.slice().sort(function(a, b) {
@@ -324,7 +337,7 @@ function showInfo(a) {
   document.getElementById('infoGenre').textContent = a.genre;
   document.getElementById('infoCity').textContent = a.city;
   document.getElementById('infoBio').textContent = a.bio;
-  document.getElementById('infoScore').textContent = a.score;
+  document.getElementById('infoScore').textContent = computeTotScore(a, a.fanRank, TOT_ARTISTAS.length || 10);
   var lbl = document.getElementById('infoScoreLabel');
   if (lbl) lbl.textContent = 'Score TOT · ' + a.name;
   document.getElementById('infoCity2').textContent = a.city + ', Ecuador';
@@ -350,6 +363,9 @@ function buildTop7() {
   list.innerHTML = '';
   var artistMap = {};
   (window.TOT_ARTISTAS || []).forEach(function(a) { artistMap[a.id] = a; });
+  // Fan rank (por votos) de cada artista, para el componente Fans del score
+  var rankMap = {}, nArtists = (window.TOT_ARTISTAS || []).length || 10;
+  getSortedArtists().forEach(function(a) { rankMap[a.id] = a.fanRank; });
 
   TOP7_ORDER.forEach(function(entry, i) {
     var a = artistMap[entry.id] || {};
@@ -370,7 +386,7 @@ function buildTop7() {
       '</div>' +
       '<div class="t7-meta-block"><span class="t7-city">' + (a.city || '') + '</span><span class="t7-genre">' + (a.genre || '') + '</span></div>' +
       '<div class="t7-actions">' +
-        '<span class="t7-score">' + (a.score || '') + '</span>' +
+        '<span class="t7-score">' + (a.id ? computeTotScore(a, rankMap[entry.id] || nArtists, nArtists) : '') + '</span>' +
         '<span class="t7-score-label">Score TOT · ' + (a.name || '') + '</span>' +
         ytBtn +
       '</div>';
