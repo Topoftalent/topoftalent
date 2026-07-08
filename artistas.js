@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// TOP OF TALENT — Fuente de datos de artistas
+// TOP OF TALENT · Fuente de datos de artistas
 // Edita aquí para actualizar info. Cuando migres a Firebase,
 // reemplaza window.TOT_ARTISTAS con una lectura de Firestore.
 // ─────────────────────────────────────────────────────────────────

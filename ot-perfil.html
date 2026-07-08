@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Otros Talentos — Top of Talent</title>
+<title>Otros Talentos · Top of Talent</title>
 <meta name="description" content="Talento ecuatoriano destacado en Top of Talent.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Top of Talent">
-<meta property="og:title" content="Otros Talentos — Top of Talent">
+<meta property="og:title" content="Otros Talentos · Top of Talent">
 <meta property="og:description" content="Talento ecuatoriano destacado en Top of Talent.">
 <meta property="og:image" content="https://topoftalentoficial.com/logo.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -91,13 +91,13 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
     <span class="ticker-item"><span class="tdot"></span>Modelaje</span>
     <span class="ticker-item"><span class="tdot"></span>Deporte</span>
     <span class="ticker-item"><span class="tdot"></span>Entretenimiento</span>
-    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2026</span>
     <span class="ticker-item"><span class="tdot"></span>Otros Talentos</span>
     <span class="ticker-item"><span class="tdot"></span>Fotografía</span>
     <span class="ticker-item"><span class="tdot"></span>Modelaje</span>
     <span class="ticker-item"><span class="tdot"></span>Deporte</span>
     <span class="ticker-item"><span class="tdot"></span>Entretenimiento</span>
-    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2026</span>
     <span class="ticker-item"><span class="tdot"></span>Otros Talentos</span>
   </div>
 </div>
@@ -135,7 +135,7 @@ function showError(msg) {
 function renderTalent(data) {
   // Update meta tags
   var fullName = data.name || 'Talento';
-  document.title = fullName + ' — Top of Talent';
+  document.title = fullName + ' · Top of Talent';
   var metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.content = data.meta_desc || (fullName + ' en Top of Talent.');
 
@@ -168,7 +168,7 @@ function renderTalent(data) {
   // Photo
   var photoHTML = data.photo_url
     ? '<img src="' + escapeHTML(data.photo_url) + '" alt="' + escapeHTML(fullName) + '">'
-    : '<div class="photo-placeholder">Foto — ' + escapeHTML(fullName) + '</div>';
+    : '<div class="photo-placeholder">Foto · ' + escapeHTML(fullName) + '</div>';
 
   document.getElementById('main-content').innerHTML =
     '<div class="page">' +

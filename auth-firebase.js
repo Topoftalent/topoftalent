@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// TOP OF TALENT — Auth System v3.0 (Firebase)
+// TOP OF TALENT · Auth System v3.0 (Firebase)
 // Reemplaza auth.js cuando firebase-config.js esté configurado.
 // Firebase Auth + Firestore · Glass card modals · Entrance animations
 // ─────────────────────────────────────────────────────────────────
@@ -212,7 +212,7 @@ var css=`
 .tot-btn.danger-btn::after{display:none}
 .tot-btn.success-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px}
 .tot-btn.success-btn:hover{opacity:.9;box-shadow:0 0 24px 6px rgba(200,108,255,.4)}
-/* Member CTA — liquid glass igual que en membresia.html */
+/* Member CTA · liquid glass igual que en membresia.html */
 .tot-btn.member-btn{
   background:rgba(200,108,255,.07);color:#fff;border-radius:14px;margin-top:0;
   border:none;outline:1px solid rgba(255,255,255,.06);outline-offset:-1px;
@@ -446,7 +446,7 @@ var HTML=`
     <!-- Step 3: T&C -->
     <div class="tot-section" id="reg-step3">
       <div class="tot-tc">
-        <p><strong style="color:rgba(255,255,255,.7)">Términos — Top of Talent</strong></p>
+        <p><strong style="color:rgba(255,255,255,.7)">Términos · Top of Talent</strong></p>
         <p>Al registrarte aceptas nuestros términos de servicio y política de privacidad.</p>
         <p>Tu información no será vendida a terceros. Top of Talent opera desde Europa, dirigido al público ecuatoriano.</p>
         <p>Tienes derecho a acceder, rectificar y suprimir tus datos. Contacto: contactoftalent@gmail.com</p>
@@ -857,7 +857,7 @@ window.TotAuth = {
     document.getElementById('prof-fan').textContent = u.fanNum || '–';
     document.getElementById('prof-date').textContent = u.createdAt || '–';
     document.getElementById('prof-method').textContent = u.provider || 'email';
-    document.getElementById('prof-country-display').textContent = cNames[u.country] || u.country || '—';
+    document.getElementById('prof-country-display').textContent = cNames[u.country] || u.country || '·';
     document.getElementById('prof-first').value = u.firstName || '';
     document.getElementById('prof-last').value = u.lastName || '';
     document.getElementById('prof-user').value = u.username || '';

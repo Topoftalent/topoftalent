@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// TOP OF TALENT — Auth System v2.1
+// TOP OF TALENT · Auth System v2.1
 // Glass card modals · Entrance animations · Backdrop blur
 // ─────────────────────────────────────────────────────────────────
 (function(){
@@ -110,7 +110,7 @@ var css=`
 .tot-dd-item.danger:hover{background:rgba(255,80,80,.08)!important;color:#ff5050!important}
 .tot-dd-sep{height:1px;background:rgba(255,255,255,.05)}
 
-/* ── BACKDROP — blurs the page behind ── */
+/* ── BACKDROP · blurs the page behind ── */
 .tot-backdrop{
   position:fixed;inset:0;z-index:1000;
   background:rgba(0,0,0,.6);
@@ -330,7 +330,7 @@ var css=`
 .tot-btn.member-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px;margin-top:0}
 .tot-btn.member-btn:hover{opacity:.9;box-shadow:0 0 28px 6px rgba(200,108,255,.4)}
 
-/* Dropdown membership — scoped rules above per #tot-dd-out / #tot-dd-in */
+/* Dropdown membership · scoped rules above per #tot-dd-out / #tot-dd-in */
 .tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
 .tot-dd-member-status.show{display:block}
 
@@ -490,7 +490,7 @@ var HTML=`
     <!-- Step 3: T&C -->
     <div class="tot-section" id="reg-step3">
       <div class="tot-tc">
-        <p><strong style="color:rgba(255,255,255,.7)">Términos — Top of Talent</strong></p>
+        <p><strong style="color:rgba(255,255,255,.7)">Términos · Top of Talent</strong></p>
         <p>Al registrarte aceptas nuestros términos de servicio y política de privacidad. El contenido es de uso personal y no comercial.</p>
         <p>Tu información no será vendida a terceros. Top of Talent opera desde Europa, dirigido al público ecuatoriano.</p>
         <p>Tienes derecho a acceder, rectificar y suprimir tus datos. Contacto: contactoftalent@gmail.com</p>
@@ -790,7 +790,7 @@ window.TotAuth={
     if(found){
       setSession(found);TotAuth.closeLogin();TotAuth._updateBtn();TotAuth.showToast('Hola, @'+found.username+'!');
     } else {
-      // No account found — send through full registration flow (DOB + T&C required)
+      // No account found · send through full registration flow (DOB + T&C required)
       TotAuth.closeLogin();
       TotAuth.openRegister();
       TotAuth.socialReg(provider);
@@ -826,7 +826,7 @@ window.TotAuth={
     document.getElementById('prof-fan').textContent=u.fanNum;
     document.getElementById('prof-date').textContent=u.createdAt;
     document.getElementById('prof-method').textContent=u.provider||'email';
-    document.getElementById('prof-country-display').textContent=cNames[u.country]||u.country||'—';
+    document.getElementById('prof-country-display').textContent=cNames[u.country]||u.country||'·';
     document.getElementById('prof-first').value=u.firstName||'';
     document.getElementById('prof-last').value=u.lastName||'';
     document.getElementById('prof-user').value=u.username||'';

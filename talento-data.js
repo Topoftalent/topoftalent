@@ -1,5 +1,5 @@
 /**
- * talento-data.js — ES Module
+ * talento-data.js · ES Module
  * Loads artistas from Firestore and drives the talento.html carousel + Top7.
  * Replaces the static artistas.js window.TOT_ARTISTAS array.
  */

@@ -1,4 +1,4 @@
-// artista-extras.js — ES Module, Firestore-backed votes & comments
+// artista-extras.js · ES Module, Firestore-backed votes & comments
 import {
   getMyVoteData, castVote, getTotalVotes, getAllVoteTotals,
   getAllVoteTotalsWithTiebreak,
@@ -39,7 +39,7 @@ function injectStyles() {
   var s = document.createElement('style');
   s.id = 'tot-artista-styles';
   s.textContent = [
-    /* ── VOTE CARD (paso2) — glass sobre fondo claro, igual sección 5 ── */
+    /* ── VOTE CARD (paso2) · glass sobre fondo claro, igual sección 5 ── */
     '.vote-area{position:relative;margin-top:0;display:flex;flex-direction:column;align-items:center;gap:16px;',
     'padding:32px 32px 24px;border-radius:16px;min-width:220px;overflow:hidden;',
     'background:rgba(200,108,255,.05);backdrop-filter:blur(24px);',
@@ -359,7 +359,7 @@ function startVoteDotMatrix(card) {
   resize(); draw();
 }
 
-// Fixed catalog order — final tiebreaker when votes and lastVoteAt are
+// Fixed catalog order · final tiebreaker when votes and lastVoteAt are
 // both equal (e.g. two artists with 0 votes), so the ranking is stable
 // across page loads instead of depending on Firestore query race timing.
 var ARTIST_CATALOG_ORDER = ['artista1','artista2','artista3','artista4','artista5',
@@ -464,7 +464,7 @@ async function buildVoteArea() {
   var ph = p2.querySelector('.paso-header');
   if (!ph) return;
 
-  // Synchronously reserve slot — prevents race-condition duplicates
+  // Synchronously reserve slot · prevents race-condition duplicates
   ph.querySelectorAll('.vote-area').forEach(function(el) { el.remove(); });
 
   // Keep title on the left
@@ -572,7 +572,7 @@ function moveResumen() {
   block.innerHTML =
     '<p class="resumen-eyebrow">Resumen de carrera</p>' +
     '<blockquote class="resumen-quote-big">' + quoteEl.innerHTML + '</blockquote>' +
-    '<p class="resumen-attr">— Top of Talent, 2025</p>';
+    '<p class="resumen-attr">· Top of Talent, 2026</p>';
   paso4.appendChild(block);
 
   var obs = new IntersectionObserver(function (entries) {
@@ -628,7 +628,7 @@ async function buildCommunity() {
 
   paso5.innerHTML =
     '<div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:24px;margin-bottom:28px">' +
-      '<span class="paso-num" style="color:#c86cff">05 —</span>' +
+      '<span class="paso-num" style="color:#c86cff">05 ·</span>' +
       '<h2 class="paso-title" style="color:#000">Comunidad de Fans</h2>' +
     '</div>' +
     '<div class="community-grid">' +
@@ -724,7 +724,7 @@ async function buildCommunity() {
         '</div>';
       }).join('');
 
-      // Delegated click — safe regardless of username characters
+      // Delegated click · safe regardless of username characters
       ticker.onclick = function(e) {
         var reportBtn = e.target.closest('.cmt-report');
         if (reportBtn && !reportBtn.disabled) {

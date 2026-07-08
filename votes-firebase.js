@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// TOP OF TALENT — Votes & Comments via Firestore
+// TOP OF TALENT · Votes & Comments via Firestore
 // Reemplaza la lógica de localStorage en artista-extras.js
 // Estructura Firestore:
 //   votes/{artistId}/fans/{userId}   → { total, lastVote (Timestamp) }
@@ -56,7 +56,7 @@ export async function getAllVoteTotals() {
 
 // Returns {artistId: {total, lastVoteAt}} for all artists.
 // lastVoteAt = timestamp (ms) of the most recent vote that pushed the
-// artist to their current total — used to break ties: whoever reached
+// artist to their current total · used to break ties: whoever reached
 // the tied vote count earlier (lower lastVoteAt) ranks higher.
 export async function getAllVoteTotalsWithTiebreak() {
   var ids = ['artista1','artista2','artista3','artista4','artista5',

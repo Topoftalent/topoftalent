@@ -1,5 +1,5 @@
 /**
- * artista-data.js  — ES Module
+ * artista-data.js  · ES Module
  * Loads artist data from Firestore and populates the artista page.
  * Each artista page must have  data-artist-id="artista1"  on <body>.
  */
@@ -37,7 +37,7 @@ async function loadArtist() {
     var snap = await getDoc(doc(db, 'artistas', artistId));
 
     if (!snap.exists() || snap.data().active === false) {
-      // Silently keep placeholder content — data not uploaded yet
+      // Silently keep placeholder content · data not uploaded yet
       return;
     }
 
@@ -45,15 +45,15 @@ async function loadArtist() {
 
     // ── <title> and meta ────────────────────────────────────────
     var nombre = fmt(d.nombre, 'Artista');
-    document.title = nombre + ' — Top of Talent';
+    document.title = nombre + ' · Top of Talent';
     var metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.content = nombre + ' — conoce su carrera y comunidad fan en Top of Talent.';
+    if (metaDesc) metaDesc.content = nombre + ' · conoce su carrera y comunidad fan en Top of Talent.';
     var ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.content = nombre + ' — Top of Talent';
+    if (ogTitle) ogTitle.content = nombre + ' · Top of Talent';
     var twTitle = document.querySelector('meta[name="twitter:title"]');
-    if (twTitle) twTitle.content = nombre + ' — Top of Talent';
+    if (twTitle) twTitle.content = nombre + ' · Top of Talent';
 
-    // ── HERO — photo ─────────────────────────────────────────────
+    // ── HERO · photo ─────────────────────────────────────────────
     var heroPhotoWrap = document.querySelector('.photo-placeholder-center');
     if (heroPhotoWrap) {
       if (d.foto_principal && d.foto_principal.startsWith('http')) {
@@ -65,11 +65,11 @@ async function loadArtist() {
         heroPhotoWrap.parentElement.insertBefore(heroImg, heroPhotoWrap);
         heroPhotoWrap.style.display = 'none';
       } else {
-        heroPhotoWrap.querySelector('span').textContent = 'Foto Principal — ' + nombre;
+        heroPhotoWrap.querySelector('span').textContent = 'Foto Principal · ' + nombre;
       }
     }
 
-    // ── HERO — social stats ───────────────────────────────────────
+    // ── HERO · social stats ───────────────────────────────────────
     var socials = document.querySelector('.hero-socials');
     if (socials) {
       var rows = [];
@@ -84,11 +84,11 @@ async function loadArtist() {
       }
     }
 
-    // ── HERO — name ───────────────────────────────────────────────
+    // ── HERO · name ───────────────────────────────────────────────
     var heroName = document.querySelector('.hero-artist-name');
     if (heroName) heroName.textContent = nombre;
 
-    // ── HERO — EP label & rank ────────────────────────────────────
+    // ── HERO · EP label & rank ────────────────────────────────────
 
     // Rank is set dynamically by artista-extras.js (based on live votes)
     var rankEl = document.querySelector('.hero-rank');
@@ -191,7 +191,7 @@ async function loadArtist() {
     var btnIG = document.querySelector('.btn-outline');
     if (btnIG && d.link_instagram) btnIG.href = d.link_instagram;
 
-    // Next artist — btn inside paso5
+    // Next artist · btn inside paso5
     var btnNext = document.querySelector('.btn-next');
     if (btnNext) {
       if (d.siguiente_id && d.siguiente_nombre) {

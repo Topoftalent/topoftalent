@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// TOP OF TALENT — Legal Modal + Cookie Consent  v1.0
+// TOP OF TALENT · Legal Modal + Cookie Consent  v1.0
 // Handles: Términos, Privacidad, Cookies, Aviso Legal
 // Cookie consent stored in localStorage as 'tot_cookies'
 // ─────────────────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ window.TotLegal = {
   }
 };
 
-// Wire footer links — run once only
+// Wire footer links · run once only
 function _wireLegal(){
   document.querySelectorAll('[data-legal]').forEach(function(el){
     el.addEventListener('click',function(e){

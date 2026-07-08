@@ -1,4 +1,4 @@
-// artista-extras.js — ES Module, Firestore-backed votes & comments
+// artista-extras.js · ES Module, Firestore-backed votes & comments
 import {
   getMyVoteData, castVote, getTotalVotes, getAllVoteTotals,
   listenTopFans, listenComments,
@@ -35,7 +35,7 @@ function injectStyles() {
   var s = document.createElement('style');
   s.id = 'tot-artista-styles';
   s.textContent = [
-    /* ── VOTE CARD (paso2) — glass sobre fondo claro, igual sección 5 ── */
+    /* ── VOTE CARD (paso2) · glass sobre fondo claro, igual sección 5 ── */
     '.vote-area{position:relative;margin-top:0;display:flex;flex-direction:column;align-items:center;gap:16px;',
     'padding:32px 32px 24px;border-radius:16px;min-width:220px;overflow:hidden;',
     'background:rgba(200,108,255,.05);backdrop-filter:blur(24px);',
@@ -320,7 +320,7 @@ async function buildVoteArea() {
   var ph = p2.querySelector('.paso-header');
   if (!ph) return;
 
-  // Synchronously reserve slot — prevents race-condition duplicates
+  // Synchronously reserve slot · prevents race-condition duplicates
   ph.querySelectorAll('.vote-area').forEach(function(el) { el.remove(); });
 
   // Keep title on the left
@@ -428,7 +428,7 @@ function moveResumen() {
   block.innerHTML =
     '<p class="resumen-eyebrow">Resumen de carrera</p>' +
     '<blockquote class="resumen-quote-big">' + quoteEl.innerHTML + '</blockquote>' +
-    '<p class="resumen-attr">— Top of Talent, 2025</p>';
+    '<p class="resumen-attr">· Top of Talent, 2026</p>';
   paso4.appendChild(block);
 
   var obs = new IntersectionObserver(function (entries) {
@@ -484,7 +484,7 @@ async function buildCommunity() {
 
   paso5.innerHTML =
     '<div class="paso-header fade-up" style="border-bottom:1px solid rgba(0,0,0,.1);padding-bottom:24px;margin-bottom:28px">' +
-      '<span class="paso-num" style="color:#c86cff">05 —</span>' +
+      '<span class="paso-num" style="color:#c86cff">05 ·</span>' +
       '<h2 class="paso-title" style="color:#000">Comunidad de Fans</h2>' +
     '</div>' +
     '<div class="community-grid">' +
@@ -492,7 +492,7 @@ async function buildCommunity() {
         '<div class="comm-col-header">' +
           '<p class="comm-col-title">Top Fans</p>' +
           '<div class="info-btn" tabindex="0">ⓘ' +
-            '<div class="info-tooltip"><p>Los fans que más votan por este artista aparecen aquí. Cada voto cuenta — mientras más apoyes, más visible serás para tu artista y su comunidad.</p></div>' +
+            '<div class="info-tooltip"><p>Los fans que más votan por este artista aparecen aquí. Cada voto cuenta · mientras más apoyes, más visible serás para tu artista y su comunidad.</p></div>' +
           '</div>' +
         '</div>' +
         (getIsMember()

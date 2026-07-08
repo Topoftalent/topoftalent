@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talento — Top of Talent</title>
+<title>Talento · Top of Talent</title>
 <meta name="description" content="El talento ecuatoriano en el centro de la escena. Conoce a los artistas de Top of Talent.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Top of Talent">
-<meta property="og:title" content="Talento — Top of Talent">
+<meta property="og:title" content="Talento · Top of Talent">
 <meta property="og:description" content="El talento ecuatoriano en el centro de la escena. Conoce a los artistas de Top of Talent.">
 <meta property="og:image" content="https://topoftalentoficial.com/logo.png">
 <meta property="og:url" content="https://topoftalentoficial.com/talento.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Talento — Top of Talent">
+<meta name="twitter:title" content="Talento · Top of Talent">
 <meta name="twitter:description" content="El talento ecuatoriano en el centro de la escena. Conoce a los artistas de Top of Talent.">
 <meta name="twitter:image" content="https://topoftalentoficial.com/logo.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -87,6 +87,7 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .card-photo{width:100%;height:260px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center 15%;background-repeat:no-repeat}
 .card-photo-link{position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;text-decoration:none;opacity:0;transition:opacity .2s;background:linear-gradient(to top,rgba(200,108,255,.55),transparent)}
 .card-photo:hover .card-photo-link{opacity:1}
+@media(hover:none){.card-photo-link{opacity:1;background:linear-gradient(to top,rgba(0,0,0,.55),transparent)}}
 .card-photo-link span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:#fff;text-transform:uppercase;background:var(--purple);padding:4px 10px}
 .tone-1{background:linear-gradient(160deg,#d4cfc9,#b8b2ab)}.tone-2{background:linear-gradient(160deg,#c2bdb6,#a09990)}.tone-3{background:linear-gradient(160deg,#1a1a2e,#16213e)}.tone-4{background:linear-gradient(160deg,#cc4444,#991111)}.tone-5{background:linear-gradient(160deg,#8888bb,#444488)}.tone-6{background:linear-gradient(160deg,#2244aa,#112266)}.tone-7{background:linear-gradient(160deg,#1a2a1a,#112211)}.tone-8{background:linear-gradient(160deg,#aa7722,#664411)}.tone-9{background:linear-gradient(160deg,#111,#333)}.tone-0{background:linear-gradient(160deg,#cc88cc,#884488)}
 .card-photo-placeholder{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.25);text-transform:uppercase;text-align:center;padding:8px}
@@ -119,7 +120,7 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .info-cta{display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-top:16px}
 .btn-ficha{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:12px 20px;transition:background .2s}
 .btn-ficha:hover{background:var(--purple)}
-/* ── TOP 7 — sección negra ── */
+/* ── TOP 7 · sección negra ── */
 #view-top7{background:#000;margin-top:0;padding-bottom:0}
 .top7-masthead{padding:48px 40px 32px;border-bottom:1px solid rgba(255,255,255,.08)}
 .top7-masthead-eyebrow{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(28px,4vw,56px);text-transform:uppercase;letter-spacing:-.02em;color:#fff;line-height:1;margin-bottom:4px}
@@ -209,7 +210,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
   </div>
   <div class="section-eyebrow">
     <span class="eyebrow-num">Talento Nacional</span>
-    <span class="eyebrow-sep" style="display:none">—</span>
+    <span class="eyebrow-sep" style="display:none">·</span>
     <span class="eyebrow-count" id="eyebrowCount">10 artistas</span>
   </div>
 
@@ -220,7 +221,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
       </div>
     </div>
     <div class="info-panel">
-      <div class="info-panel-default" id="panelDefault">Pasa el cursor sobre un artista para ver su perfil</div>
+      <div class="info-panel-default" id="panelDefault">Toca o pasa el cursor sobre un artista para ver su perfil</div>
       <div class="info-panel-content" id="panelContent">
         <div class="info-col" style="align-items:center"><span class="info-rank" id="infoRank">01</span></div>
         <div class="info-col">

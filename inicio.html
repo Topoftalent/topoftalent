@@ -7,12 +7,12 @@
 <meta name="description" content="Descubre los artistas más talentosos del Ecuador. Rankings, perfiles, eventos y comunidad fan en Top of Talent.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Top of Talent">
-<meta property="og:title" content="Top of Talent — Música Ecuatoriana Emergente">
+<meta property="og:title" content="Top of Talent · Música Ecuatoriana Emergente">
 <meta property="og:description" content="Descubre los artistas más talentosos del Ecuador. Rankings, perfiles, eventos y comunidad fan en Top of Talent.">
 <meta property="og:image" content="https://topoftalentoficial.com/logo.png">
 <meta property="og:url" content="https://topoftalentoficial.com/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Top of Talent — Música Ecuatoriana Emergente">
+<meta name="twitter:title" content="Top of Talent · Música Ecuatoriana Emergente">
 <meta name="twitter:description" content="Descubre los artistas más talentosos del Ecuador. Rankings, perfiles, eventos y comunidad fan en Top of Talent.">
 <meta name="twitter:image" content="https://topoftalentoficial.com/logo.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -136,7 +136,7 @@ nav.h-nav a.active::before {
   background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.02) 2px,rgba(0,0,0,.02) 4px);
 }
 
-/* ── TITLE — Helvetica puro, blanco ── */
+/* ── TITLE · Helvetica puro, blanco ── */
 .hero-title {
   font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 700;
@@ -224,7 +224,7 @@ nav.h-nav a.active::before {
   position: relative;
   color: inherit;
 }
-/* Registrarse — purple glow */
+/* Registrarse · purple glow */
 .login-buttons-row a.d-register {
   color: #c86cff;
   border: 1px solid rgba(200,108,255,.5);
@@ -243,7 +243,7 @@ nav.h-nav a.active::before {
   box-shadow: 0 0 24px 6px rgba(200,108,255,.8), 0 0 48px 10px rgba(200,108,255,.35);
   border-color: #c86cff;
 }
-/* Iniciar Sesión — white glow */
+/* Iniciar Sesión · white glow */
 .login-buttons-row a.d-login {
   color: rgba(255,255,255,.75);
   border: 1px solid rgba(255,255,255,.25);
@@ -344,7 +344,7 @@ nav.h-nav a.active::before {
 .footer-legal a{cursor:none!important}
 .footer-legal a:hover{color:#c86cff}
 
-/* ── LIQUID GLASS BUTTON — Hazte Miembro ── */
+/* ── LIQUID GLASS BUTTON · Hazte Miembro ── */
 .d-member-lg{
   font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;
   font-size:11px;font-weight:700;letter-spacing:.18em;
@@ -429,7 +429,7 @@ nav.h-nav a.active::before {
 <div class="nav-overlay" id="navOL">
   <div class="nav-ol-hdr">
     <a href="inicio.html" class="logo">
-      <!-- LOGO CORRECTO — even-odd dos barras cruzadas -->
+      <!-- LOGO CORRECTO · even-odd dos barras cruzadas -->
       <img src="logo.png" class="logo-icon" alt="Top of Talent">
   </div>
   <div class="nav-links">
@@ -504,14 +504,14 @@ nav.h-nav a.active::before {
     <span class="ticker-item"><span class="tdot"></span>Eventos en Vivo</span>
     <span class="ticker-item"><span class="tdot"></span>Nuevos Lanzamientos</span>
     <span class="ticker-item"><span class="tdot"></span>Talento Nacional</span>
-    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2026</span>
     <span class="ticker-item"><span class="tdot"></span>Artistas Ecuatorianos</span>
     <span class="ticker-item"><span class="tdot"></span>Rankings Semanales</span>
     <span class="ticker-item"><span class="tdot"></span>Reseñas Editoriales</span>
     <span class="ticker-item"><span class="tdot"></span>Eventos en Vivo</span>
     <span class="ticker-item"><span class="tdot"></span>Nuevos Lanzamientos</span>
     <span class="ticker-item"><span class="tdot"></span>Talento Nacional</span>
-    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2025</span>
+    <span class="ticker-item"><span class="tdot"></span>Top of Talent 2026</span>
     <span class="ticker-item"><span class="tdot"></span>Artistas Ecuatorianos</span>
   </div>
 </div>
@@ -540,14 +540,14 @@ document.querySelectorAll('a, button').forEach(el => {
 });
 
 // Dropdown login
-// Buttons always visible — no dropdown needed
+// Buttons always visible · no dropdown needed
 
 // Nav
 function openNav()  { document.getElementById('navOL').classList.add('open');  document.body.style.overflow='hidden'; }
 function closeNav() { document.getElementById('navOL').classList.remove('open'); document.body.style.overflow=''; }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeNav(); });
 
-// Inicio welcome state — single source of truth, no setTimeout race
+// Inicio welcome state · single source of truth, no setTimeout race
 function updateInicioAuth() {
   var u = window._totCurrentUser;
   var authArea    = document.getElementById('inicio-auth-area');
@@ -563,7 +563,7 @@ function updateInicioAuth() {
     welcomeArea.style.display = 'none';
   }
 }
-// Run once when DOM is ready — auth.js also calls _updateBtn() which handles the same elements,
+// Run once when DOM is ready · auth.js also calls _updateBtn() which handles the same elements,
 // so we hook into the same moment instead of racing with a blind setTimeout.
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', updateInicioAuth);
