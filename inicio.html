@@ -554,10 +554,13 @@ function updateInicioAuth() {
   var welcomeArea = document.getElementById('inicio-welcome');
   var welcomeMsg  = document.getElementById('inicio-welcome-msg');
   if (!authArea || !welcomeArea) return;
+  var memberCta = document.getElementById('inicio-member-cta');
   if (u && u.username) {
     authArea.style.display    = 'none';
     welcomeArea.style.display = 'flex';
     if (welcomeMsg) welcomeMsg.textContent = 'Hola, @' + u.username;
+    // Members already paid: no "Hazte Miembro" for them, only "Mi cuenta".
+    if (memberCta) memberCta.style.display = (u.isMember || u.isAdmin) ? 'none' : '';
   } else {
     authArea.style.display    = 'block';
     welcomeArea.style.display = 'none';
