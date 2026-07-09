@@ -395,7 +395,7 @@ async function buildVoteArea() {
 
   } else {
     card.innerHTML = counterHTML +
-      '<a href="membresia.html" class="va-btn va-btn-member">Hazte Miembro</a>' +
+      '<a href="membresia" class="va-btn va-btn-member">Hazte Miembro</a>' +
       '<p class="va-legend">Solo los miembros pueden votar</p>';
   }
 
@@ -472,12 +472,12 @@ async function buildCommunity() {
     var upsell = '<div class="member-upsell">' +
       '<p class="upsell-eye">Acceso exclusivo</p>' +
       '<p class="upsell-desc">Los miembros de Top of Talent votan por sus artistas, aparecen en el ranking de fans y dejan su huella en la comunidad.</p>' +
-      '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
+      '<a href="membresia" class="upsell-cta">Hazte Miembro</a>' +
       '</div>';
     rankHTML = '<div class="member-upsell">' +
       '<p class="upsell-eye">Solo miembros</p>' +
       '<p class="upsell-desc">El ranking de fans más activos solo es visible para los miembros de Top of Talent.</p>' +
-      '<a href="membresia.html" class="upsell-cta">Hazte Miembro</a>' +
+      '<a href="membresia" class="upsell-cta">Hazte Miembro</a>' +
       '</div>';
     cmtHTML  = upsell;
   }

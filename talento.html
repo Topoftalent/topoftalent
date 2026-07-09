@@ -10,7 +10,7 @@
 <meta property="og:title" content="Talento · Top of Talent">
 <meta property="og:description" content="El talento ecuatoriano en el centro de la escena. Conoce a los artistas de Top of Talent.">
 <meta property="og:image" content="https://topoftalentoficial.com/logo.png">
-<meta property="og:url" content="https://topoftalentoficial.com/talento.html">
+<meta property="og:url" content="https://topoftalentoficial.com/talento">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Talento · Top of Talent">
 <meta name="twitter:description" content="El talento ecuatoriano en el centro de la escena. Conoce a los artistas de Top of Talent.">
@@ -181,24 +181,24 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 
 <div class="nav-overlay" id="navOL">
   <div class="nav-ol-hdr">
-    <a href="inicio.html" class="logo"><img src="logo.png" class="logo-icon" alt="Top of Talent"><span class="logo-text" style="color:white">Top of<br>Talent</span></a>
+    <a href="inicio" class="logo"><img src="logo.png" class="logo-icon" alt="Top of Talent"><span class="logo-text" style="color:white">Top of<br>Talent</span></a>
     <button class="nav-close" onclick="closeNav()">Cerrar X</button>
   </div>
   <div class="nav-links">
-    <a href="inicio.html" class="nav-link"><span class="nl-n">01</span>Inicio</a>
-    <a href="talento.html" class="nav-link current"><span class="nl-n">02</span>Talento</a>
-    <a href="proyectos.html" class="nav-link"><span class="nl-n">03</span>Proyectos</a>
-    <a href="nosotros.html" class="nav-link"><span class="nl-n">04</span>Nosotros</a>
+    <a href="inicio" class="nav-link"><span class="nl-n">01</span>Inicio</a>
+    <a href="talento" class="nav-link current"><span class="nl-n">02</span>Talento</a>
+    <a href="proyectos" class="nav-link"><span class="nl-n">03</span>Proyectos</a>
+    <a href="nosotros" class="nav-link"><span class="nl-n">04</span>Nosotros</a>
   </div>
 </div>
 
 <header>
-  <a href="inicio.html" class="logo"><img src="logo.png" class="logo-icon" alt="Top of Talent"><span class="logo-text">Top of<br>Talent</span></a>
+  <a href="inicio" class="logo"><img src="logo.png" class="logo-icon" alt="Top of Talent"><span class="logo-text">Top of<br>Talent</span></a>
   <nav class="h-nav">
-    <a href="inicio.html">Inicio</a>
-    <a href="talento.html" class="active">Talento</a>
-    <a href="proyectos.html">Proyectos</a>
-    <a href="nosotros.html">Nosotros</a>
+    <a href="inicio">Inicio</a>
+    <a href="talento" class="active">Talento</a>
+    <a href="proyectos">Proyectos</a>
+    <a href="nosotros">Nosotros</a>
   </nav>
   <button class="mob-btn" onclick="openNav()"><div class="mlines"><span></span><span></span></div>Menu</button>
 </header>
@@ -237,7 +237,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
             <div class="info-stat-row"><span class="info-stat-label">Ciudad</span><span class="info-stat-val" id="infoCity2"></span></div>
             <div class="info-stat-row"><span class="info-stat-label">Activo desde</span><span class="info-stat-val" id="infoYear"></span></div>
           </div>
-          <div class="info-cta"><a href="artista1.html" class="btn-ficha" id="fichaBtn">Ver Ficha</a></div>
+          <div class="info-cta"><a href="alex-ponce" class="btn-ficha" id="fichaBtn">Ver Ficha</a></div>
         </div>
       </div>
     </div>
@@ -262,7 +262,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
 
   <footer>
   <div class="footer-legal">
-    <a href="nosotros.html">About Us</a>
+    <a href="nosotros">About Us</a>
     <a href="#" data-legal="terminos">Términos y Condiciones</a>
     <a href="#" data-legal="privacidad">Política de Privacidad</a>
     <a href="#" data-legal="cookies">Política de Cookies</a>
@@ -380,7 +380,7 @@ function buildTop7() {
       '<div class="t7-song-block">' +
         '<div class="t7-song">' + entry.song + '</div>' +
         '<div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:6px">' +
-          '<a href="' + entry.id + '.html" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
+          '<a href="' + (window.TOT_SLUG_OF ? window.TOT_SLUG_OF(entry.id) : entry.id) + '" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
           (entry.feat ? '<span class="t7-artist-link" style="color:rgba(200,108,255,.35);pointer-events:none;margin:0">ft. ' + entry.feat + '</span>' : '') +
         '</div>' +
       '</div>' +
@@ -448,7 +448,8 @@ document.getElementById('view-top7').style.display = 'none';
 document.getElementById('eyebrowCount').textContent = '…';
 </script>
 <script src="legal.js"></script>
+<script src="slugs.js"></script>
 <script type="module" src="auth-firebase.js"></script>
-<script type="module" src="talento-data.js"></script>
+<script type="module" src="talento-data.js?v=2"></script>
 </body>
 </html>

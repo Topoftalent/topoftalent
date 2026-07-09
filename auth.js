@@ -388,7 +388,7 @@ var HTML=`
       <div class="tot-dd-fan" id="tot-dd-fan"></div>
       <div class="tot-dd-member-status" id="tot-dd-member-status">Miembro Activo</div>
     </div>
-    <div class="tot-dd-item member-cta" id="tot-dd-member-cta" onclick="window.location.href='membresia.html'">
+    <div class="tot-dd-item member-cta" id="tot-dd-member-cta" onclick="window.location.href='membresia'">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
       Hazte Miembro
     </div>
@@ -522,7 +522,7 @@ var HTML=`
           <li>Acceso a la sección de comentarios</li>
           <li>Descuentos en eventos y merch del artista</li>
         </ul>
-        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia.html'">Ver Membresía →</button>
+        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia'">Ver Membresía →</button>
       </div>
       <button class="tot-btn ghost" style="margin-top:10px" onclick="TotAuth.closeRegister()">Continuar sin membresía</button>
     </div>

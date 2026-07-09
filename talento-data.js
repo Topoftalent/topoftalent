@@ -55,7 +55,7 @@ async function loadArtistas() {
 
     artistas.push({
       id:     d.id,
-      file:   d.id + '.html',
+      file:   (window.TOT_SLUG_OF ? window.TOT_SLUG_OF(d.id) : d.id),
       name:   data.nombre  || d.id,
       song:   song,
       genre:  data.genero  || '',

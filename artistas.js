@@ -6,7 +6,7 @@
 window.TOT_ARTISTAS = [
   {
     id:     'artista1',
-    file:   'artista1.html',
+    file:   'alex-ponce',
     name:   'Artista Uno',
     song:   'Cancion Uno',
     genre:  'Indie - Alternativo',
@@ -18,7 +18,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista2',
-    file:   'artista2.html',
+    file:   'johann-vera',
     name:   'Artista Dos',
     song:   'Cancion Dos',
     genre:  'Hip-Hop - Trap',
@@ -30,7 +30,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista3',
-    file:   'artista3.html',
+    file:   'mar-rendon',
     name:   'Artista Tres',
     song:   'Cancion Tres',
     genre:  'Electronic - Ambient',
@@ -42,7 +42,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista4',
-    file:   'artista4.html',
+    file:   'jombriel',
     name:   'Artista Cuatro',
     song:   'Cancion Cuatro',
     genre:  'Pop - Rock',
@@ -54,7 +54,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista5',
-    file:   'artista5.html',
+    file:   'alex-krack',
     name:   'Artista Cinco',
     song:   'Cancion Cinco',
     genre:  'R&B - Soul',
@@ -66,7 +66,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista6',
-    file:   'artista6.html',
+    file:   'dicapo',
     name:   'Artista Seis',
     song:   'Cancion Seis',
     genre:  'Folk - Andino',
@@ -78,7 +78,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista7',
-    file:   'artista7.html',
+    file:   'kenny-die',
     name:   'Artista Siete',
     song:   'Cancion Siete',
     genre:  'Metal - Rock',
@@ -90,7 +90,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista8',
-    file:   'artista8.html',
+    file:   'yilda',
     name:   'Artista Ocho',
     song:   'Cancion Ocho',
     genre:  'Jazz - Fusion',
@@ -102,7 +102,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista9',
-    file:   'artista9.html',
+    file:   'ren-kai',
     name:   'Artista Nueve',
     song:   'Cancion Nueve',
     genre:  'Reggaeton - Urbano',
@@ -114,7 +114,7 @@ window.TOT_ARTISTAS = [
   },
   {
     id:     'artista10',
-    file:   'artista10.html',
+    file:   'blanko',
     name:   'Artista Diez',
     song:   'Cancion Diez',
     genre:  'Punk - Post-Punk',

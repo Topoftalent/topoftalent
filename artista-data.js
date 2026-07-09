@@ -195,7 +195,7 @@ async function loadArtist() {
     var btnNext = document.querySelector('.btn-next');
     if (btnNext) {
       if (d.siguiente_id && d.siguiente_nombre) {
-        btnNext.href = d.siguiente_id + '.html';
+        btnNext.href = (window.TOT_SLUG_OF ? window.TOT_SLUG_OF(d.siguiente_id) : d.siguiente_id);
         btnNext.textContent = 'Siguiente: ' + d.siguiente_nombre + ' →';
       } else {
         btnNext.style.display = 'none';
@@ -206,7 +206,7 @@ async function loadArtist() {
     var nextArtist = document.querySelector('a.next-artist');
     if (nextArtist) {
       if (d.siguiente_id && d.siguiente_nombre) {
-        nextArtist.href = d.siguiente_id + '.html';
+        nextArtist.href = (window.TOT_SLUG_OF ? window.TOT_SLUG_OF(d.siguiente_id) : d.siguiente_id);
         var nextName = nextArtist.querySelector('.next-name');
         if (nextName) nextName.textContent = d.siguiente_nombre;
       } else {
