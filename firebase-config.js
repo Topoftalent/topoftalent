@@ -23,7 +23,7 @@ const app  = initializeApp(firebaseConfig);
 // Mientras diga PEGAR_..., App Check queda INACTIVO y el sitio funciona igual.
 // Cuando pegues la llave real, App Check arranca solo. El bloqueo real solo
 // ocurre cuando actives "Enforce" en la consola de Firebase (ver guia).
-const RECAPTCHA_V3_SITE_KEY = 'PEGAR_SITE_KEY_RECAPTCHA_V3_AQUI';
+const RECAPTCHA_V3_SITE_KEY = '6LdumUstAAAAABiDCV2X2WhJ5_aGYA48X-o3Mufh';
 if (RECAPTCHA_V3_SITE_KEY.indexOf('PEGAR_') !== 0) {
   try {
     initializeAppCheck(app, {
