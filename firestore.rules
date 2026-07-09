@@ -78,6 +78,13 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── RATE LIMITS ──────────────────────────────────────────────
+    // Server-only counters (comment daily limit). No client access; the
+    // Cloud Function writes here with admin privileges (bypasses rules).
+    match /rate_limits/{userId} {
+      allow read, write: if false;
+    }
+
     // ── ARTISTAS ─────────────────────────────────────────────────
     // Public read. Admins may edit ONLY the score fields (editorial /
     // criticos) from the admin panel; everything else stays Console-only.
