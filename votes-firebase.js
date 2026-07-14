@@ -25,17 +25,17 @@ export async function getMyVoteData(artistId, userId) {
   } catch(e) { return { canVote: false, total: 0, lastVote: null }; }
 }
 
-export async function castVote(artistId, userId, username) {
+export async function castVote(artistId, userId, username, fanNum) {
   var fanRef = doc(db, 'votes', artistId, 'fans', userId);
   var payload = {
     total: increment(1),
     lastVote: serverTimestamp()
   };
-  // Denormalize username into the (public) vote doc so the fan ranking never
-  // has to read other users' private docs (which would leak their email).
-  if (typeof username === 'string' && username) {
-    payload.username = username.slice(0, 40);
-  }
+  // Denormalize username + fan number into the (public) vote doc so the fan
+  // ranking never has to read other users' private docs (which would leak
+  // their email). fanNum is the fallback identifier when there's no username.
+  if (typeof username === 'string' && username) payload.username = username.slice(0, 40);
+  if (typeof fanNum   === 'string' && fanNum)   payload.fanNum   = fanNum.slice(0, 20);
   await setDoc(fanRef, payload, { merge: true });
 }
 
@@ -105,8 +105,11 @@ export function listenTopFans(artistId, cb) {
     // Read the username straight from the public vote doc — no cross-user
     // reads, so members' private data is never exposed to build the ranking.
     var fans = snap.docs.map(function(d) {
-      var uname = d.data().username;
-      return { username: uname ? ('@' + uname) : 'Fan', total: d.data().total || 0 };
+      var uname  = d.data().username;
+      var fanNum = d.data().fanNum;
+      // Prefer @username; if none, use the fan number as identifier; else "Fan".
+      var display = uname ? ('@' + uname) : (fanNum || 'Fan');
+      return { username: display, total: d.data().total || 0 };
     });
     cb(fans);
   });

@@ -527,7 +527,7 @@ async function buildVoteArea() {
         vBtn.disabled = true;
         vBtn.textContent = 'Votando…';
         try {
-          await castVote(artistId, uid, (getUser() && getUser().username) || '');
+          await castVote(artistId, uid, (getUser() && getUser().username) || '', (getUser() && getUser().fanNum) || '');
           // Update counter and rank
           var newTotal = await getTotalVotes(artistId);
           var pc = document.getElementById('tot-public-votes');
