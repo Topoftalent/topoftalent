@@ -268,8 +268,10 @@ function buildCard(e) {
       + '<div class="event-location" style="--pink:' + c.accent + '">' + escapeHTML(e.ubicacion) + '</div>'
       + '<p class="event-review">' + escapeHTML(e.resena) + '</p>'
       + '<div class="event-meta">'
-        + '<div class="meta-block"><span class="meta-label">Precio desde</span><span class="meta-value" style="color:' + c.accent + '">' + escapeHTML(e.precio_desde) + '</span></div>'
-        + '<div class="meta-block"><span class="meta-label">Precio hasta</span><span class="meta-value">' + escapeHTML(e.precio_hasta) + '</span></div>'
+        + (e.precio_hasta
+            ? '<div class="meta-block"><span class="meta-label">Precio desde</span><span class="meta-value" style="color:' + c.accent + '">' + escapeHTML(e.precio_desde) + '</span></div>'
+              + '<div class="meta-block"><span class="meta-label">Precio hasta</span><span class="meta-value">' + escapeHTML(e.precio_hasta) + '</span></div>'
+            : '<div class="meta-block" style="grid-column:1/-1"><span class="meta-label">Entradas</span><span class="meta-value" style="color:' + c.accent + '">' + escapeHTML(e.precio_desde || 'Por confirmar') + '</span></div>')
         + '<div class="meta-block"><span class="meta-label">Fecha</span><span class="meta-value">' + escapeHTML(e.fecha) + '</span></div>'
         + '<div class="meta-block"><span class="meta-label">País</span><span class="meta-value">' + escapeHTML(e.pais) + '</span></div>'
       + '</div>'
