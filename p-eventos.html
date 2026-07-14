@@ -288,6 +288,16 @@ async function loadEventos() {
       if (data.active !== false) eventos.push(data);
     });
 
+    // Auto-ocultar eventos ya pasados: si su fecha_fin (YYYY-MM-DD) ya
+    // transcurrió, no se muestran. Los eventos con solo mes usan el ultimo
+    // dia de ese mes. Sin fecha_fin, se conservan (fallback seguro).
+    var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    eventos = eventos.filter(function(e) {
+      if (!e.fecha_fin) return true;
+      var fin = new Date(e.fecha_fin + 'T23:59:59');
+      return isNaN(fin.getTime()) ? true : fin >= hoy;
+    });
+
     var grid = document.getElementById('eventsGrid');
     if (!eventos.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:11px;color:rgba(255,255,255,.3)">Próximamente · nuevos eventos</div>';
