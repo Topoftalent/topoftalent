@@ -348,14 +348,17 @@ function showInfo(a) {
   if (vRow) vRow.textContent = votes + ' votos de fans';
 }
 
+// feat      = invitado (nuestro artista es el principal) -> va DESPUES, en gris
+// featBefore= artista dueño de la cancion (nuestro artista es la colaboracion)
+//             -> va ANTES, en gris; nuestro artista queda con link + color
 var TOP7_ORDER = [
-  { id:'artista4', song:'Masalveo',          yt:'https://www.youtube.com/watch?v=tAsMR1VXb9c' },
-  { id:'artista1', song:'Fuiste',            yt:'https://www.youtube.com/watch?v=-zIkozpXk8Y' },
-  { id:'artista2', song:'Grita Fuerte',      yt:'https://www.youtube.com/watch?v=PHNQRJ00NwM', feat:'Don Medardo y sus Players' },
-  { id:'artista5', song:'ZAZZA',             yt:'https://www.youtube.com/watch?v=TKOjqz-fhEw' },
-  { id:'artista6', song:'Tiempo Sin Verte',  yt:'https://www.youtube.com/watch?v=bVcU3uQyDcs' },
-  { id:'artista3', song:'Tú Me Hiciste Así', yt:'https://www.youtube.com/watch?v=8ug7oc5Y_V8' },
-  { id:'artista9', song:'Quédate',           yt:'https://www.youtube.com/watch?v=jYWsjwKHEUQ', feat:'Maykel' }
+  { id:'artista2',  song:'Grita Fuerte',    yt:'https://www.youtube.com/watch?v=PHNQRJ00NwM', feat:'Don Medardo y sus Players' },
+  { id:'artista9',  song:'Cobardes',        yt:'https://www.youtube.com/watch?v=eP_EwJ6q6bU', featBefore:'Nicky Dumas' },
+  { id:'artista1',  song:'El 11',           yt:'https://www.youtube.com/watch?v=F_AGLyjZBSI' },
+  { id:'artista10', song:'Cancún',          yt:'https://www.youtube.com/watch?v=AhNMm0SOrmM' },
+  { id:'artista7',  song:'Mintiéndonos',    yt:'https://www.youtube.com/watch?v=Pk-6ElB8-cs', featBefore:'Sharik' },
+  { id:'artista5',  song:'ZAZZA',           yt:'https://www.youtube.com/watch?v=TKOjqz-fhEw' },
+  { id:'artista6',  song:'Tiempo Sin Verte',yt:'https://www.youtube.com/watch?v=bVcU3uQyDcs' }
 ];
 
 function buildTop7() {
@@ -380,7 +383,10 @@ function buildTop7() {
       '<div class="t7-song-block">' +
         '<div class="t7-song">' + entry.song + '</div>' +
         '<div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:6px">' +
+          // featBefore: artista dueno de la cancion va primero, en gris, sin link (respeta el orden del video)
+          (entry.featBefore ? '<span class="t7-artist-link" style="color:rgba(200,108,255,.35);pointer-events:none;margin:0">' + entry.featBefore + ' ft.</span>' : '') +
           '<a href="' + (window.TOT_SLUG_OF ? window.TOT_SLUG_OF(entry.id) : entry.id) + '" class="t7-artist-link" onclick="event.stopPropagation()">' + (a.name || '') + '</a>' +
+          // feat: invitado va despues, en gris
           (entry.feat ? '<span class="t7-artist-link" style="color:rgba(200,108,255,.35);pointer-events:none;margin:0">ft. ' + entry.feat + '</span>' : '') +
         '</div>' +
       '</div>' +
