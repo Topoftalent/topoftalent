@@ -288,10 +288,15 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
 .mem-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px;line-height:1.5}
 .mem-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;text-align:center;outline:none;transition:border-color .2s}
 .mem-input:focus{border-color:#c86cff}
-.mem-err{color:#ff6b6b;font-family:'JetBrains Mono',monospace;font-size:10px;min-height:14px;margin:6px 0}
-.mem-btn{width:100%;background:#c86cff;color:#0e0d14;border:none;border-radius:10px;padding:14px;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:opacity .2s;margin-top:4px}
+.mem-input.error{border-color:#ff6b6b;background:rgba(255,107,107,.07);animation:mem-shake .35s}
+.mem-input.ok{border-color:#4cff91;background:rgba(76,255,145,.08);color:#4cff91}
+@keyframes mem-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.mem-err{color:#ff6b6b;font-family:'JetBrains Mono',monospace;font-size:10.5px;min-height:15px;margin:7px 0;line-height:1.4}
+.mem-btn{width:100%;background:#c86cff;color:#0e0d14;border:none;border-radius:10px;padding:14px;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:opacity .2s,background .3s;margin-top:4px}
 .mem-btn:hover{opacity:.9}
-.mem-note{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);text-align:center;margin-top:12px;line-height:1.5}
+.mem-btn.ok{background:#4cff91;color:#08120c}
+.mem-note{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(255,255,255,.5);text-align:center;margin-top:12px;line-height:1.6}
+.mem-note.ok{color:#4cff91}
 </style>
 </head>
 <body>
@@ -570,34 +575,97 @@ document.getElementById('member-cta-btn').addEventListener('click',function(e){
   else{alert('El pago estará disponible muy pronto. ¡Gracias por tu interés!');}
 });
 </script>
-<script>
-/* ── ACTIVAR MEMBRESÍA (código de prueba) ── */
+<script type="module">
+/* ── ACTIVAR MEMBRESÍA (código de prueba) ──────────────────────────
+   Independiente de auth-firebase.js: llama a la Cloud Function
+   directamente, para que no falle si el navegador tiene cache vieja. */
+import { getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+import "./firebase-config.js";
+
+function $(id){ return document.getElementById(id); }
+
+function setEstado(estado, mensaje) {
+  var input = $('mem-codigo'), err = $('mem-codigo-err'), btn = $('mem-codigo-btn'), note = $('mem-note');
+  input.classList.remove('error','ok');
+  err.textContent = ''; note.textContent = ''; note.classList.remove('ok');
+  if (estado === 'error') {
+    input.classList.add('error');
+    err.textContent = mensaje;
+    input.focus(); input.select();
+  } else if (estado === 'ok') {
+    input.classList.add('ok');
+    btn.classList.add('ok');
+    btn.textContent = '✓ Membresía activada';
+    btn.disabled = true;
+    note.textContent = mensaje;
+    note.classList.add('ok');
+  }
+}
+
 var TotMembresia = {
   open: function() {
     var u = window._totCurrentUser;
     if (!u) {
       if (window.TotAuth && TotAuth.openLogin) { TotAuth.openLogin(); TotAuth.showToast('Inicia sesión para activar tu membresía.'); }
+      else { alert('Inicia sesión para activar tu membresía.'); }
       return;
     }
     if (u.isMember) {
       if (window.TotAuth) TotAuth.showToast('Ya eres miembro. ¡Gracias por tu apoyo!');
+      else alert('Ya eres miembro.');
       return;
     }
-    var n = document.getElementById('mem-note'); if (n) n.textContent = '';
-    document.getElementById('mem-backdrop').classList.add('open');
-    setTimeout(function(){ var i=document.getElementById('mem-codigo'); if(i) i.focus(); }, 60);
+    setEstado('reset','');
+    $('mem-codigo').value = '';
+    $('mem-backdrop').classList.add('open');
+    setTimeout(function(){ $('mem-codigo').focus(); }, 60);
   },
-  close: function() { document.getElementById('mem-backdrop').classList.remove('open'); },
-  activar: function() {
-    if (window.TotAuth && TotAuth.activarCodigo) {
-      TotAuth.activarCodigo('mem-codigo', 'mem-codigo-err', 'mem-codigo-btn');
+
+  close: function() { $('mem-backdrop').classList.remove('open'); },
+
+  activar: async function() {
+    var input = $('mem-codigo'), btn = $('mem-codigo-btn');
+    var codigo = input.value.trim();
+
+    if (!codigo) { setEstado('error', 'Escribe tu código de regalo.'); return; }
+    if (!window._totCurrentUser) { setEstado('error', 'Inicia sesión para activar tu membresía.'); return; }
+
+    var textoOriginal = btn.textContent;
+    btn.disabled = true; btn.style.opacity = '.6'; btn.textContent = 'Activando…';
+    setEstado('reset','');
+
+    try {
+      var call = httpsCallable(getFunctions(getApp(), 'us-east1'), 'activarMembresia');
+      var res = await call({ codigo: codigo });
+      var data = res.data || {};
+      if (window._totCurrentUser) window._totCurrentUser.isMember = true;
+      if (window.TotAuth && TotAuth._updateBtn) TotAuth._updateBtn();
+      btn.style.opacity = '1';
+      setEstado('ok', data.already
+        ? 'Tu membresía ya estaba activa.'
+        : 'Listo. Tienes 2 meses de membresía Premium gratis. Revisa tu correo.');
+      setTimeout(function(){ TotMembresia.close(); location.reload(); }, 2600);
+    } catch (e) {
+      btn.disabled = false; btn.style.opacity = '1'; btn.textContent = textoOriginal;
+      var msg = (e && e.message) ? e.message : '';
+      // Código equivocado -> mensaje claro. Otro fallo -> mensaje genérico.
+      if (/inválid|invalid|no es válido|argument/i.test(msg)) {
+        setEstado('error', 'Código incorrecto. Revisa el correo de bienvenida.');
+      } else if (/unauthenticated|sesión/i.test(msg)) {
+        setEstado('error', 'Tu sesión expiró. Vuelve a iniciar sesión.');
+      } else {
+        setEstado('error', msg || 'No se pudo activar. Intenta de nuevo.');
+      }
+      console.error('activarMembresia:', e);
     }
   }
 };
+
 window.TotMembresia = TotMembresia;
-document.addEventListener('keydown', function(e){ if(e.key==='Escape') TotMembresia.close(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') TotMembresia.close(); });
 </script>
 <script src="legal.js"></script>
-<script type="module" src="auth-firebase.js"></script>
+<script type="module" src="auth-firebase.js?v=2"></script>
 </body>
 </html>

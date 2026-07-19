@@ -299,6 +299,10 @@ var css=`
 .tot-member-perks li::before{content:'·';position:absolute;left:0;color:#c86cff;font-size:8px;top:1px}
 .tot-code-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:8px}
 .tot-code-input{text-transform:uppercase;letter-spacing:.15em;text-align:center;font-weight:700;margin-bottom:10px}
+.tot-code-input.error{border-color:#ff6b6b!important;background:rgba(255,107,107,.07)!important;animation:tot-shake .35s}
+.tot-code-input.ok{border-color:#4cff91!important;background:rgba(76,255,145,.08)!important;color:#4cff91!important}
+@keyframes tot-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.tot-btn.member-btn.ok{background:#4cff91!important;color:#08120c!important}
 .tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
 .tot-dd-member-status.show{display:block}
 .tot-delete-warn{background:rgba(255,80,80,.05);border:1px solid rgba(255,80,80,.18);border-radius:10px;padding:14px;margin-bottom:18px}
@@ -994,6 +998,7 @@ window.TotAuth = {
       return;
     }
     var original = btn ? btn.innerHTML : '';
+    inp.classList.remove('error','ok');
     if (btn) { btn.disabled = true; btn.style.opacity = '.6'; btn.textContent = 'Activando…'; }
     try {
       var call = httpsCallable(getFunctions(getApp(), 'us-east1'), 'activarMembresia');
@@ -1001,17 +1006,25 @@ window.TotAuth = {
       var data = res.data || {};
       if (window._totCurrentUser) window._totCurrentUser.isMember = true;
       TotAuth._updateBtn();
-      if (btn) { btn.textContent = data.already ? 'Ya eres miembro ✓' : 'Membresía activada ✓'; btn.style.opacity = '1'; }
+      inp.classList.add('ok');
+      if (btn) { btn.textContent = '✓ Membresía activada'; btn.classList.add('ok'); btn.style.opacity = '1'; }
       TotAuth.showToast(data.already ? 'Tu membresía ya estaba activa.' : 'Listo. Tienes 2 meses de membresía gratis.');
       setTimeout(function(){
         var reg = document.getElementById('tot-reg-backdrop');
         if (reg && reg.classList.contains('open')) TotAuth.closeRegister();
         if (window.TotMembresia) TotMembresia.close();
-      }, 1800);
+      }, 2400);
     } catch (e) {
       if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = original; }
-      var msg = (e && e.message) ? e.message : 'No se pudo activar. Intenta de nuevo.';
+      inp.classList.add('error');
+      var raw = (e && e.message) ? e.message : '';
+      var msg;
+      if (/inválid|invalid|no es válido|argument/i.test(raw)) msg = 'Código incorrecto. Revisa el correo de bienvenida.';
+      else if (/unauthenticated|sesión/i.test(raw)) msg = 'Tu sesión expiró. Vuelve a iniciar sesión.';
+      else msg = raw || 'No se pudo activar. Intenta de nuevo.';
       if (err) { err.textContent = msg; err.classList.add('show'); }
+      inp.focus(); inp.select();
+      console.error('activarMembresia:', e);
     }
   },
 
