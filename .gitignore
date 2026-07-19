@@ -4,3 +4,9 @@
 *adminsdk*.json
 *serviceaccount*.json
 top-of-talent-firebase-adminsdk-*.json
+
+# Documentos financieros privados (no publicar)
+finanzas/
+
+# Plantillas de email privadas (no publicar)
+plantillas-email/

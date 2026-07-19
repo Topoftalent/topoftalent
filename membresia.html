@@ -261,6 +261,37 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
   header{padding:16px 20px}
   .hero{padding:80px 24px 48px}
 }
+
+/* ── MODAL ACTIVAR CÓDIGO ── */
+.mem-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+.mem-backdrop.open{display:flex}
+.mem-modal{position:relative;width:100%;max-width:420px;background:#0e0d14;border:1px solid rgba(200,108,255,.28);border-radius:20px;padding:36px 30px 30px;box-shadow:0 0 60px rgba(200,108,255,.18);overflow:hidden}
+.mem-modal::before{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  border-radius:20px;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 25% at 0% 0%, rgba(200,108,255,.14), transparent 70%),
+    radial-gradient(ellipse 40% 20% at 100% 0%, rgba(63,169,255,.1), transparent 70%),
+    radial-gradient(ellipse 50% 15% at 100% 100%, rgba(200,108,255,.08), transparent 60%);
+}
+.mem-modal > *{position:relative;z-index:1}
+.mem-beam{position:absolute;top:0;left:0;right:0;height:1px;z-index:2;pointer-events:none;overflow:hidden;border-radius:20px 20px 0 0}
+.mem-beam::after{content:'';position:absolute;top:0;left:-60%;width:50%;height:100%;background:linear-gradient(to right,transparent,rgba(200,108,255,.8),transparent);animation:mem-beam-run 3.5s ease-in-out infinite}
+@keyframes mem-beam-run{0%{left:-60%}100%{left:120%}}
+.mem-close{position:absolute;top:16px;right:18px;background:none;border:none;color:rgba(255,255,255,.4);font-size:16px;cursor:none}
+.mem-close:hover{color:#fff}
+.mem-title{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px;margin-top:4px}
+.mem-sub{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:rgba(255,255,255,.5);margin-bottom:18px}
+.mem-perks{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.mem-perks li{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.65);padding-left:16px;position:relative;line-height:1.5}
+.mem-perks li::before{content:'·';position:absolute;left:0;color:#c86cff}
+.mem-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px;line-height:1.5}
+.mem-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;text-align:center;outline:none;transition:border-color .2s}
+.mem-input:focus{border-color:#c86cff}
+.mem-err{color:#ff6b6b;font-family:'JetBrains Mono',monospace;font-size:10px;min-height:14px;margin:6px 0}
+.mem-btn{width:100%;background:#c86cff;color:#0e0d14;border:none;border-radius:10px;padding:14px;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:opacity .2s;margin-top:4px}
+.mem-btn:hover{opacity:.9}
+.mem-note{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);text-align:center;margin-top:12px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -333,7 +364,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
   <div class="tier highlighted">
     <div class="tier-label">Nivel 02 · Premium</div>
     <div class="tier-name">Miembro</div>
-    <div class="tier-price"><strong>$X</strong> /mes</div>
+    <div class="tier-price"><strong>Gratis</strong> · 2 meses <span style="display:block;font-size:10px;color:#c86cff;letter-spacing:.15em;text-transform:uppercase;margin-top:6px">Regalo de prelanzamiento</span></div>
     <div class="tier-divider"></div>
     <ul class="tier-features">
       <li class="active">Todo lo anterior</li>
@@ -348,8 +379,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
       <li class="future">Próximamente: early access a conciertos</li>
     </ul>
     <div class="btn-liquid-wrap">
-      <a href="#" class="btn-liquid" id="member-cta-btn">
-        <span class="btn-arrow">Hazte Miembro
+      <a href="#" class="btn-liquid" id="member-cta-btn" onclick="TotMembresia.open();return false">
+        <span class="btn-arrow">Activar 2 meses gratis
           <span class="arrow-clip"><span class="arr-inner"><span>→</span><span>→</span></span></span>
         </span>
       </a>
@@ -449,6 +480,27 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
   </div>
 </div>
 
+<!-- ══ MODAL ACTIVAR CÓDIGO ══ -->
+<div class="mem-backdrop" id="mem-backdrop" onclick="if(event.target.id==='mem-backdrop')TotMembresia.close()">
+  <div class="mem-modal">
+    <div class="mem-beam"></div>
+    <button class="mem-close" onclick="TotMembresia.close()">✕</button>
+    <h3 class="mem-title">Activa tus 2 meses gratis</h3>
+    <p class="mem-sub">Membresía Premium sin costo durante el prelanzamiento. Con ella votas cada 8 horas, apareces en el ranking de fans, comentas y accedes a descuentos.</p>
+    <ul class="mem-perks">
+      <li>Vota por tu artista favorito cada 8 horas</li>
+      <li>Aparece en el ranking de fans del artista</li>
+      <li>Acceso a la sección de comentarios</li>
+      <li>Descuentos en eventos y merch del artista</li>
+    </ul>
+    <div class="mem-hint">Ingresa el código de regalo que te enviamos a tu correo:</div>
+    <input type="text" id="mem-codigo" class="mem-input" placeholder="Código de regalo" autocomplete="off" spellcheck="false">
+    <div class="mem-err" id="mem-codigo-err"></div>
+    <button class="mem-btn" id="mem-codigo-btn" onclick="TotMembresia.activar()">Activar 2 meses gratis →</button>
+    <div class="mem-note" id="mem-note"></div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-legal">
     <a href="nosotros">About Us</a>
@@ -517,6 +569,33 @@ document.getElementById('member-cta-btn').addEventListener('click',function(e){
   if(!u){if(window.TotAuth)TotAuth.openRegister();}
   else{alert('El pago estará disponible muy pronto. ¡Gracias por tu interés!');}
 });
+</script>
+<script>
+/* ── ACTIVAR MEMBRESÍA (código de prueba) ── */
+var TotMembresia = {
+  open: function() {
+    var u = window._totCurrentUser;
+    if (!u) {
+      if (window.TotAuth && TotAuth.openLogin) { TotAuth.openLogin(); TotAuth.showToast('Inicia sesión para activar tu membresía.'); }
+      return;
+    }
+    if (u.isMember) {
+      if (window.TotAuth) TotAuth.showToast('Ya eres miembro. ¡Gracias por tu apoyo!');
+      return;
+    }
+    var n = document.getElementById('mem-note'); if (n) n.textContent = '';
+    document.getElementById('mem-backdrop').classList.add('open');
+    setTimeout(function(){ var i=document.getElementById('mem-codigo'); if(i) i.focus(); }, 60);
+  },
+  close: function() { document.getElementById('mem-backdrop').classList.remove('open'); },
+  activar: function() {
+    if (window.TotAuth && TotAuth.activarCodigo) {
+      TotAuth.activarCodigo('mem-codigo', 'mem-codigo-err', 'mem-codigo-btn');
+    }
+  }
+};
+window.TotMembresia = TotMembresia;
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') TotMembresia.close(); });
 </script>
 <script src="legal.js"></script>
 <script type="module" src="auth-firebase.js"></script>

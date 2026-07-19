@@ -17,6 +17,9 @@ import {
   doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+import { getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+
 import { auth, db } from "./firebase-config.js";
 
 (function () {
@@ -294,6 +297,8 @@ var css=`
 .tot-member-perks{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .tot-member-perks li{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);padding-left:16px;position:relative;line-height:1.5}
 .tot-member-perks li::before{content:'·';position:absolute;left:0;color:#c86cff;font-size:8px;top:1px}
+.tot-code-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:8px}
+.tot-code-input{text-transform:uppercase;letter-spacing:.15em;text-align:center;font-weight:700;margin-bottom:10px}
 .tot-dd-member-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,108,255,.55);letter-spacing:.08em;margin-top:3px;display:none}
 .tot-dd-member-status.show{display:block}
 .tot-delete-warn{background:rgba(255,80,80,.05);border:1px solid rgba(255,80,80,.18);border-radius:10px;padding:14px;margin-bottom:18px}
@@ -469,17 +474,20 @@ var HTML=`
       <div class="tot-output"><div class="tot-output-label">Nombre de usuario</div><div class="tot-output-val" id="out-user-val">–</div></div>
       <div class="tot-output"><div class="tot-output-label">Fecha de creación</div><div class="tot-output-val" id="out-date-val">–</div></div>
       <div class="tot-member-upsell">
-        <div class="tot-member-upsell-title">¿Quieres ser Miembro?</div>
-        <div class="tot-member-upsell-sub">Acceso exclusivo · Fan Premium</div>
+        <div class="tot-member-upsell-title">Tu regalo: 2 meses gratis</div>
+        <div class="tot-member-upsell-sub">Activa tu membres&iacute;a Premium sin costo durante el prelanzamiento</div>
         <ul class="tot-member-perks">
           <li>Vota por tu artista favorito cada 8 horas</li>
           <li>Aparece en el ranking de fans del artista</li>
-          <li>Acceso a la sección de comentarios</li>
+          <li>Acceso a la secci&oacute;n de comentarios</li>
           <li>Descuentos en eventos y merch del artista</li>
         </ul>
-        <button class="tot-btn member-btn" onclick="TotAuth.closeRegister();window.location.href='membresia'">Hazte Miembro →</button>
+        <div class="tot-code-hint">Usa el c&oacute;digo de regalo que te enviamos a tu correo:</div>
+        <input type="text" id="reg-codigo" class="tot-input tot-code-input" placeholder="C&oacute;digo de regalo" autocomplete="off" spellcheck="false">
+        <div class="tot-err" id="reg-codigo-err"></div>
+        <button class="tot-btn member-btn" id="reg-codigo-btn" onclick="TotAuth.activarCodigo('reg-codigo','reg-codigo-err','reg-codigo-btn')">Activar 2 meses gratis &rarr;</button>
       </div>
-      <button class="tot-btn ghost" style="margin-top:10px" onclick="TotAuth.closeRegister()">Continuar sin membresía</button>
+      <button class="tot-btn ghost" style="margin-top:10px" onclick="TotAuth.closeRegister()">Continuar sin membres&iacute;a</button>
     </div>
   </div>
 </div>
@@ -967,6 +975,44 @@ window.TotAuth = {
     var t = document.getElementById('tot-toast'); if(!t) return;
     t.textContent = msg; t.classList.add('show');
     setTimeout(function(){ t.classList.remove('show'); }, 3200);
+  },
+
+  // Activa la membresía de prueba con el código (pop-up y página).
+  activarCodigo: async function(inputId, errId, btnId) {
+    var inp = document.getElementById(inputId);
+    var err = errId && document.getElementById(errId);
+    var btn = btnId && document.getElementById(btnId);
+    if (!inp) return;
+    var codigo = inp.value.trim();
+    if (err) { err.textContent = ''; err.classList.remove('show'); }
+    if (!codigo) {
+      if (err) { err.textContent = 'Ingresa tu código de regalo.'; err.classList.add('show'); }
+      return;
+    }
+    if (!window._totCurrentUser) {
+      if (err) { err.textContent = 'Inicia sesión para activar tu membresía.'; err.classList.add('show'); }
+      return;
+    }
+    var original = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.style.opacity = '.6'; btn.textContent = 'Activando…'; }
+    try {
+      var call = httpsCallable(getFunctions(getApp(), 'us-east1'), 'activarMembresia');
+      var res = await call({ codigo: codigo });
+      var data = res.data || {};
+      if (window._totCurrentUser) window._totCurrentUser.isMember = true;
+      TotAuth._updateBtn();
+      if (btn) { btn.textContent = data.already ? 'Ya eres miembro ✓' : 'Membresía activada ✓'; btn.style.opacity = '1'; }
+      TotAuth.showToast(data.already ? 'Tu membresía ya estaba activa.' : 'Listo. Tienes 2 meses de membresía gratis.');
+      setTimeout(function(){
+        var reg = document.getElementById('tot-reg-backdrop');
+        if (reg && reg.classList.contains('open')) TotAuth.closeRegister();
+        if (window.TotMembresia) TotMembresia.close();
+      }, 1800);
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = original; }
+      var msg = (e && e.message) ? e.message : 'No se pudo activar. Intenta de nuevo.';
+      if (err) { err.textContent = msg; err.classList.add('show'); }
+    }
   },
 
   _updateBtn: function() {

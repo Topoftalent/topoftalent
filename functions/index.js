@@ -15,6 +15,12 @@ const { getFirestore } = require("firebase-admin/firestore");
 initializeApp();
 const db = getFirestore();
 
+// Motor de notificaciones por email (Brevo). Debe ir DESPUÉS de initializeApp().
+const notificaciones = require("./notificaciones");
+exports.onUserCreated = notificaciones.onUserCreated;
+exports.onMemberActivated = notificaciones.onMemberActivated;
+exports.activarMembresia = notificaciones.activarMembresia;
+
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 
 exports.enforceCommentLimit = onDocumentCreated(
