@@ -28,6 +28,13 @@ const BREVO_LIST_ID = 3;               // Lista "Prelanzamiento" de Brevo (para 
 const SITE = "https://topoftalentoficial.com";
 // ─────────────────────────────────────────────────────────────────
 
+// Exporta helpers y config para los otros módulos (engagement, contenido).
+module.exports.BREVO_API_KEY = BREVO_API_KEY;
+module.exports.SENDER = SENDER;
+module.exports.SITE = SITE;
+module.exports.BREVO_LIST_ID = BREVO_LIST_ID;
+module.exports._helpers = {}; // se llenan más abajo (brevo, sendEmail, plantilla)
+
 const db = getFirestore();
 
 // Llama a la API de Brevo. path ej. "/v3/smtp/email".
@@ -117,7 +124,7 @@ exports.onUserCreated = onDocumentCreated(
         titulo: "Algo grande empieza contigo",
         cuerpoHtml: `${nombre ? "Hola " + nombre + ", b" : "B"}ienvenido a Top of Talent, la casa del talento musical emergente del Ecuador. Para que la disfrutes sin límites, te regalamos <b>2 meses de membresía gratis</b>. Actívalos con este código al hacerte miembro:<br><br><span style="display:inline-block;background:#1c1a26;color:#c86cff;font-weight:bold;letter-spacing:2px;padding:10px 18px;border-radius:8px;">${TRIAL_CODE}</span><br><br>Con la membresía tu voto pesa, apareces en los rankings y accedes a todo.`,
         textoBoton: "Activar mi membresía",
-        linkBoton: `${SITE}/perfil`,
+        linkBoton: `${SITE}/membresia`,
       }, apiKey);
       await snap.ref.update({ welcomeEmailSent: true });
       logger.info("Bienvenida enviada", { email: data.email });
@@ -198,3 +205,10 @@ exports.onMemberActivated = onDocumentUpdated(
     }
   }
 );
+
+// ── Helpers reutilizables para otros módulos (engagement, contenido) ──
+// Las funciones están declaradas arriba (hoisting), aquí solo se exponen.
+module.exports._helpers.brevo = brevo;
+module.exports._helpers.sendEmail = sendEmail;
+module.exports._helpers.plantilla = plantilla;
+module.exports._helpers.upsertContact = upsertContact;

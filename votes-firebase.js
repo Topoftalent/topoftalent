@@ -37,6 +37,17 @@ export async function castVote(artistId, userId, username, fanNum) {
   if (typeof username === 'string' && username) payload.username = username.slice(0, 40);
   if (typeof fanNum   === 'string' && fanNum)   payload.fanNum   = fanNum.slice(0, 20);
   await setDoc(fanRef, payload, { merge: true });
+
+  // Marca actividad y voto en el doc del usuario (para notificaciones de
+  // engagement: inactividad, "invita a votar", recordatorio 8h). No toca
+  // isMember/isAdmin, así que las reglas lo permiten. Best-effort.
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      hasVoted: true,
+      lastVoteAt: serverTimestamp(),
+      lastActivityAt: serverTimestamp()
+    });
+  } catch (e) { /* no bloquea el voto */ }
 }
 
 // Returns total votes across all fans for an artist (for public counter)

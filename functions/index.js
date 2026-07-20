@@ -21,6 +21,11 @@ exports.onUserCreated = notificaciones.onUserCreated;
 exports.onMemberActivated = notificaciones.onMemberActivated;
 exports.activarMembresia = notificaciones.activarMembresia;
 
+// Motor de engagement (programado, requiere Blaze).
+const engagement = require("./engagement");
+exports.engagementDiario = engagement.engagementDiario;
+exports.engagementDiag = engagement.engagementDiag; // diagnóstico dry-run (temporal)
+
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 
 exports.enforceCommentLimit = onDocumentCreated(

@@ -788,7 +788,13 @@ window.TotAuth = {
       }
       var userData = Object.assign({ uid: fbUser.uid }, _pendingUser);
       delete userData.age; // calculated on the fly
-      await saveUserDoc(fbUser.uid, userData);
+      // Timestamps reales (para lógica de notificaciones: inactividad, 8h, etc.)
+      var writeData = Object.assign({}, userData, {
+        createdAtTS: serverTimestamp(),
+        lastActivityAt: serverTimestamp(),
+        hasVoted: false
+      });
+      await saveUserDoc(fbUser.uid, writeData);
       window._totCurrentUser = userData;
       document.getElementById('out-fan-val').textContent = userData.fanNum;
       document.getElementById('out-user-val').textContent = '@' + userData.username;
@@ -825,6 +831,7 @@ window.TotAuth = {
       var existing = await getUserDoc(fbUser.uid);
       if (existing) {
         window._totCurrentUser = existing;
+        saveUserDoc(fbUser.uid, { lastActivityAt: serverTimestamp() }); // actividad
         TotAuth.closeLogin(); TotAuth._updateBtn();
         TotAuth.showToast('Hola, @' + existing.username + '!');
       } else {
@@ -850,6 +857,7 @@ window.TotAuth = {
       var cred = await signInWithEmailAndPassword(auth, email, pwd);
       var userDoc = await getUserDoc(cred.user.uid);
       window._totCurrentUser = userDoc || { uid: cred.user.uid, email: email };
+      saveUserDoc(cred.user.uid, { lastActivityAt: serverTimestamp() }); // actividad
       TotAuth.closeLogin(); TotAuth._updateBtn();
       TotAuth.showToast('Hola, @' + (userDoc && userDoc.username ? userDoc.username : email) + '!');
     } catch(e) {
