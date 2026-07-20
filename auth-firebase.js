@@ -589,12 +589,15 @@ var HTML=`
       </div>
     </div>
     <div class="tot-section" id="tab-panel-notifications">
-      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Email importantes</div><div class="tot-toggle-desc">Actualizaciones de tu cuenta</div></div><label class="tot-toggle"><input type="checkbox" id="notif-email" checked><div class="tot-toggle-slider"></div></label></div>
-      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Nuevos Rankings</div><div class="tot-toggle-desc">Cuando se actualiza el Top 7</div></div><label class="tot-toggle"><input type="checkbox" id="notif-rankings" checked><div class="tot-toggle-slider"></div></label></div>
-      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Nuevos Artistas</div><div class="tot-toggle-desc">Cuando se agrega un artista</div></div><label class="tot-toggle"><input type="checkbox" id="notif-artists"><div class="tot-toggle-slider"></div></label></div>
-      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Eventos</div><div class="tot-toggle-desc">Nuevos festivales y eventos</div></div><label class="tot-toggle"><input type="checkbox" id="notif-events" checked><div class="tot-toggle-slider"></div></label></div>
-      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Marketing</div><div class="tot-toggle-desc">Promociones y comunicaciones</div></div><label class="tot-toggle"><input type="checkbox" id="notif-marketing"><div class="tot-toggle-slider"></div></label></div>
-      <button class="tot-btn" style="margin-top:20px" onclick="TotAuth.saveNotifications()">Guardar Preferencias</button>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Recordatorios de voto</div><div class="tot-toggle-desc">Cuando puedes volver a votar y si dejas de votar</div></div><label class="tot-toggle"><input type="checkbox" id="pref-voto" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Mi posición</div><div class="tot-toggle-desc">Cuando entras o sales del Top Fans de un artista</div></div><label class="tot-toggle"><input type="checkbox" id="pref-posicion" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Logros y hitos</div><div class="tot-toggle-desc">Cuando tu artista llega al #1</div></div><label class="tot-toggle"><input type="checkbox" id="pref-hitos" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Novedades y nuevo talento</div><div class="tot-toggle-desc">Cuando se agrega un artista o hay novedades</div></div><label class="tot-toggle"><input type="checkbox" id="pref-novedades" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">TOP 7 y resumen semanal</div><div class="tot-toggle-desc">El nuevo TOP 7 y tu resumen de la semana</div></div><label class="tot-toggle"><input type="checkbox" id="pref-semanal" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Eventos y beneficios</div><div class="tot-toggle-desc">Conciertos, sorteos y descuentos</div></div><label class="tot-toggle"><input type="checkbox" id="pref-eventos" checked><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-row"><div><div class="tot-toggle-title">Comunidad y promos</div><div class="tot-toggle-desc">Invitaciones, referidos y comunicaciones</div></div><label class="tot-toggle"><input type="checkbox" id="pref-comunidad"><div class="tot-toggle-slider"></div></label></div>
+      <div class="tot-toggle-desc" style="margin-top:14px;opacity:.6;line-height:1.5">Los correos de tu cuenta y membresía (verificación, pagos) siempre se envían por seguridad.</div>
+      <button class="tot-btn" style="margin-top:16px" onclick="TotAuth.saveNotifications()">Guardar Preferencias</button>
     </div>
     <div class="tot-section" id="tab-panel-tc">
       <div class="tot-tc" style="max-height:260px">
@@ -882,12 +885,15 @@ window.TotAuth = {
     document.getElementById('prof-last').value = u.lastName || '';
     document.getElementById('prof-user').value = u.username || '';
     document.getElementById('prof-country').value = u.country || '';
-    var n = u.notifications || {};
-    document.getElementById('notif-email').checked    = n.email !== false;
-    document.getElementById('notif-rankings').checked = n.rankings !== false;
-    document.getElementById('notif-artists').checked  = !!n.artists;
-    document.getElementById('notif-events').checked   = n.events !== false;
-    document.getElementById('notif-marketing').checked= !!n.marketing;
+    var p = u.prefs || {};
+    // Todas ON por defecto salvo "comunidad" (opt-in).
+    document.getElementById('pref-voto').checked      = p.voto      !== false;
+    document.getElementById('pref-posicion').checked  = p.posicion  !== false;
+    document.getElementById('pref-hitos').checked     = p.hitos     !== false;
+    document.getElementById('pref-novedades').checked = p.novedades !== false;
+    document.getElementById('pref-semanal').checked   = p.semanal   !== false;
+    document.getElementById('pref-eventos').checked   = p.eventos   !== false;
+    document.getElementById('pref-comunidad').checked = p.comunidad === true;
     document.getElementById('delete-sad').style.display = 'none';
     document.getElementById('delete-confirm').style.display = 'none';
     document.getElementById('prof-saved').style.display = 'none';
@@ -920,15 +926,19 @@ window.TotAuth = {
 
   saveNotifications: async function() {
     var u = window._totCurrentUser; if (!u) return;
-    u.notifications = {
-      email:    document.getElementById('notif-email').checked,
-      rankings: document.getElementById('notif-rankings').checked,
-      artists:  document.getElementById('notif-artists').checked,
-      events:   document.getElementById('notif-events').checked,
-      marketing:document.getElementById('notif-marketing').checked
+    // Estas claves son las que el backend (Cloud Functions) respeta antes de enviar.
+    u.prefs = {
+      voto:      document.getElementById('pref-voto').checked,
+      posicion:  document.getElementById('pref-posicion').checked,
+      hitos:     document.getElementById('pref-hitos').checked,
+      novedades: document.getElementById('pref-novedades').checked,
+      semanal:   document.getElementById('pref-semanal').checked,
+      eventos:   document.getElementById('pref-eventos').checked,
+      comunidad: document.getElementById('pref-comunidad').checked
     };
-    await saveUserDoc(u.uid, { notifications: u.notifications });
-    TotAuth.showToast('Preferencias guardadas ✓');
+    await saveUserDoc(u.uid, { prefs: u.prefs });
+    window._totCurrentUser = u;
+    TotAuth.showToast('Preferencias guardadas');
   },
 
   showDeleteConfirm: function() { document.getElementById('delete-sad').style.display='block'; document.getElementById('delete-confirm').style.display='none'; },
