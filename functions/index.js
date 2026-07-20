@@ -26,6 +26,13 @@ const engagement = require("./engagement");
 exports.engagementDiario = engagement.engagementDiario;
 exports.engagementDiag = engagement.engagementDiag; // diagnóstico dry-run (temporal)
 
+// Contenido automático (broadcasts programados + nuevo artista).
+const contenido = require("./contenido");
+exports.top7Semanal = contenido.top7Semanal;
+exports.resumenSemanal = contenido.resumenSemanal;
+exports.onNuevoArtista = contenido.onNuevoArtista;
+exports.broadcastAdmin = contenido.broadcastAdmin;
+
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 
 exports.enforceCommentLimit = onDocumentCreated(
