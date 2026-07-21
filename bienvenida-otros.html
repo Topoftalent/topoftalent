@@ -48,7 +48,10 @@
   .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
     border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 8px 30px rgba(0,0,0,.3)}
 
-  .permiso{margin-top:16px;border-radius:16px;padding:22px}
+  .permiso{margin-top:16px;border-radius:16px;padding:22px 24px}
+  .permiso-h{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#c86cff;margin-bottom:10px}
+  .permiso-b{font-size:15px;line-height:1.62;color:rgba(255,255,255,.9)}
+  .permiso-b b{color:#fff;font-weight:700}
   .permiso .row{display:flex;align-items:flex-start;gap:15px;cursor:pointer}
   .permiso .box{width:28px;height:28px;border:2px solid #c86cff;border-radius:8px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:background .2s;background:rgba(200,108,255,.08)}
   .permiso .box svg{opacity:0;transition:opacity .15s}
@@ -98,12 +101,9 @@
         <div class="t">Sabemos lo difícil que es abrirse camino, y lo solo que a veces se siente. Existimos para cambiar eso: apoyo real, difusión y una comunidad fuerte que impulse al talento del país. Empezamos desde la música y crecemos hacia cada figura que enorgullece a Ecuador. Tu lugar aquí es permanente y ganado con méritos.</div>
       </div>
 
-      <div class="permiso glass" id="permiso">
-        <div class="row" onclick="toggleAuth()">
-          <div class="box"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="#0a0710" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="txt"><b>Autorizo</b> a Top of Talent a mantener y mostrar mi perfil, y a compartir mi información dentro de la plataforma, y confirmo que quiero seguir siendo parte del proyecto.</div>
-        </div>
-        <a class="authbtn" id="authbtn" href="#">Enviar autorización por correo</a>
+      <div class="permiso glass">
+        <div class="permiso-h">Autorización</div>
+        <div class="permiso-b">Tu perfil aparece en Top of Talent con fines de difusión y reconocimiento, sin ningún costo. Para <b>confirmar tu autorización</b> —o para pedir que retiremos tu información en cualquier momento— basta con <b>responder a este correo</b>. Respetamos tu decisión siempre.</div>
       </div>
 
       <div class="foot">
@@ -114,13 +114,4 @@
     </div>
   </div>
 
-<script>
-  function toggleAuth(){
-    var p=document.getElementById('permiso');p.classList.toggle('on');
-    var on=p.classList.contains('on');var btn=document.getElementById('authbtn');
-    var asunto=encodeURIComponent('Autorización · Michael Morales · Otros Talentos');
-    var cuerpo=encodeURIComponent('Yo, Michael Morales, autorizo a Top of Talent a mantener y mostrar mi perfil, y a compartir mi información dentro de la plataforma, y confirmo que quiero seguir siendo parte del proyecto.\n\nNombre: Michael Morales\nSección: Otros Talentos');
-    btn.href = on ? ('mailto:contactoftalent@gmail.com?subject='+asunto+'&body='+cuerpo) : '#';
-  }
-</script>
 </body></html>
