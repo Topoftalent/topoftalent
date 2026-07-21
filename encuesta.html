@@ -28,6 +28,7 @@ h1{font-size:clamp(30px,6vw,44px);font-weight:700;letter-spacing:-.03em;line-hei
 .sec-title{font-size:15px;font-weight:700;color:#fff;margin:34px 0 4px;padding-bottom:8px;border-bottom:2px solid rgba(200,108,255,.5)}
 .q{margin:22px 0}
 .q-txt{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:12px}
+.q-txt .q-n{color:#c86cff;margin-right:2px}
 .q-txt .req{color:#c86cff}
 .opt{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid rgba(255,255,255,.12);border-radius:10px;margin-bottom:8px;cursor:none!important;transition:border-color .15s,background .15s}
 .opt:hover{border-color:rgba(200,108,255,.4)}
@@ -137,12 +138,14 @@ function render() {
   document.getElementById('s-intro').textContent = CFG.intro;
   var form = document.getElementById('s-form');
   var html = '';
+  var n = 0;
   CFG.secciones.forEach(function(sec){
     html += '<div class="sec-title">'+esc(sec.titulo)+'</div>';
     sec.preguntas.forEach(function(q){
+      n++;
       var req = q.opcional ? '' : ' <span class="req">*</span>';
       html += '<div class="q" data-q="'+q.id+'">';
-      html += '<div class="q-txt">'+esc(q.txt)+req+'</div>';
+      html += '<div class="q-txt"><span class="q-n">'+n+'.</span> '+esc(q.txt)+req+'</div>';
       if (q.tipo === 'radio') {
         q.ops.forEach(function(op){
           html += '<div class="opt" onclick="TotEncuesta._pick(this,\''+q.id+'\')" data-val="'+esc(op)+'"><span class="dot"></span><span class="lbl">'+esc(op)+'</span></div>';
