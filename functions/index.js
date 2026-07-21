@@ -33,6 +33,10 @@ exports.resumenSemanal = contenido.resumenSemanal;
 exports.onNuevoArtista = contenido.onNuevoArtista;
 exports.broadcastAdmin = contenido.broadcastAdmin;
 
+// Endpoint de prueba (temporal): envía un correo de un tipo a una dirección.
+const pruebas = require("./pruebas");
+exports.pruebaCorreo = pruebas.pruebaCorreo;
+
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 
 exports.enforceCommentLimit = onDocumentCreated(

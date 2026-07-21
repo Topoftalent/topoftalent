@@ -38,7 +38,13 @@ const SLUGS = {
   artista4: "jombriel", artista5: "alex-krack", artista6: "dicapo",
   artista7: "kenny-die", artista8: "yilda", artista9: "ren-kai", artista10: "blanko",
 };
+const NOMBRES = {
+  artista1: "Alex Ponce", artista2: "Johann Vera", artista3: "Mar Rendón",
+  artista4: "Jombriel", artista5: "Alex Krack", artista6: "Dicapo",
+  artista7: "Kenny Die", artista8: "Yilda", artista9: "Ren Kai", artista10: "Blanko",
+};
 function linkArtista(id) { return `${SITE}/${SLUGS[id] || id}`; }
+function nombreArtista(id, mapa) { return mapa[id] || NOMBRES[id] || "tu artista"; }
 function prefOn(user, key) { return !user.prefs || user.prefs[key] !== false; }
 function nombreDe(u) { return u.nombre || u.username || u.firstName || ""; }
 function msDe(ts) { return ts && ts.toMillis ? ts.toMillis() : 0; }
@@ -183,6 +189,41 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
       }
     }
     if (!dryRun) tareas.push(stateRef.set({ porArtista: nuevo, updatedAt: FieldValue.serverTimestamp() }));
+  }
+
+  // E · Logros y hitos: tu artista llegó al #1 (cualquier día) · pref "hitos"
+  {
+    const totales = {};
+    for (const aid of Object.keys(fansPorArtista)) {
+      totales[aid] = fansPorArtista[aid].reduce((s, f) => s + f.total, 0);
+    }
+    let top1 = null;
+    for (const aid of Object.keys(totales)) { if (!top1 || totales[aid] > totales[top1]) top1 = aid; }
+
+    const hitoRef = db.doc("noti_state/hito");
+    const hitoSnap = await hitoRef.get();
+    const prevTop1 = hitoSnap.exists ? hitoSnap.data().top1 : undefined;
+
+    // Solo notifica si hay un cambio real de #1 (no en la primera corrida).
+    if (top1 && prevTop1 !== undefined && top1 !== prevTop1) {
+      const artista = nombreArtista(top1, artistaNombre);
+      const fansIds = new Set((fansPorArtista[top1] || []).map((f) => f.uid));
+      for (const doc of usersSnap.docs) {
+        const u = doc.data();
+        if (!u.email || !fansIds.has(doc.id) || !prefOn(u, "hitos")) continue;
+        u._ref = doc.ref;
+        await enviar("hito", u, {
+          to: u.email,
+          subject: `${artista} es #1 esta semana`,
+          preheader: "Lo lograste con tu voto.",
+          titulo: `${artista} llegó al #1`,
+          cuerpoHtml: `Lo lograste con tu voto: <b>${artista}</b> llegó al #1 del ranking. Gracias por empujar. ¿Lo mantenemos ahí?`,
+          textoBoton: "Ver el ranking",
+          linkBoton: linkArtista(top1),
+        }, null);
+      }
+    }
+    if (!dryRun && top1) tareas.push(hitoRef.set({ top1, updatedAt: FieldValue.serverTimestamp() }));
   }
 
   if (!dryRun) await Promise.allSettled(tareas);
