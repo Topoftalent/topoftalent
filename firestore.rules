@@ -122,6 +122,18 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ── ENCUESTAS (respuestas del prelanzamiento) ────────────────
+    // Cada usuario autenticado escribe SU propia respuesta (doc = uid),
+    // una sola vez (no editable). Nadie puede leer las respuestas de
+    // otros: la lectura/análisis se hace desde la Consola / Admin SDK.
+    match /encuestas/{encuestaId}/respuestas/{userId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.uid == userId;
+      allow update, delete: if false;
+    }
+
     // ── DEFAULT DENY ─────────────────────────────────────────────
     // Any collection not matched above is locked down.
     match /{document=**} {

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta · Top of Talent</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff;--black:#000;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;transition:width .15s,height .15s,border-color .15s}
+header{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:20px 32px;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo img{width:28px;height:28px}
+.logo span{font-weight:700;font-size:9px;letter-spacing:.2em;color:#fff;text-transform:uppercase;line-height:1.35}
+.wrap{flex:1;width:100%;max-width:680px;margin:0 auto;padding:40px 22px 80px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#c86cff;margin-bottom:12px}
+.accent{height:4px;width:56px;background:#c86cff;border-radius:3px;margin:0 0 20px}
+h1{font-size:clamp(30px,6vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:8px}
+.sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.05em}
+.intro{background:rgba(200,108,255,.06);border:1px solid rgba(200,108,255,.2);border-left:4px solid #c86cff;border-radius:12px;padding:16px 18px;margin:26px 0 8px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:rgba(255,255,255,.7)}
+.sec-title{font-size:15px;font-weight:700;color:#fff;margin:34px 0 4px;padding-bottom:8px;border-bottom:2px solid rgba(200,108,255,.5)}
+.q{margin:22px 0}
+.q-txt{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:12px}
+.q-txt .req{color:#c86cff}
+.opt{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid rgba(255,255,255,.12);border-radius:10px;margin-bottom:8px;cursor:none!important;transition:border-color .15s,background .15s}
+.opt:hover{border-color:rgba(200,108,255,.4)}
+.opt.sel{border-color:#c86cff;background:rgba(200,108,255,.1)}
+.opt .dot{width:15px;height:15px;border:1.5px solid #c86cff;border-radius:50%;flex-shrink:0;position:relative}
+.opt.sel .dot::after{content:'';position:absolute;inset:3px;background:#c86cff;border-radius:50%}
+.opt .lbl{font-size:13.5px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.85);line-height:1.4}
+textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;resize:vertical;min-height:70px;outline:none;cursor:text!important}
+textarea:focus{border-color:#c86cff}
+.followup{margin-top:10px}
+.followup label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px}
+.submit{width:100%;background:#c86cff;color:#0e0d14;border:none;border-radius:12px;padding:16px;font-family:Helvetica,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:none!important;margin-top:30px;transition:opacity .2s,background .3s}
+.submit:hover{opacity:.9}
+.submit:disabled{opacity:.5}
+.submit.ok{background:#4cff91;color:#08120c}
+.err{color:#ff6b6b;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;margin-top:14px;min-height:16px}
+.state{text-align:center;padding:80px 20px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6);font-size:14px;line-height:1.7}
+.state h2{font-family:Helvetica,Arial,sans-serif;font-size:26px;color:#fff;margin-bottom:12px;letter-spacing:-.02em}
+.state .big{font-size:40px;margin-bottom:16px}
+.state button{margin-top:22px;background:#c86cff;color:#0e0d14;border:none;border-radius:10px;padding:13px 26px;font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:none!important}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="crng"></div>
+
+<header>
+  <a href="inicio" class="logo"><img src="logo.png" alt="TT"><span>Top of<br>Talent</span></a>
+</header>
+
+<div class="wrap">
+  <!-- Estado: cargando / login / no encontrada -->
+  <div id="state" class="state"><p>Cargando…</p></div>
+
+  <!-- Encuesta -->
+  <div id="survey" class="hidden">
+    <div class="tag" id="s-tag"></div>
+    <div class="accent"></div>
+    <h1 id="s-titulo"></h1>
+    <div class="sub" id="s-sub"></div>
+    <div class="intro" id="s-intro"></div>
+    <form id="s-form"></form>
+    <button class="submit" id="s-submit" onclick="TotEncuesta.enviar()">Enviar mis respuestas</button>
+    <div class="err" id="s-err"></div>
+  </div>
+</div>
+
+<script>
+/* Cursor */
+var cur=document.getElementById('cur'),crng=document.getElementById('crng');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=(mx-4)+'px';cur.style.top=(my-4)+'px';});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;crng.style.left=(rx-14)+'px';crng.style.top=(ry-14)+'px';requestAnimationFrame(loop);})();
+function hookHover(){document.querySelectorAll('a,button,.opt,textarea').forEach(function(el){
+  el.addEventListener('mouseenter',function(){crng.style.width='42px';crng.style.height='42px';});
+  el.addEventListener('mouseleave',function(){crng.style.width='28px';crng.style.height='28px';});
+});}
+hookHover();
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showState(html){document.getElementById('survey').classList.add('hidden');var s=document.getElementById('state');s.classList.remove('hidden');s.innerHTML=html;hookHover();}
+</script>
+
+<script src="encuestas-config.js"></script>
+<script src="legal.js"></script>
+<script type="module" src="auth-firebase.js?v=4"></script>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+var params = new URLSearchParams(location.search);
+var KEY = params.get('s') || '';
+var CFG = (window.TOT_ENCUESTAS || {})[KEY];
+var respuestas = {};
+
+var TotEncuesta = { enviar: enviar };
+window.TotEncuesta = TotEncuesta;
+
+if (!CFG) {
+  showState('<div class="big">·</div><h2>Encuesta no disponible</h2><p>El enlace no es válido o la encuesta ya cerró.</p>');
+} else {
+  // Espera al estado de sesión.
+  onAuthStateChanged(auth, async function(user){
+    if (!user) {
+      showState('<div class="big">·</div><h2>Inicia sesión para responder</h2><p>Esta encuesta es solo para el grupo del prelanzamiento.<br>Ingresa con tu cuenta para continuar.</p><button onclick="window.TotAuth&&TotAuth.openLogin()">Iniciar sesión</button>');
+      return;
+    }
+    // ¿Ya respondió?
+    try {
+      var prev = await getDoc(doc(db, 'encuestas', KEY, 'respuestas', user.uid));
+      if (prev.exists()) {
+        showState('<div class="big">✓</div><h2>Ya respondiste</h2><p>Gracias por tu tiempo. Tus respuestas ya están registradas.</p><button onclick="location.href=\'inicio\'">Volver al inicio</button>');
+        return;
+      }
+    } catch(e){ /* si falla la lectura, dejamos responder igual */ }
+    render();
+  });
+}
+
+function render() {
+  document.getElementById('state').classList.add('hidden');
+  document.getElementById('survey').classList.remove('hidden');
+  document.getElementById('s-tag').textContent = CFG.tag;
+  document.getElementById('s-titulo').textContent = CFG.titulo;
+  document.getElementById('s-sub').textContent = CFG.sub || '';
+  document.getElementById('s-intro').textContent = CFG.intro;
+  var form = document.getElementById('s-form');
+  var html = '';
+  CFG.secciones.forEach(function(sec){
+    html += '<div class="sec-title">'+esc(sec.titulo)+'</div>';
+    sec.preguntas.forEach(function(q){
+      var req = q.opcional ? '' : ' <span class="req">*</span>';
+      html += '<div class="q" data-q="'+q.id+'">';
+      html += '<div class="q-txt">'+esc(q.txt)+req+'</div>';
+      if (q.tipo === 'radio') {
+        q.ops.forEach(function(op){
+          html += '<div class="opt" onclick="TotEncuesta._pick(this,\''+q.id+'\')" data-val="'+esc(op)+'"><span class="dot"></span><span class="lbl">'+esc(op)+'</span></div>';
+        });
+        if (q.seguimiento) {
+          html += '<div class="followup hidden" id="fu-'+q.id+'"><label>'+esc(q.seguimiento.txt)+'</label><textarea data-fu="'+q.id+'" rows="2"></textarea></div>';
+        }
+      } else {
+        html += '<textarea data-q="'+q.id+'" rows="3" placeholder="Escribe aquí…"></textarea>';
+      }
+      html += '</div>';
+    });
+  });
+  form.innerHTML = html;
+  hookHover();
+}
+
+TotEncuesta._pick = function(el, qid) {
+  var group = el.parentElement.querySelectorAll('.opt');
+  group.forEach(function(o){ o.classList.remove('sel'); });
+  el.classList.add('sel');
+  respuestas[qid] = el.getAttribute('data-val');
+  // seguimiento condicional
+  var q = findQ(qid);
+  if (q && q.seguimiento) {
+    var fu = document.getElementById('fu-' + qid);
+    if (fu) fu.classList.toggle('hidden', respuestas[qid] !== q.seguimiento.si);
+  }
+};
+
+function findQ(qid){
+  var found=null;
+  CFG.secciones.forEach(function(s){ s.preguntas.forEach(function(q){ if(q.id===qid) found=q; }); });
+  return found;
+}
+
+async function enviar() {
+  var err = document.getElementById('s-err');
+  var btn = document.getElementById('s-submit');
+  err.textContent = '';
+  // Recolecta textos
+  document.querySelectorAll('textarea[data-q]').forEach(function(t){ if(t.value.trim()) respuestas[t.getAttribute('data-q')] = t.value.trim(); });
+  var seguimientos = {};
+  document.querySelectorAll('textarea[data-fu]').forEach(function(t){ if(t.value.trim()) seguimientos[t.getAttribute('data-fu')] = t.value.trim(); });
+  // Valida obligatorias
+  var faltan = [];
+  CFG.secciones.forEach(function(s){ s.preguntas.forEach(function(q){ if(!q.opcional && !respuestas[q.id]) faltan.push(q.id); }); });
+  if (faltan.length) {
+    err.textContent = 'Faltan ' + faltan.length + ' pregunta(s) por responder.';
+    var first = document.querySelector('[data-q="'+faltan[0]+'"]');
+    if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  var user = auth.currentUser;
+  if (!user) { err.textContent = 'Tu sesión expiró. Vuelve a iniciar sesión.'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    await setDoc(doc(db, 'encuestas', KEY, 'respuestas', user.uid), {
+      uid: user.uid,
+      answers: respuestas,
+      seguimientos: seguimientos,
+      encuesta: KEY,
+      at: serverTimestamp()
+    });
+    showState('<div class="big">✓</div><h2>¡Gracias!</h2><p>Tus respuestas quedaron registradas. Esto nos ayuda muchísimo a mejorar Top of Talent.</p><button onclick="location.href=\'inicio\'">Volver al inicio</button>');
+  } catch(e) {
+    console.error('encuesta:', e);
+    btn.disabled = false; btn.textContent = 'Enviar mis respuestas';
+    err.textContent = 'No se pudo enviar. Intenta de nuevo.';
+  }
+}
+</script>
+</body>
+</html>
