@@ -26,11 +26,10 @@ const engagement = require("./engagement");
 exports.engagementDiario = engagement.engagementDiario;
 exports.engagementDiag = engagement.engagementDiag; // diagnóstico dry-run (temporal)
 
-// Contenido automático (broadcasts programados + nuevo artista).
+// Contenido automático (resumen semanal combinado + nuevos artistas por tanda).
 const contenido = require("./contenido");
-exports.top7Semanal = contenido.top7Semanal;
-exports.resumenSemanal = contenido.resumenSemanal;
-exports.onNuevoArtista = contenido.onNuevoArtista;
+exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 · TOP 7 + #1 en un correo
+exports.notificarNuevosArtistas = contenido.notificarNuevosArtistas; // envío agrupado por tanda
 exports.broadcastAdmin = contenido.broadcastAdmin;
 
 // Endpoint de prueba (temporal): envía un correo de un tipo a una dirección.

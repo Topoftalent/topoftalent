@@ -11,8 +11,7 @@
 // ─────────────────────────────────────────────────────────────────
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { onRequest } = require("firebase-functions/v2/https");
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
-const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { getFirestore } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
 const noti = require("./notificaciones");
 
@@ -73,45 +72,25 @@ async function artistaNumeroUno() {
   return { id: best, nombre: NOMBRES[best] || best, total: tot[best], slug: SLUGS[best] || best };
 }
 
-// ── TOP 7 semanal · sábado 11:00 Ecuador ───────────────────────────
-exports.top7Semanal = onSchedule(
-  { schedule: "0 11 * * 6", timeZone: "America/Guayaquil", region: "us-east1", secrets: [BREVO_API_KEY], memory: "256MiB" },
-  async () => {
-    const r = await enviarAMiembros({
-      apiKey: BREVO_API_KEY.value(),
-      prefKey: "semanal",
-      buildCorreo: (u) => ({
-        to: u.email,
-        subject: "El nuevo TOP 7 de la semana ya está aquí",
-        preheader: "Descubre quién entró y vota por tu favorita.",
-        titulo: "El nuevo TOP 7 ya está aquí",
-        cuerpoHtml: "Actualizamos las 7 mejores canciones de la semana. Mira quién subió, quién se mantiene y vota por la que más suena para ti.",
-        textoBoton: "Ver el TOP 7",
-        linkBoton: `${SITE}/talento`,
-      }),
-    });
-    logger.info("top7Semanal", r);
-  }
-);
-
-// ── Resumen semanal · domingo 19:00 Ecuador ────────────────────────
+// ── Resumen semanal combinado (TOP 7 + #1) · sábado 11:00 Ecuador ──
+// UN solo correo por semana: anuncia el nuevo TOP 7 y el artista #1.
 exports.resumenSemanal = onSchedule(
-  { schedule: "0 19 * * 0", timeZone: "America/Guayaquil", region: "us-east1", secrets: [BREVO_API_KEY], memory: "256MiB" },
+  { schedule: "0 11 * * 6", timeZone: "America/Guayaquil", region: "us-east1", secrets: [BREVO_API_KEY], memory: "256MiB" },
   async () => {
     const uno = await artistaNumeroUno();
     const lineaUno = uno
-      ? `Esta semana el artista más votado es <b>${uno.nombre}</b>.`
-      : "Esta semana la escena sigue moviéndose.";
+      ? `Esta semana el artista más votado es <b>${uno.nombre}</b>. `
+      : "";
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "semanal",
       buildCorreo: (u) => ({
         to: u.email,
         subject: "Tu semana en Top of Talent",
-        preheader: "El #1 de la semana y el nuevo TOP 7, en un vistazo.",
+        preheader: "El nuevo TOP 7 y el #1 de la semana, en un vistazo.",
         titulo: "Tu semana en Top of Talent",
-        cuerpoHtml: `${lineaUno} Descubre el nuevo TOP 7, mira tu posición en los Top Fans y sigue votando para mantener a tus artistas arriba.`,
-        textoBoton: "Ver la plataforma",
+        cuerpoHtml: `Ya está el nuevo TOP 7 de la semana. ${lineaUno}Escucha las 7 mejores, mira tu posición en los Top Fans y vota por tus favoritas para mantener a tus artistas arriba.`,
+        textoBoton: "Ver el TOP 7",
         linkBoton: `${SITE}/talento`,
       }),
     });
@@ -119,31 +98,74 @@ exports.resumenSemanal = onSchedule(
   }
 );
 
-// ── Nuevo artista · trigger onCreate(artistas) (idempotente) ───────
-exports.onNuevoArtista = onDocumentCreated(
-  { document: "artistas/{id}", secrets: [BREVO_API_KEY] },
-  async (event) => {
-    const snap = event.data; if (!snap) return;
-    const data = snap.data() || {};
-    if (data.notificado) return; // anti-doble-envío
-    const id = event.params.id;
-    const nombre = data.name || data.nombre || NOMBRES[id] || "un nuevo artista";
-    const slug = data.slug || SLUGS[id] || "talento";
+// ── Nuevo(s) artista(s) · endpoint admin, envío AGRUPADO por tanda ──
+// Sube los artistas a Firestore (colección artistas) y luego llama a
+// este endpoint UNA vez: junta todos los que aún no se notificaron y
+// manda UN solo correo (1 artista = correo simple; varios = agrupado).
+//   GET /notificarNuevosArtistas?key=TOKEN[&send=1]
+exports.notificarNuevosArtistas = onRequest(
+  { region: "us-east1", secrets: [BREVO_API_KEY] },
+  async (req, res) => {
+    if (req.query.key !== ADMIN_TOKEN) { res.status(403).send("forbidden"); return; }
+    const dryRun = req.query.send !== "1";
+
+    const snap = await db.collection("artistas").get();
+    const nuevos = [];
+    snap.forEach((d) => {
+      const data = d.data() || {};
+      if (data.notificado === true) return;
+      nuevos.push({
+        id: d.id,
+        nombre: data.name || data.nombre || NOMBRES[d.id] || d.id,
+        slug: data.slug || SLUGS[d.id] || "talento",
+        ref: d.ref,
+      });
+    });
+
+    if (nuevos.length === 0) { res.status(200).json({ ok: true, nuevos: 0, msg: "No hay artistas nuevos por notificar." }); return; }
+
+    // baseline=1: marca los actuales como ya notificados SIN enviar correo
+    // (para no incluir artistas viejos en el primer envío real).
+    if (req.query.baseline === "1") {
+      await Promise.allSettled(nuevos.map((a) => a.ref.set({ notificado: true }, { merge: true })));
+      res.status(200).json({ baseline: true, marcados: nuevos.map((a) => a.nombre) });
+      return;
+    }
+
+    let correoBase;
+    if (nuevos.length === 1) {
+      const a = nuevos[0];
+      correoBase = {
+        subject: `Nuevo talento en Top of Talent: ${a.nombre}`,
+        preheader: "Conócelo y dale tu voto.",
+        titulo: `Nuevo talento: ${a.nombre}`,
+        cuerpoHtml: `<b>${a.nombre}</b> acaba de entrar a la plataforma. Escúchalo, conoce su historia y, si te gusta, súmate a los que lo están impulsando al TOP.`,
+        textoBoton: `Conocer a ${a.nombre}`,
+        linkBoton: `${SITE}/${a.slug}`,
+      };
+    } else {
+      const lista = nuevos.map((a) => a.nombre).join(", ");
+      correoBase = {
+        subject: "Nuevos talentos en Top of Talent",
+        preheader: "Se sumaron nuevos artistas. Conócelos y vota.",
+        titulo: "Llegaron nuevos talentos",
+        cuerpoHtml: `Se sumaron <b>${nuevos.length}</b> artistas a la plataforma: ${lista}. Conócelos, escúchalos y vota por los que te gusten para impulsarlos al TOP.`,
+        textoBoton: "Ver los artistas",
+        linkBoton: `${SITE}/talento`,
+      };
+    }
+
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "novedades",
-      buildCorreo: (u) => ({
-        to: u.email,
-        subject: `Nuevo talento en Top of Talent: ${nombre}`,
-        preheader: "Conócelo y dale tu voto.",
-        titulo: `Nuevo talento: ${nombre}`,
-        cuerpoHtml: `<b>${nombre}</b> acaba de entrar a la plataforma. Escúchalo, conoce su historia y, si te gusta, súmate a los que lo están impulsando al TOP.`,
-        textoBoton: `Conocer a ${nombre}`,
-        linkBoton: `${SITE}/${slug}`,
-      }),
+      buildCorreo: (u) => Object.assign({ to: u.email }, correoBase),
+      dryRun,
     });
-    await snap.ref.set({ notificado: true }, { merge: true });
-    logger.info("onNuevoArtista", { id, ...r });
+
+    if (!dryRun) {
+      await Promise.allSettled(nuevos.map((a) => a.ref.set({ notificado: true }, { merge: true })));
+    }
+    res.status(200).json({ dryRun, nuevos: nuevos.map((a) => a.nombre), ...r });
   }
 );
 
