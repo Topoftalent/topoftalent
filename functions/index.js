@@ -35,6 +35,10 @@ exports.broadcastAdmin = contenido.broadcastAdmin;
 // Endpoint de prueba (temporal): envía un correo de un tipo a una dirección.
 const pruebas = require("./pruebas");
 exports.pruebaCorreo = pruebas.pruebaCorreo;
+exports.pruebaFlyer = pruebas.pruebaFlyer;
+
+const autoriz = require("./autorizaciones");
+exports.onAutorizacion = autoriz.onAutorizacion;
 
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 

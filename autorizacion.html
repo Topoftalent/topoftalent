@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autorización · Top of Talent</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#c86cff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{cursor:none!important}
+body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+#cur{position:fixed;width:8px;height:8px;background:#c86cff;border-radius:50%;pointer-events:none;z-index:99999;top:0;left:0}
+#crng{position:fixed;width:28px;height:28px;border:1.5px solid rgba(200,108,255,.7);border-radius:50%;pointer-events:none;z-index:99998;top:0;left:0;transition:width .15s,height .15s}
+header{position:sticky;top:0;z-index:300;display:flex;align-items:center;padding:20px 32px;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}.logo img{width:28px;height:28px}
+.logo span{font-weight:700;font-size:9px;letter-spacing:.2em;color:#fff;text-transform:uppercase;line-height:1.35}
+.wrap{flex:1;width:100%;max-width:640px;margin:0 auto;padding:44px 22px 80px;position:relative;z-index:2}
+.glow{position:fixed;top:-12%;left:50%;transform:translateX(-50%);width:900px;height:520px;z-index:0;background:radial-gradient(ellipse,rgba(200,108,255,.16),transparent 66%)}
+.tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#c86cff;margin-bottom:12px}
+.accent{height:4px;width:56px;background:#c86cff;border-radius:3px;margin:0 0 20px}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:10px}
+.sub{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.7}
+.field{margin-top:26px}
+.label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:9px;display:block}
+select,input[type=text]{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:15px 16px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;outline:none;cursor:text!important}
+select{cursor:pointer!important}
+select:focus,input:focus{border-color:#c86cff}
+select option{background:#141018}
+.consent{margin-top:26px;display:flex;align-items:flex-start;gap:14px;background:rgba(200,108,255,.06);border:1px solid rgba(200,108,255,.28);border-radius:14px;padding:20px 20px;cursor:pointer}
+.consent .box{width:28px;height:28px;border:2px solid #c86cff;border-radius:8px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(200,108,255,.08);transition:background .2s}
+.consent.on .box{background:#c86cff}
+.consent .box svg{opacity:0}.consent.on .box svg{opacity:1}
+.consent .txt{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.9)}
+.consent .txt b{color:#fff}
+.btn{width:100%;margin-top:26px;background:#c86cff;color:#0a0710;border:none;border-radius:12px;padding:17px;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:none!important;transition:opacity .2s,background .3s}
+.btn:hover{opacity:.92}.btn:disabled{opacity:.5}
+.btn.ok{background:#4cff91;color:#08120c}
+.err{color:#ff6b6b;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;margin-top:14px;min-height:16px}
+.state{text-align:center;padding:70px 20px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6);font-size:14px;line-height:1.7}
+.state h2{font-family:Helvetica,Arial,sans-serif;font-size:28px;color:#fff;margin-bottom:12px}
+.state .big{font-size:44px;margin-bottom:14px}
+.state button{margin-top:22px;background:#c86cff;color:#0a0710;border:none;border-radius:11px;padding:14px 28px;font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:none!important}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="crng"></div><div class="glow"></div>
+<header><a href="inicio" class="logo"><img src="logo.png" alt="TT"><span>Top of<br>Talent</span></a></header>
+
+<div class="wrap">
+  <div id="state" class="state hidden"></div>
+
+  <div id="form">
+    <div class="tag">Autorización de uso</div>
+    <div class="accent"></div>
+    <h1>Firma tu autorización</h1>
+    <p class="sub">Confirma que autorizas a Top of Talent a mostrar tu perfil en la plataforma. Toma menos de un minuto. Si en algún momento deseas retirar tu información, escríbenos al correo oficial.</p>
+
+    <div class="field">
+      <label class="label">Selecciona tu nombre</label>
+      <select id="sel"><option value="">Cargando talentos…</option></select>
+    </div>
+
+    <div class="field">
+      <label class="label">Confirma tu nombre (firma)</label>
+      <input type="text" id="firma" placeholder="Escribe tu nombre completo" autocomplete="off">
+    </div>
+
+    <div class="consent" id="consent" onclick="toggleC()">
+      <div class="box"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="#0a0710" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="txt"><b>Autorizo</b> a Top of Talent a usar mi nombre, imagen e información pública <b>únicamente para mi exposición y difusión</b> dentro de la plataforma, sin ningún costo. Entiendo que puedo pedir el retiro de mi información en cualquier momento escribiendo al correo oficial.</div>
+    </div>
+
+    <button class="btn" id="btn" onclick="firmar()">Firmar autorización</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+
+<script>
+var cur=document.getElementById('cur'),crng=document.getElementById('crng');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=(mx-4)+'px';cur.style.top=(my-4)+'px';});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;crng.style.left=(rx-14)+'px';crng.style.top=(ry-14)+'px';requestAnimationFrame(loop);})();
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showState(h){document.getElementById('form').classList.add('hidden');var s=document.getElementById('state');s.classList.remove('hidden');s.innerHTML=h;}
+function toggleC(){document.getElementById('consent').classList.toggle('on');}
+</script>
+
+<script type="module">
+import { db } from './firebase-config.js';
+import { collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+var TOKEN='tot-firma-2026';
+var params=new URLSearchParams(location.search);
+if(params.get('k')!==TOKEN){ showState('<div class="big">·</div><h2>Enlace no válido</h2><p>Este enlace de autorización no es correcto o ya expiró.</p>'); }
+
+// Artistas del Top (fichas por slug)
+var TOP=[
+ {id:'artista1',name:'Alex Ponce',slug:'alex-ponce'},{id:'artista2',name:'Johann Vera',slug:'johann-vera'},
+ {id:'artista3',name:'Mar Rendón',slug:'mar-rendon'},{id:'artista4',name:'Jombriel',slug:'jombriel'},
+ {id:'artista5',name:'Alex Krack',slug:'alex-krack'},{id:'artista6',name:'Dicapo',slug:'dicapo'},
+ {id:'artista7',name:'Kenny Die',slug:'kenny-die'},{id:'artista8',name:'Yilda',slug:'yilda'},
+ {id:'artista9',name:'Ren Kai',slug:'ren-kai'},{id:'artista10',name:'Blanko',slug:'blanko'}
+];
+var LISTA={}; // value -> {tipo,id,nombre,ficha}
+
+async function cargar(){
+  var sel=document.getElementById('sel');
+  var html='<option value="">— Elige tu nombre —</option>';
+  html+='<optgroup label="Artistas del Top">';
+  TOP.forEach(function(a){ var v='top:'+a.id; LISTA[v]={tipo:'top',id:a.id,nombre:a.name,ficha:'/'+a.slug}; html+='<option value="'+v+'">'+esc(a.name)+'</option>'; });
+  html+='</optgroup>';
+  try{
+    var snap=await getDocs(collection(db,'otros_talentos'));
+    var otros=[]; snap.forEach(function(d){ var x=d.data(); if(x.active!==false) otros.push({id:d.id,name:x.name}); });
+    otros.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+    if(otros.length){ html+='<optgroup label="Otros Talentos">';
+      otros.forEach(function(o){ var v='otro:'+o.id; LISTA[v]={tipo:'otro',id:o.id,nombre:o.name,ficha:'ot-perfil.html?id='+encodeURIComponent(o.id)}; html+='<option value="'+v+'">'+esc(o.name)+'</option>'; });
+      html+='</optgroup>'; }
+  }catch(e){ console.warn('otros_talentos',e); }
+  sel.innerHTML=html;
+  // preseleccion por ?a=id
+  var a=params.get('a');
+  if(a){ for(var v in LISTA){ if(LISTA[v].id===a){ sel.value=v; var f=document.getElementById('firma'); f.value=LISTA[v].nombre; break; } } }
+}
+if(params.get('k')===TOKEN) cargar();
+
+window.firmar=async function(){
+  var err=document.getElementById('err'), btn=document.getElementById('btn');
+  err.textContent='';
+  var val=document.getElementById('sel').value;
+  var firma=document.getElementById('firma').value.trim();
+  var ok=document.getElementById('consent').classList.contains('on');
+  if(!val){ err.textContent='Selecciona tu nombre en la lista.'; return; }
+  if(firma.length<3){ err.textContent='Escribe tu nombre completo para firmar.'; return; }
+  if(!ok){ err.textContent='Debes marcar la casilla de autorización.'; return; }
+  var art=LISTA[val];
+  btn.disabled=true; btn.textContent='Firmando…';
+  try{
+    await addDoc(collection(db,'autorizaciones'),{
+      tipo:art.tipo, artistaId:art.id, nombre:art.nombre, firma:firma,
+      autorizado:true, at:serverTimestamp(), ua:navigator.userAgent.slice(0,180)
+    });
+    showState('<div class="big">✓</div><h2>¡Gracias, '+esc(art.nombre)+'!</h2><p>Tu autorización quedó registrada. Bienvenido oficialmente a Top of Talent.<br>Te llevamos a tu ficha…</p><button onclick="location.href=\''+art.ficha+'\'">Ver mi ficha</button>');
+    setTimeout(function(){ location.href=art.ficha; }, 3200);
+  }catch(e){
+    console.error(e); btn.disabled=false; btn.textContent='Firmar autorización';
+    err.textContent='No se pudo registrar. Intenta de nuevo.';
+  }
+};
+</script>
+</body>
+</html>

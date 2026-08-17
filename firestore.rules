@@ -134,6 +134,19 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── AUTORIZACIONES (firma de talentos) ───────────────────────
+    // El talento firma desde la página privada (protegida por token +
+    // App Check). Puede CREAR su autorización; nadie lee las de otros
+    // (el equipo las revisa desde la Consola / Admin SDK).
+    match /autorizaciones/{autoId} {
+      allow read:   if false;
+      allow create: if request.resource.data.autorizado == true
+                    && request.resource.data.artistaId is string
+                    && request.resource.data.nombre is string
+                    && request.resource.data.tipo in ['top', 'otro'];
+      allow update, delete: if false;
+    }
+
     // ── DEFAULT DENY ─────────────────────────────────────────────
     // Any collection not matched above is locked down.
     match /{document=**} {
