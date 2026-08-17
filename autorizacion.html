@@ -108,24 +108,27 @@ var TOP=[
 ];
 var LISTA={}; // value -> {tipo,id,nombre,ficha}
 
+function preselec(){
+  var a=params.get('a'); if(!a) return;
+  var sel=document.getElementById('sel');
+  for(var v in LISTA){ if(LISTA[v].id===a){ sel.value=v; var f=document.getElementById('firma'); if(!f.value) f.value=LISTA[v].nombre; break; } }
+}
 async function cargar(){
   var sel=document.getElementById('sel');
-  var html='<option value="">— Elige tu nombre —</option>';
-  html+='<optgroup label="Artistas del Top">';
-  TOP.forEach(function(a){ var v='top:'+a.id; LISTA[v]={tipo:'top',id:a.id,nombre:a.name,ficha:'/'+a.slug}; html+='<option value="'+v+'">'+esc(a.name)+'</option>'; });
-  html+='</optgroup>';
+  // 1) Artistas del Top al instante (no dependen de la red)
+  var base='<option value="">— Elige tu nombre —</option><optgroup label="Artistas del Top">';
+  TOP.forEach(function(a){ var v='top:'+a.id; LISTA[v]={tipo:'top',id:a.id,nombre:a.name,ficha:'/'+a.slug}; base+='<option value="'+v+'">'+esc(a.name)+'</option>'; });
+  base+='</optgroup>';
+  sel.innerHTML=base; preselec();
+  // 2) Otros Talentos desde Firestore (se agregan al terminar)
   try{
     var snap=await getDocs(collection(db,'otros_talentos'));
     var otros=[]; snap.forEach(function(d){ var x=d.data(); if(x.active!==false) otros.push({id:d.id,name:x.name}); });
     otros.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
-    if(otros.length){ html+='<optgroup label="Otros Talentos">';
-      otros.forEach(function(o){ var v='otro:'+o.id; LISTA[v]={tipo:'otro',id:o.id,nombre:o.name,ficha:'ot-perfil.html?id='+encodeURIComponent(o.id)}; html+='<option value="'+v+'">'+esc(o.name)+'</option>'; });
-      html+='</optgroup>'; }
+    if(otros.length){ var og='<optgroup label="Otros Talentos">';
+      otros.forEach(function(o){ var v='otro:'+o.id; LISTA[v]={tipo:'otro',id:o.id,nombre:o.name,ficha:'ot-perfil.html?id='+encodeURIComponent(o.id)}; og+='<option value="'+v+'">'+esc(o.name)+'</option>'; });
+      og+='</optgroup>'; sel.innerHTML=base+og; preselec(); }
   }catch(e){ console.warn('otros_talentos',e); }
-  sel.innerHTML=html;
-  // preseleccion por ?a=id
-  var a=params.get('a');
-  if(a){ for(var v in LISTA){ if(LISTA[v].id===a){ sel.value=v; var f=document.getElementById('firma'); f.value=LISTA[v].nombre; break; } } }
 }
 if(params.get('k')===TOKEN) cargar();
 
