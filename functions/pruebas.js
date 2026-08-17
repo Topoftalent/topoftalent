@@ -66,6 +66,36 @@ const CORREOS = {
   },
 };
 
+// Envía el FLYER (imagen) por correo, tal cual lo recibiría el talento.
+//   GET ?key=TOKEN&to=correo&nombre=Michael&img=URL&ficha=URL
+exports.pruebaFlyer = onRequest(
+  { region: "us-east1", secrets: [BREVO_API_KEY] },
+  async (req, res) => {
+    if (req.query.key !== TOKEN) { res.status(403).send("forbidden"); return; }
+    const to = req.query.to, nombre = req.query.nombre || "", img = req.query.img;
+    const ficha = req.query.ficha || "https://topoftalentoficial.com/p-otros";
+    if (!to || !img) { res.status(400).json({ error: "faltan to o img" }); return; }
+    const html = `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#050506;">` +
+      `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#050506;">` +
+      `<tr><td align="center" style="padding:22px 12px 10px;">` +
+      `<a href="${ficha}" target="_blank" style="text-decoration:none;"><img src="${img}" width="600" alt="Bienvenido al Top" style="width:100%;max-width:600px;display:block;border:0;border-radius:16px;"></a>` +
+      `</td></tr>` +
+      `<tr><td align="center" style="padding:8px 12px 34px;">` +
+      `<a href="${ficha}" target="_blank" style="display:inline-block;padding:17px 46px;border-radius:34px;` +
+      `background:rgba(255,255,255,0.08);border:1.5px solid rgba(200,108,255,0.65);color:#ffffff;` +
+      `font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;` +
+      `text-decoration:none;box-shadow:inset 0 1px 0 rgba(255,255,255,0.28), 0 0 28px rgba(200,108,255,0.3);">Firmar autorizaci&oacute;n &rarr;</a>` +
+      `</td></tr></table></body></html>`;
+    try {
+      await noti._helpers.brevo("/v3/smtp/email", "POST", {
+        sender: noti.SENDER, to: [{ email: to }],
+        subject: `Bienvenido al Top · ${nombre}`, htmlContent: html,
+      }, BREVO_API_KEY.value());
+      res.status(200).json({ ok: true, to, nombre });
+    } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  }
+);
+
 exports.pruebaCorreo = onRequest(
   { region: "us-east1", secrets: [BREVO_API_KEY] },
   async (req, res) => {
