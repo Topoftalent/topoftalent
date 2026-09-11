@@ -17,7 +17,7 @@ service cloud.firestore {
 
     // ── USERS ────────────────────────────────────────────────────
     match /users/{userId} {
-      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow read:   if isAdmin() || (request.auth != null && request.auth.uid == userId);
       allow create: if request.auth != null && request.auth.uid == userId;
       // Users can update their own doc but NOT their membership/admin flags
       allow update: if request.auth != null && request.auth.uid == userId
@@ -127,7 +127,7 @@ service cloud.firestore {
     // una sola vez (no editable). Nadie puede leer las respuestas de
     // otros: la lectura/análisis se hace desde la Consola / Admin SDK.
     match /encuestas/{encuestaId}/respuestas/{userId} {
-      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow read:   if isAdmin() || (request.auth != null && request.auth.uid == userId);
       allow create: if request.auth != null
                     && request.auth.uid == userId
                     && request.resource.data.uid == userId;
@@ -139,7 +139,7 @@ service cloud.firestore {
     // App Check). Puede CREAR su autorización; nadie lee las de otros
     // (el equipo las revisa desde la Consola / Admin SDK).
     match /autorizaciones/{autoId} {
-      allow read:   if false;
+      allow read:   if isAdmin();
       allow create: if request.resource.data.autorizado == true
                     && request.resource.data.artistaId is string
                     && request.resource.data.nombre is string
