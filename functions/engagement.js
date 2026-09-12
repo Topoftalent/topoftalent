@@ -10,12 +10,8 @@
 //
 // Respeta: preferencias (user.prefs.*, default ON), anti-repetición
 // (marcas en el doc del usuario) y solo miembros (isMember == true).
-//
-// Además expone un endpoint de diagnóstico (dry-run) protegido por
-// token para verificar la lógica SIN enviar correos.
 // ─────────────────────────────────────────────────────────────────
 const { onSchedule } = require("firebase-functions/v2/scheduler");
-const { onRequest } = require("firebase-functions/v2/https");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
 const noti = require("./notificaciones");
@@ -29,9 +25,6 @@ const INACTIVIDAD_DIAS = 5;
 const REPETIR_INVITAR_DIAS = 4;
 const REPETIR_INACTIV_DIAS = 7;
 const TOP_FANS_N = 10;
-
-// Token para el endpoint de diagnóstico (dry-run). Temporal.
-const DIAG_TOKEN = "tot-diag-9f3a71c2e5";
 
 const SLUGS = {
   artista1: "alex-ponce", artista2: "johann-vera", artista3: "mar-rendon",
@@ -237,19 +230,5 @@ exports.engagementDiario = onSchedule(
     const day = new Date(Date.now() - 5 * 3600 * 1000).getUTCDay();
     const r = await procesarEngagement({ apiKey: BREVO_API_KEY.value(), day, dryRun: false });
     logger.info("engagementDiario", { day, ...r, report: undefined, detalle: r.report.slice(0, 20) });
-  }
-);
-
-// ── Endpoint de diagnóstico (dry-run, no envía) ────────────────────
-// GET /engagementDiag?key=TOKEN[&day=N][&send=1]
-exports.engagementDiag = onRequest(
-  { region: "us-east1", secrets: [BREVO_API_KEY] },
-  async (req, res) => {
-    if (req.query.key !== DIAG_TOKEN) { res.status(403).send("forbidden"); return; }
-    const day = req.query.day != null ? Number(req.query.day)
-      : new Date(Date.now() - 5 * 3600 * 1000).getUTCDay();
-    const dryRun = req.query.send !== "1"; // por defecto NO envía
-    const r = await procesarEngagement({ apiKey: BREVO_API_KEY.value(), day, dryRun });
-    res.status(200).json({ dryRun, day, ...r });
   }
 );

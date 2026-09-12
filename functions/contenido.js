@@ -10,7 +10,6 @@
 // notificaciones.js (misma plantilla de marca).
 // ─────────────────────────────────────────────────────────────────
 const { onSchedule } = require("firebase-functions/v2/scheduler");
-const { onRequest } = require("firebase-functions/v2/https");
 const { getFirestore } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
 const noti = require("./notificaciones");
@@ -18,8 +17,6 @@ const noti = require("./notificaciones");
 const BREVO_API_KEY = noti.BREVO_API_KEY;
 const SITE = noti.SITE;
 const db = getFirestore();
-
-const ADMIN_TOKEN = "tot-admin-4b8d2e6a10";
 
 const SLUGS = {
   artista1: "alex-ponce", artista2: "johann-vera", artista3: "mar-rendon",
@@ -95,121 +92,5 @@ exports.resumenSemanal = onSchedule(
       }),
     });
     logger.info("resumenSemanal", { ...r, uno: uno && uno.id });
-  }
-);
-
-// ── Nuevo(s) artista(s) · endpoint admin, envío AGRUPADO por tanda ──
-// Sube los artistas a Firestore (colección artistas) y luego llama a
-// este endpoint UNA vez: junta todos los que aún no se notificaron y
-// manda UN solo correo (1 artista = correo simple; varios = agrupado).
-//   GET /notificarNuevosArtistas?key=TOKEN[&send=1]
-exports.notificarNuevosArtistas = onRequest(
-  { region: "us-east1", secrets: [BREVO_API_KEY] },
-  async (req, res) => {
-    if (req.query.key !== ADMIN_TOKEN) { res.status(403).send("forbidden"); return; }
-    const dryRun = req.query.send !== "1";
-
-    const snap = await db.collection("artistas").get();
-    const nuevos = [];
-    snap.forEach((d) => {
-      const data = d.data() || {};
-      if (data.notificado === true) return;
-      nuevos.push({
-        id: d.id,
-        nombre: data.name || data.nombre || NOMBRES[d.id] || d.id,
-        slug: data.slug || SLUGS[d.id] || "talento",
-        ref: d.ref,
-      });
-    });
-
-    if (nuevos.length === 0) { res.status(200).json({ ok: true, nuevos: 0, msg: "No hay artistas nuevos por notificar." }); return; }
-
-    // baseline=1: marca los actuales como ya notificados SIN enviar correo
-    // (para no incluir artistas viejos en el primer envío real).
-    if (req.query.baseline === "1") {
-      await Promise.allSettled(nuevos.map((a) => a.ref.set({ notificado: true }, { merge: true })));
-      res.status(200).json({ baseline: true, marcados: nuevos.map((a) => a.nombre) });
-      return;
-    }
-
-    let correoBase;
-    if (nuevos.length === 1) {
-      const a = nuevos[0];
-      correoBase = {
-        subject: `Nuevo talento en Top of Talent: ${a.nombre}`,
-        preheader: "Conócelo y dale tu voto.",
-        titulo: `Nuevo talento: ${a.nombre}`,
-        cuerpoHtml: `<b>${a.nombre}</b> acaba de entrar a la plataforma. Escúchalo, conoce su historia y, si te gusta, súmate a los que lo están impulsando al TOP.`,
-        textoBoton: `Conocer a ${a.nombre}`,
-        linkBoton: `${SITE}/${a.slug}`,
-      };
-    } else {
-      const lista = nuevos.map((a) => a.nombre).join(", ");
-      correoBase = {
-        subject: "Nuevos talentos en Top of Talent",
-        preheader: "Se sumaron nuevos artistas. Conócelos y vota.",
-        titulo: "Llegaron nuevos talentos",
-        cuerpoHtml: `Se sumaron <b>${nuevos.length}</b> artistas a la plataforma: ${lista}. Conócelos, escúchalos y vota por los que te gusten para impulsarlos al TOP.`,
-        textoBoton: "Ver los artistas",
-        linkBoton: `${SITE}/talento`,
-      };
-    }
-
-    const r = await enviarAMiembros({
-      apiKey: BREVO_API_KEY.value(),
-      prefKey: "novedades",
-      buildCorreo: (u) => Object.assign({ to: u.email }, correoBase),
-      dryRun,
-    });
-
-    if (!dryRun) {
-      await Promise.allSettled(nuevos.map((a) => a.ref.set({ notificado: true }, { merge: true })));
-    }
-    res.status(200).json({ dryRun, nuevos: nuevos.map((a) => a.nombre), ...r });
-  }
-);
-
-// ── Endpoint admin: broadcast manual (nuevo artista / ad-hoc) ──────
-// GET /broadcastAdmin?key=TOKEN&tipo=artista&nombre=...&slug=...[&send=1]
-// tipo=libre: &subject=&titulo=&mensaje=&boton=&link=
-exports.broadcastAdmin = onRequest(
-  { region: "us-east1", secrets: [BREVO_API_KEY] },
-  async (req, res) => {
-    if (req.query.key !== ADMIN_TOKEN) { res.status(403).send("forbidden"); return; }
-    const q = req.query;
-    const dryRun = q.send !== "1";
-    let correoBase, prefKey;
-
-    if (q.tipo === "artista") {
-      const nombre = q.nombre || "un nuevo artista";
-      const slug = q.slug || "talento";
-      prefKey = "novedades";
-      correoBase = {
-        subject: `Nuevo talento en Top of Talent: ${nombre}`,
-        preheader: "Conócelo y dale tu voto.",
-        titulo: `Nuevo talento: ${nombre}`,
-        cuerpoHtml: `<b>${nombre}</b> acaba de entrar a la plataforma. Escúchalo, conoce su historia y, si te gusta, súmate a los que lo están impulsando al TOP.`,
-        textoBoton: `Conocer a ${nombre}`,
-        linkBoton: `${SITE}/${slug}`,
-      };
-    } else {
-      prefKey = q.pref || null;
-      correoBase = {
-        subject: q.subject || "Novedades de Top of Talent",
-        preheader: q.preheader || "",
-        titulo: q.titulo || "Top of Talent",
-        cuerpoHtml: q.mensaje || "",
-        textoBoton: q.boton || "Ver la plataforma",
-        linkBoton: q.link || `${SITE}/talento`,
-      };
-    }
-
-    const r = await enviarAMiembros({
-      apiKey: BREVO_API_KEY.value(),
-      prefKey,
-      buildCorreo: (u) => Object.assign({ to: u.email }, correoBase),
-      dryRun,
-    });
-    res.status(200).json({ dryRun, ...r });
   }
 );

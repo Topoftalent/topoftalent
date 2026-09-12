@@ -24,18 +24,10 @@ exports.activarMembresia = notificaciones.activarMembresia;
 // Motor de engagement (programado, requiere Blaze).
 const engagement = require("./engagement");
 exports.engagementDiario = engagement.engagementDiario;
-exports.engagementDiag = engagement.engagementDiag; // diagnóstico dry-run (temporal)
 
-// Contenido automático (resumen semanal combinado + nuevos artistas por tanda).
+// Contenido automático (resumen semanal combinado).
 const contenido = require("./contenido");
 exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 · TOP 7 + #1 en un correo
-exports.notificarNuevosArtistas = contenido.notificarNuevosArtistas; // envío agrupado por tanda
-exports.broadcastAdmin = contenido.broadcastAdmin;
-
-// Endpoint de prueba (temporal): envía un correo de un tipo a una dirección.
-const pruebas = require("./pruebas");
-exports.pruebaCorreo = pruebas.pruebaCorreo;
-exports.pruebaFlyer = pruebas.pruebaFlyer;
 
 const autoriz = require("./autorizaciones");
 exports.onAutorizacion = autoriz.onAutorizacion;
