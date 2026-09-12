@@ -10,5 +10,16 @@
     "alfredocampo": "flyer-otro-alfredocampo.png",
     "gustavomoscoso": "flyer-otro-gustavomoscoso.png"
   },
-  "top": {}
+  "top": {
+    "artista1": "flyer-top-alex-ponce.png",
+    "artista2": "flyer-top-johann-vera.png",
+    "artista3": "flyer-top-mar-rendon.png",
+    "artista4": "flyer-top-jombriel.png",
+    "artista5": "flyer-top-alex-krack.png",
+    "artista6": "flyer-top-dicapo.png",
+    "artista7": "flyer-top-kenny-die.png",
+    "artista8": "flyer-top-yilda.png",
+    "artista9": "flyer-top-ren-kai.png",
+    "artista10": "flyer-top-blanko.png"
+  }
 }
