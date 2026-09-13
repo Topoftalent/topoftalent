@@ -32,6 +32,10 @@ exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 
 const autoriz = require("./autorizaciones");
 exports.onAutorizacion = autoriz.onAutorizacion;
 
+// GA4 en el dashboard (Analytics Data API, solo admins).
+const ga = require("./getAnalytics");
+exports.getAnalytics = ga.getAnalytics;
+
 const DAILY_LIMIT = 5; // comentarios por usuario por dia
 
 exports.enforceCommentLimit = onDocumentCreated(

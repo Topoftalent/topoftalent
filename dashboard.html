@@ -81,6 +81,8 @@ h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.02em;margin-b
     <div class="sub" id="hola"></div>
     <div class="sec-label">Cifras en vivo · toca una tarjeta para ver el detalle</div>
     <div class="grid" id="stats"></div>
+    <div class="sec-label">Analítica · GA4 · últimos 28 días</div>
+    <div id="ga-wrap"><div class="card"><div class="d">Cargando analítica…</div></div></div>
     <div class="sec-label">Recursos · abre y revisa cuando quieras</div>
     <div class="grid res" id="recursos"></div>
   </div>
@@ -114,6 +116,8 @@ function openDraw(kk,title,bodyHtml){document.getElementById('dkk').textContent=
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
 var FIRMA='autorizacion.html?k=tot-firma-2026';
 var E1='encuesta?s=mes1-a7f3k9', E2='encuesta?s=final-c2m8p5';
@@ -135,6 +139,7 @@ onAuthStateChanged(auth, async function(u){
   document.getElementById('state').hidden=true;
   document.getElementById('panel').hidden=false;
   document.getElementById('hola').textContent='Sesión de administrador · '+(u.email||'');
+  cargarGA();
   try{ var os=await getDocs(collection(db,'otros_talentos')); os.forEach(function(d){OTROS.push({id:d.id,name:(d.data().name||d.id)});}); }catch(e){}
   ROSTER=TOP.map(function(a){return{id:a.id,name:a.name,tipo:'top'};}).concat(OTROS.map(function(a){return{id:a.id,name:a.name,tipo:'otro'};}));
   cargar();
@@ -157,6 +162,33 @@ var stats=[
   {k:'Encuesta 2 · respuestas',d:'Satisfacción · fin · toca para ver quién respondió',lnk:E2,lt:'Ver encuesta',det:function(){return detEncuesta('final-c2m8p5','Encuesta 2 · final');},
    cnt:function(){return count(collection(db,'encuestas','final-c2m8p5','respuestas'));}},
 ];
+
+// ── Analítica GA4 ───────────────────────────────────────
+async function cargarGA(){
+  var wrap=document.getElementById('ga-wrap');
+  try{
+    var fn=httpsCallable(getFunctions(getApp(),'us-east1'),'getAnalytics');
+    var res=await fn(); var d=res.data||{};
+    var big='<div class="grid">'+
+      gaCard('Usuarios',d.activeUsers)+
+      gaCard('Vistas de página',d.views)+
+      gaCard('Sesiones',d.sessions)+
+    '</div>';
+    var lists='<div class="grid" style="margin-top:16px">'+
+      gaList('Top países', d.countries, 'name','users')+
+      gaList('Páginas más vistas', d.pages, 'name','views')+
+    '</div>';
+    wrap.innerHTML=big+lists;
+  }catch(e){
+    var msg=((e&&e.message)||'').slice(0,140);
+    wrap.innerHTML='<div class="card"><div class="k">Analítica GA4</div><div class="d" style="line-height:1.7;margin-top:8px">Aún no hay datos para mostrar. Es normal si acabas de conectar GA4 o si falta habilitar la <b>Analytics Data API</b>. Empezará a poblarse cuando entren visitantes que acepten cookies.<br><span style="color:rgba(255,255,255,.3)">'+esc(msg)+'</span></div><div class="row"><a class="lnk" href="https://analytics.google.com/analytics/web/" target="_blank">Abrir GA4 &rarr;</a></div></div>';
+  }
+}
+function gaCard(k,n){ return '<div class="card"><div class="k">'+k+'</div><div class="n">'+(n==null?'—':n)+'</div><div class="d">últimos 28 días</div></div>'; }
+function gaList(title,arr,kk,vk){
+  var rows=(arr&&arr.length)?arr.map(function(r){return '<div class="row"><span class="k">'+esc(r[kk])+'</span><span class="v">'+r[vk]+'</span></div>';}).join(''):'<div class="d" style="margin-top:8px">Sin datos aún</div>';
+  return '<div class="card"><div class="k">'+title+'</div>'+rows+'</div>';
+}
 
 function cargar(){
   var el=document.getElementById('stats');
