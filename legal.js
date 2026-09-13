@@ -294,6 +294,23 @@ window.TotLegal = {
       timestamp: Date.now(), decision: 'accepted'
     }));
     document.getElementById('tot-cookie-banner').classList.remove('show');
+    this.loadGA();
+  },
+
+  // Google Analytics 4 · se carga SOLO con consentimiento de análisis.
+  loadGA: function() {
+    if (this._ga) return;
+    this._ga = true;
+    var id = 'G-Q6KKB53QSJ';
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', id, { anonymize_ip: true });
   },
 
   rejectCookies: function() {
@@ -312,6 +329,9 @@ window.TotLegal = {
       setTimeout(function() {
         document.getElementById('tot-cookie-banner').classList.add('show');
       }, 2000);
+    } else if (consent.analytics) {
+      // Consentimiento previo: carga analítica.
+      this.loadGA();
     }
   }
 };
