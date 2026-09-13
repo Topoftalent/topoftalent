@@ -24,7 +24,7 @@ function fmt(val, fallback) {
 function photoEl(url, label, extraClass) {
   extraClass = extraClass || '';
   if (url && url.startsWith('http')) {
-    return '<img src="' + esc(url) + '" alt="' + esc(label) + '" style="width:100%;height:100%;object-fit:cover;display:block">';
+    return '<img loading="lazy" decoding="async" src="' + esc(url) + '" alt="' + esc(label) + '" style="width:100%;height:100%;object-fit:cover;display:block">';
   }
   return '<span class="photo-placeholder-icon">' + esc(label) + '</span>';
 }
@@ -129,7 +129,7 @@ async function loadArtist() {
       if (hasAny) {
         gallery.innerHTML = photos.map(function(url, i) {
           var inner = url && url.startsWith('http')
-            ? '<img src="' + esc(url) + '" alt="' + esc(nombre) + ' ' + labels[i] + '" style="width:100%;height:100%;object-fit:cover;display:block">'
+            ? '<img loading="lazy" decoding="async" src="' + esc(url) + '" alt="' + esc(nombre) + ' ' + labels[i] + '" style="width:100%;height:100%;object-fit:cover;display:block">'
             : '<div class="photo-bg ' + grads[i] + '"><span class="photo-placeholder-icon">Foto 0' + (i+1) + '</span></div>';
           return '<div class="gallery-photo">' + inner + '<span class="photo-label">Foto 0' + (i+1) + ' · ' + labels[i] + '</span></div>';
         }).join('');

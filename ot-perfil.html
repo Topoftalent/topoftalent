@@ -167,7 +167,7 @@ function renderTalent(data) {
 
   // Photo
   var photoHTML = data.photo_url
-    ? '<img src="' + escapeHTML(data.photo_url) + '" alt="' + escapeHTML(fullName) + '">'
+    ? '<img loading="lazy" decoding="async" src="' + escapeHTML(data.photo_url) + '" alt="' + escapeHTML(fullName) + '">'
     : '<div class="photo-placeholder">Foto · ' + escapeHTML(fullName) + '</div>';
 
   document.getElementById('main-content').innerHTML =
