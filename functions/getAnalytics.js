@@ -12,7 +12,7 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { getFirestore } = require("firebase-admin/firestore");
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 
-const PROPERTY = "properties/395605586";
+const PROPERTY = "properties/538747456";
 const SA = "firebase-adminsdk-fbsvc@top-of-talent.iam.gserviceaccount.com";
 let client;
 
