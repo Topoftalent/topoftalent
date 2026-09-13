@@ -181,6 +181,7 @@ function cargar(){
     {k:'Preview flyer Otros',d:'Vista del diseño de bienvenida',lnk:'bienvenida-otros.html'},
     {k:'Ver artistas',d:'Ranking y perfiles',lnk:'talento'},
     {k:'Otros Talentos',d:'Sección de talentos consolidados',lnk:'p-otros'},
+    {k:'Analítica · GA4',d:'Visitas, países, páginas más vistas y tiempo real',lnk:'https://analytics.google.com/analytics/web/',lt:'Abrir GA4'},
   ];
   document.getElementById('recursos').innerHTML=recs.map(function(r){return '<div class="card"><div class="k">'+r.k+'</div><div class="d">'+r.d+'</div><div class="row"><a class="lnk" href="'+r.lnk+'" target="_blank">Abrir &rarr;</a></div></div>';}).join('');
 }
