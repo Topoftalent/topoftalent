@@ -213,6 +213,9 @@ var css=`
 .tot-btn.danger-btn{background:rgba(255,80,80,.07);color:#ff5050;border:1px solid rgba(255,80,80,.22);margin-top:20px;border-radius:10px}
 .tot-btn.danger-btn:hover{background:#ff5050;color:#fff}
 .tot-btn.danger-btn::after{display:none}
+.tot-btn.glass{background:rgba(200,108,255,.10);color:#fff;border:1px solid rgba(200,108,255,.38);margin-top:8px;border-radius:10px;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);box-shadow:inset 0 1px 0 rgba(255,255,255,.20), 0 0 18px rgba(200,108,255,.22)}
+.tot-btn.glass::after{display:none}
+.tot-btn.glass:hover{background:rgba(200,108,255,.20);border-color:#c86cff;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.30), 0 0 28px 4px rgba(200,108,255,.55)}
 .tot-btn.success-btn{background:linear-gradient(135deg,#c86cff,#3fa9ff);color:#fff;border-radius:10px}
 .tot-btn.success-btn:hover{opacity:.9;box-shadow:0 0 24px 6px rgba(200,108,255,.4)}
 /* Member CTA · liquid glass igual que en membresia.html */
@@ -566,6 +569,7 @@ var HTML=`
       <select class="tot-select" id="prof-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select>
       <button class="tot-btn" onclick="TotAuth.saveProfile()">Guardar Cambios</button>
       <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4cff91;display:none;margin-top:8px" id="prof-saved">✓ Cambios guardados</div>
+      <button class="tot-btn glass" onclick="TotAuth.logout()">Cerrar sesión</button>
       <button class="tot-btn danger-btn" onclick="TotAuth.showDeleteConfirm()">⚠ Eliminar Cuenta</button>
       <!-- Paso 1: mensaje emocional -->
       <div id="delete-sad" style="display:none;margin-top:16px;background:rgba(200,108,255,.07);border:1px solid rgba(200,108,255,.22);border-radius:12px;padding:20px 18px;text-align:center">

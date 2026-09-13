@@ -1,2 +1,9 @@
 User-agent: *
+Allow: /
 Disallow: /flyers-mail/
+Disallow: /dashboard.html
+Disallow: /autorizacion.html
+Disallow: /encuesta.html
+Disallow: /bienvenida-otros.html
+
+Sitemap: https://topoftalentoficial.com/sitemap.xml
