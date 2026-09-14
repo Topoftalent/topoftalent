@@ -174,20 +174,20 @@ var css = `
 .tcb-accept{
   font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;
   font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  padding:12px 24px;background:#c86cff;color:#fff;border:none;
+  padding:12px 24px;background:#c86cff;color:#160a22;border:none;
   transition:background .2s;
 }
-.tcb-accept:hover{background:#b050ff;cursor:none}
+.tcb-accept:hover{background:#d98cff;cursor:none}
 .tcb-reject{
   font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;
   font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  padding:12px 24px;background:transparent;color:rgba(255,255,255,.4);
-  border:1px solid rgba(255,255,255,.15);transition:all .2s;
+  padding:12px 24px;background:transparent;color:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.28);transition:all .2s;
 }
 .tcb-reject:hover{border-color:#c86cff;color:#c86cff;cursor:none}
 .tcb-settings{
   font-family:'JetBrains Mono',monospace;font-size:10px;
-  color:rgba(255,255,255,.3);text-decoration:underline;
+  color:rgba(255,255,255,.6);text-decoration:underline;
   background:none;border:none;letter-spacing:.05em;
   transition:color .2s;
 }

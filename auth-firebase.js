@@ -433,7 +433,7 @@ var HTML=`
       <div class="tot-err" id="reg-pwd-err">Mínimo 8 caracteres, 1 mayúscula y 1 número</div>
       <div class="tot-grid-2">
         <div><label class="tot-label">Fecha de nacimiento</label><input class="tot-input" id="reg-dob" type="date" style="color-scheme:dark"></div>
-        <div><label class="tot-label">País / Región</label><select class="tot-select" id="reg-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select></div>
+        <div><label class="tot-label">País / Región</label><select class="tot-select" aria-label="País o región" id="reg-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select></div>
       </div>
       <div class="tot-err" id="reg-dob-err" style="margin-top:6px">Debes tener al menos 13 años</div>
       <div class="tot-warn-badge" id="reg-parental-warn" style="display:none">⚠️ Eres menor de 16 años. Necesitas autorización de un padre o tutor.</div>
@@ -451,7 +451,7 @@ var HTML=`
       <div class="tot-err" id="reg-s2b-dob-err">Debes tener al menos 13 años</div>
       <div class="tot-warn-badge" id="reg-s2b-parental-warn" style="display:none">⚠️ Se requiere autorización parental.</div>
       <label class="tot-label">País / Región</label>
-      <select class="tot-select" id="reg-s2b-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select>
+      <select class="tot-select" aria-label="País o región" id="reg-s2b-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select>
       <button class="tot-btn" onclick="TotAuth.goTC()">Continuar →</button>
       <button class="tot-btn ghost" onclick="TotAuth.backToStep1()">← Volver</button>
     </div>
@@ -566,7 +566,7 @@ var HTML=`
       <label class="tot-label">Nombre de usuario</label>
       <div class="tot-input-group"><i class="iico">@</i><input class="tot-input" id="prof-user" placeholder="username"></div>
       <label class="tot-label">País / Región</label>
-      <select class="tot-select" id="prof-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select>
+      <select class="tot-select" aria-label="País o región" id="prof-country"><option value="">Selecciona…</option><option value="EC">Ecuador 🇪🇨</option><option value="CO">Colombia 🇨🇴</option><option value="PE">Perú 🇵🇪</option><option value="CL">Chile 🇨🇱</option><option value="AR">Argentina 🇦🇷</option><option value="MX">México 🇲🇽</option><option value="US">EE.UU. 🇺🇸</option><option value="ES">España 🇪🇸</option><option value="OTHER">Otro</option></select>
       <button class="tot-btn" onclick="TotAuth.saveProfile()">Guardar Cambios</button>
       <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4cff91;display:none;margin-top:8px" id="prof-saved">✓ Cambios guardados</div>
       <button class="tot-btn glass" onclick="TotAuth.logout()">Cerrar sesión</button>

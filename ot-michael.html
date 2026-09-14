@@ -63,7 +63,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:22p
 /* TICKER FOOTER */
 .ticker-footer{flex-shrink:0;border-top:1px solid #222;overflow:hidden;white-space:nowrap;padding:13px 0;background:var(--black)}
 .ticker-track{display:inline-flex;animation:tickerMove 28s linear infinite}
-.ticker-item{display:inline-flex;align-items:center;gap:14px;padding:0 28px;font-size:10px;letter-spacing:.18em;color:#555;text-transform:uppercase}
+.ticker-item{display:inline-flex;align-items:center;gap:14px;padding:0 28px;font-size:10px;letter-spacing:.18em;color:#8f8f8f;text-transform:uppercase}
 .tdot{width:4px;height:4px;border-radius:50%;background:var(--purple);flex-shrink:0}
 @keyframes tickerMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
@@ -91,8 +91,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
 <div class="cursor-ring" id="rng"></div>
 
 <header>
-  <a href="inicio" class="logo">
-    <img src="logo.png" class="logo-icon logo-inv" alt="Top of Talent">
+  <a href="inicio" class="logo" aria-label="Top of Talent, inicio">
+    <img src="logo.png" class="logo-icon logo-inv" alt="">
     <span class="logo-text">Top of<br>Talent</span>
   </a>
   <a href="p-otros" class="back-btn">← Otros Talentos</a>
