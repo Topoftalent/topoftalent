@@ -45,7 +45,7 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .mlines span:nth-child(2){width:13px}
 .mob-btn:hover .mlines span{width:20px}
 .page{flex:1;padding:130px 60px 0;position:relative;z-index:1}
-.big-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(72px,13vw,180px);text-transform:uppercase;letter-spacing:-.04em;line-height:.88;color:var(--purple);margin-bottom:72px;opacity:0;transform:translateY(24px);animation:slideUp .8s .1s forwards}
+.big-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(46px,12vw,170px);text-transform:uppercase;letter-spacing:-.04em;line-height:.88;color:var(--purple);margin-bottom:72px;opacity:0;transform:translateY(24px);animation:slideUp .8s .1s forwards}
 .main-grid{display:grid;grid-template-columns:1fr 280px;gap:80px;align-items:start;margin-bottom:80px;opacity:0;transform:translateY(20px);animation:slideUp .8s .25s forwards}
 .section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.35em;color:var(--purple);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .section-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--purple)}
@@ -80,7 +80,7 @@ footer{background:rgba(0,0,0,.9);border-top:1px solid rgba(255,255,255,.06);padd
 .footer-legal{border-top:1px solid rgba(255,255,255,.06);padding-top:14px;display:flex;gap:20px;flex-wrap:wrap}
 .footer-legal a,.footer-legal span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.18);text-decoration:none;text-transform:uppercase;transition:color .2s}
 .footer-legal a:hover{color:rgba(255,255,255,.5)}
-.nav-overlay{position:fixed;inset:0;background:var(--black);z-index:400;display:flex;flex-direction:column;padding:28px 40px;transform:translateY(-100%);transition:transform .55s cubic-bezier(.76,0,.24,1)}
+.nav-overlay{position:fixed;inset:0;background:var(--black);z-index:9995;display:flex;flex-direction:column;padding:28px 40px;transform:translateY(-100%);transition:transform .55s cubic-bezier(.76,0,.24,1)}
 .nav-overlay.open{transform:translateY(0)}
 .nav-ol-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:80px}
 .nav-close{background:none;border:none;font-weight:700;font-size:11px;letter-spacing:.25em;color:#fff;text-transform:uppercase;transition:color .2s;padding:0}
@@ -232,8 +232,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
 <footer>
   <div class="footer-legal">
     <a href="nosotros">About Us</a>
-    <a href="#" data-legal="terminos">Términos y Condiciones</a>
-    <a href="#" data-legal="privacidad">Política de Privacidad</a>
+    <a href="terminos">Términos y Condiciones</a>
+    <a href="privacidad">Política de Privacidad</a>
     <a href="#" data-legal="cookies">Política de Cookies</a>
     <a href="#" data-legal="aviso">Aviso Legal</a>
   </div>
