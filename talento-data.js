@@ -15,6 +15,21 @@ var ARTIST_IDS = ['artista1','artista2','artista3','artista4','artista5',
 // Tone classes cycle for cards that have no photo
 var TONES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-1','tone-2','tone-3','tone-4'];
 
+// Fallback estático: si Firestore/App Check no responde (p. ej. Safari con ITP),
+// el carrusel igual muestra los artistas en vez de quedar en blanco.
+var FALLBACK_ARTISTAS = [
+  {id:'artista1', file:'alex-ponce',  name:'Alex Ponce',   genre:'Pop',    tone:'tone-1', foto:'', ranking:1},
+  {id:'artista2', file:'johann-vera', name:'Johann Vera',  genre:'Pop',    tone:'tone-2', foto:'', ranking:2},
+  {id:'artista3', file:'mar-rendon',  name:'Mar Rendón',   genre:'Pop',    tone:'tone-3', foto:'', ranking:3},
+  {id:'artista4', file:'jombriel',    name:'Jombriel',     genre:'Urbano', tone:'tone-4', foto:'', ranking:4},
+  {id:'artista5', file:'alex-krack',  name:'Alex Krack',   genre:'Urbano', tone:'tone-5', foto:'', ranking:5},
+  {id:'artista6', file:'dicapo',      name:'Dicapo',       genre:'Pop',    tone:'tone-6', foto:'', ranking:6},
+  {id:'artista7', file:'kenny-die',   name:'Kenny Die',    genre:'Trap',   tone:'tone-1', foto:'', ranking:7},
+  {id:'artista8', file:'yilda',       name:'Yilda',        genre:'Pop',    tone:'tone-2', foto:'', ranking:8},
+  {id:'artista9', file:'ren-kai',     name:'Ren Kai',      genre:'Latino', tone:'tone-3', foto:'', ranking:9},
+  {id:'artista10',file:'blanko',      name:'Blanko',       genre:'Urbano', tone:'tone-4', foto:'', ranking:10},
+];
+
 async function getVoteTotals() {
   var totals = {};
   await Promise.all(ARTIST_IDS.map(async function(id) {
@@ -114,11 +129,13 @@ async function refreshVotes() {
 async function init() {
   try {
     var [artistas, voteTotals] = await Promise.all([loadArtistas(), getVoteTotals()]);
-    applyVotesAndRender(artistas, voteTotals);
+    if (!artistas || !artistas.length) artistas = FALLBACK_ARTISTAS.slice();
+    applyVotesAndRender(artistas, voteTotals || {});
   } catch(e) {
-    console.error('[talento-data] Error cargando artistas:', e);
-    if (typeof buildCarousel === 'function') buildCarousel();
-    if (typeof buildTop7     === 'function') buildTop7();
+    // Firestore/App Check no disponible (p. ej. Safari con ITP): usar fallback
+    // para que el carrusel y el Top 7 igual se muestren.
+    console.error('[talento-data] Firestore no disponible, usando fallback:', e);
+    applyVotesAndRender(FALLBACK_ARTISTAS.slice(), {});
   }
 }
 
