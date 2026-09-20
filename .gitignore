@@ -11,3 +11,7 @@ finanzas/
 # Plantillas de email privadas (no publicar)
 plantillas-email/
 
+
+# Videos (no publicar)
+*.mp4
+*.mov
