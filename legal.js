@@ -169,7 +169,7 @@ var css = `
 .tcb-eyebrow::before{content:'';display:block;width:20px;height:1px;background:#c86cff}
 .tcb-title{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:16px;color:#fff;letter-spacing:-.01em;margin-bottom:10px}
 .tcb-text{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8;color:rgba(255,255,255,.55);margin-bottom:18px}
-.tcb-text a{color:#c86cff;text-decoration:none}
+.tcb-text a{color:#c86cff;text-decoration:underline}
 .tcb-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .tcb-accept{
   font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;font-weight:700;
