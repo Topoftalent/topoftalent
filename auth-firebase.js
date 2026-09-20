@@ -330,6 +330,7 @@ var css=`
   .tot-modal{max-width:100%;border-radius:20px 20px 0 0}
   .tot-backdrop{align-items:flex-end;padding:0}
   #tot-user-btn{right:20px;top:18px}
+@media(max-width:900px){.mob-btn{margin-right:54px}}
   #tot-dropdown{right:20px}
   .tot-grid-2{grid-template-columns:1fr}
 }

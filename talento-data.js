@@ -18,16 +18,16 @@ var TONES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-1','ton
 // Fallback estático: si Firestore/App Check no responde (p. ej. Safari con ITP),
 // el carrusel igual muestra los artistas en vez de quedar en blanco.
 var FALLBACK_ARTISTAS = [
-  {id:'artista1', file:'alex-ponce',  name:'Alex Ponce',   genre:'Pop',    tone:'tone-1', foto:'', ranking:1},
-  {id:'artista2', file:'johann-vera', name:'Johann Vera',  genre:'Pop',    tone:'tone-2', foto:'', ranking:2},
-  {id:'artista3', file:'mar-rendon',  name:'Mar Rendón',   genre:'Pop',    tone:'tone-3', foto:'', ranking:3},
-  {id:'artista4', file:'jombriel',    name:'Jombriel',     genre:'Urbano', tone:'tone-4', foto:'', ranking:4},
-  {id:'artista5', file:'alex-krack',  name:'Alex Krack',   genre:'Urbano', tone:'tone-5', foto:'', ranking:5},
-  {id:'artista6', file:'dicapo',      name:'Dicapo',       genre:'Pop',    tone:'tone-6', foto:'', ranking:6},
-  {id:'artista7', file:'kenny-die',   name:'Kenny Die',    genre:'Trap',   tone:'tone-1', foto:'', ranking:7},
-  {id:'artista8', file:'yilda',       name:'Yilda',        genre:'Pop',    tone:'tone-2', foto:'', ranking:8},
-  {id:'artista9', file:'ren-kai',     name:'Ren Kai',      genre:'Latino', tone:'tone-3', foto:'', ranking:9},
-  {id:'artista10',file:'blanko',      name:'Blanko',       genre:'Urbano', tone:'tone-4', foto:'', ranking:10},
+  {id:'artista1', file:'alex-ponce',  name:'Alex Ponce',   genre:'Pop',    tone:'tone-1', foto:'fotos/artista1/portada.webp',  ranking:1},
+  {id:'artista2', file:'johann-vera', name:'Johann Vera',  genre:'Pop',    tone:'tone-2', foto:'fotos/artista2/portada.webp',  ranking:2},
+  {id:'artista3', file:'mar-rendon',  name:'Mar Rendón',   genre:'Pop',    tone:'tone-3', foto:'fotos/artista3/portada.webp',  ranking:3},
+  {id:'artista4', file:'jombriel',    name:'Jombriel',     genre:'Urbano', tone:'tone-4', foto:'fotos/artista4/portada.webp',  ranking:4},
+  {id:'artista5', file:'alex-krack',  name:'Alex Krack',   genre:'Urbano', tone:'tone-5', foto:'fotos/artista5/portada.webp',  ranking:5},
+  {id:'artista6', file:'dicapo',      name:'Dicapo',       genre:'Pop',    tone:'tone-6', foto:'fotos/artista6/portada.webp',  ranking:6},
+  {id:'artista7', file:'kenny-die',   name:'Kenny Die',    genre:'Trap',   tone:'tone-1', foto:'fotos/artista7/portada.webp',  ranking:7},
+  {id:'artista8', file:'yilda',       name:'Yilda',        genre:'Pop',    tone:'tone-2', foto:'fotos/artista8/portada.webp',  ranking:8},
+  {id:'artista9', file:'ren-kai',     name:'Ren Kai',      genre:'Latino', tone:'tone-3', foto:'fotos/artista9/portada.webp',  ranking:9},
+  {id:'artista10',file:'blanko',      name:'Blanko',       genre:'Urbano', tone:'tone-4', foto:'fotos/artista10/portada.webp', ranking:10},
 ];
 
 async function getVoteTotals() {
@@ -81,7 +81,8 @@ async function loadArtistas() {
       score_criticos: (typeof data.score_criticos === 'number') ? data.score_criticos : null,
       tone:   TONES[(data.order || 1) - 1] || 'tone-1',
       bio:    bio,
-      foto:   data.foto_principal || '',
+      // Portada local (WebP, mismo origen): carga siempre, también en Safari con bloqueadores.
+      foto:   'fotos/' + d.id + '/portada.webp',
       ranking: data.ranking || data.order || 0,
       yt:     data.yt_link || '',
     });
