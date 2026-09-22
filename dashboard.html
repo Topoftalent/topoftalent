@@ -33,14 +33,14 @@ h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.02em;margin-b
 .card.clic:hover{border-color:rgba(200,108,255,.4);transform:translateY(-2px);background:rgba(200,108,255,.05)}
 .card .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:12px}
 .card .n{font-size:50px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#fff}
-.card .n small{font-size:15px;color:rgba(255,255,255,.35);font-weight:400}
+.card .n small{font-size:15px;color:rgba(255,255,255,.6);font-weight:400}
 .card .d{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.42);margin-top:8px;line-height:1.5}
 .card .row{display:flex;align-items:center;gap:10px;margin-top:15px;flex-wrap:wrap}
 .card .lnk{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(200,108,255,.92);text-decoration:none;border:1px solid rgba(200,108,255,.3);border-radius:24px;padding:7px 13px;background:transparent;transition:background .15s}
 .card .lnk:hover{background:rgba(200,108,255,.1)}
 .card .verd{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
 .card .verd b{color:rgba(200,108,255,.85)}
-.spark{font-family:'JetBrains Mono',monospace;font-size:20px;color:rgba(255,255,255,.3)}
+.spark{font-family:'JetBrains Mono',monospace;font-size:20px;color:rgba(255,255,255,.6)}
 .res .card{display:flex;flex-direction:column}
 .res .card .d{flex:1}
 /* Drawer detalle */
@@ -62,9 +62,9 @@ h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.02em;margin-b
 .item.ok .dot{background:#7be0a4}.item.no .dot{background:rgba(255,255,255,.22)}
 .item .nm{font-size:14px;font-weight:500}
 .item .mt{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
-.item .badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:3px 7px}
+.item .badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:3px 7px}
 .item a.mini{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:rgba(200,108,255,.85);text-decoration:none;border:1px solid rgba(200,108,255,.3);border-radius:5px;padding:4px 8px}
-.empty{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.35);padding:16px 0}
+.empty{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.6);padding:16px 0}
 </style>
 </head>
 <body>
@@ -181,7 +181,7 @@ async function cargarGA(){
     wrap.innerHTML=big+lists;
   }catch(e){
     var msg=((e&&e.message)||'').slice(0,140);
-    wrap.innerHTML='<div class="card"><div class="k">Analítica GA4</div><div class="d" style="line-height:1.7;margin-top:8px">Aún no hay datos para mostrar. Es normal si acabas de conectar GA4 o si falta habilitar la <b>Analytics Data API</b>. Empezará a poblarse cuando entren visitantes que acepten cookies.<br><span style="color:rgba(255,255,255,.3)">'+esc(msg)+'</span></div><div class="row"><a class="lnk" href="https://analytics.google.com/analytics/web/" target="_blank">Abrir GA4 &rarr;</a></div></div>';
+    wrap.innerHTML='<div class="card"><div class="k">Analítica GA4</div><div class="d" style="line-height:1.7;margin-top:8px">Aún no hay datos para mostrar. Es normal si acabas de conectar GA4 o si falta habilitar la <b>Analytics Data API</b>. Empezará a poblarse cuando entren visitantes que acepten cookies.<br><span style="color:rgba(255,255,255,.6)">'+esc(msg)+'</span></div><div class="row"><a class="lnk" href="https://analytics.google.com/analytics/web/" target="_blank">Abrir GA4 &rarr;</a></div></div>';
   }
 }
 function gaCard(k,n){ return '<div class="card"><div class="k">'+k+'</div><div class="n">'+(n==null?'—':n)+'</div><div class="d">últimos 28 días</div></div>'; }

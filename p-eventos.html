@@ -95,7 +95,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:22p
 .event-review{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:rgba(255,255,255,.6);margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #222}
 .event-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .meta-block{display:flex;flex-direction:column;gap:3px}
-.meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.6);text-transform:uppercase}
 .meta-value{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--white);font-weight:700}
 .meta-value.pink{color:var(--pink)}
 .btn-tickets{
@@ -153,7 +153,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,.08);padding:24p
 </div>
 
 <div class="events-grid" id="eventsGrid">
-  <div style="grid-column:1/-1;padding:60px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.3)">Cargando eventos…</div>
+  <div style="grid-column:1/-1;padding:60px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.6)">Cargando eventos…</div>
 </div>
 
 <div class="ticker-footer">
@@ -303,7 +303,7 @@ async function loadEventos() {
 
     var grid = document.getElementById('eventsGrid');
     if (!eventos.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:11px;color:rgba(255,255,255,.3)">Próximamente · nuevos eventos</div>';
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:11px;color:rgba(255,255,255,.6)">Próximamente · nuevos eventos</div>';
       return;
     }
 
