@@ -29,6 +29,13 @@ exports.engagementDiario = engagement.engagementDiario;
 const contenido = require("./contenido");
 exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 · TOP 7 + #1 en un correo
 
+// Notificaciones de comunidad (triggers): conectan los toggles eventos,
+// novedades y comunidad con eventos reales de Firestore.
+const comunidad = require("./comunidad");
+exports.onEventoCreado = comunidad.onEventoCreado;             // crear eventos/{id}
+exports.onNovedadCreada = comunidad.onNovedadCreada;           // crear novedades/{id}
+exports.onComentarioComunidad = comunidad.onComentarioComunidad; // comentario en perfil de talento
+
 const autoriz = require("./autorizaciones");
 exports.onAutorizacion = autoriz.onAutorizacion;
 
