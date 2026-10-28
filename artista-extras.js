@@ -142,13 +142,13 @@ function injectStyles() {
     'background:rgba(0,0,0,.35);border-radius:4px;padding:1px 4px;letter-spacing:.05em}',
     '.empty-state{font-family:"JetBrains Mono",monospace;font-size:11px;color:#aaa;padding:20px 0}',
     /* ── SCORE TOT CARD ── */
-    '.tot-score-card{display:flex;flex-direction:column;gap:22px;padding:28px 28px 24px;border-radius:14px;',
+    '.tot-score-card{display:flex;flex-direction:column;gap:22px;padding:28px 28px 24px;border-radius:14px;width:100%;box-sizing:border-box;',
     'background:rgba(200,108,255,.04);border:1px solid rgba(200,108,255,.15);margin:4px 0}',
     '.score-header{display:flex;align-items:center;justify-content:space-between;gap:12px}',
     '.score-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
     'font-size:clamp(18px,2.5vw,26px);letter-spacing:-.01em;color:#000;text-transform:uppercase}',
     '.score-breakdown{display:flex;flex-direction:column;gap:12px}',
-    '.score-row{display:grid;grid-template-columns:110px 1fr 40px;align-items:center;gap:12px}',
+    '.score-row{display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:12px}',
     '.score-row-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;',
     'color:#555;text-transform:uppercase}',
     '.score-bar{height:4px;background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden}',
@@ -157,14 +157,15 @@ function injectStyles() {
     '.score-row-val{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;',
     'color:#000;text-align:right;letter-spacing:.02em}',
     '.score-row-val.fan-val{color:#c86cff}',
-    '.score-footer{display:flex;flex-direction:column;align-items:flex-end;gap:4px;',
+    '.score-row-val.pending{color:#8a8a8a;font-size:10px;font-weight:400;letter-spacing:.04em}',
+    '.score-footer{display:flex;flex-direction:column;align-items:flex-start;gap:4px;',
     'padding-top:16px;border-top:1px solid rgba(0,0,0,.07)}',
     '.score-avg-num{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:700;',
     'font-size:36px;letter-spacing:-.02em;color:#c86cff;line-height:1}',
     '.score-avg-label{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.2em;',
-    'color:#aaa;text-transform:uppercase}',
-    '.score-pending{font-family:"JetBrains Mono",monospace;font-size:9px;color:#aaa;',
-    'letter-spacing:.04em;text-align:right;margin-top:4px}',
+    'color:#777;text-transform:uppercase}',
+    '.score-pending{font-family:"JetBrains Mono",monospace;font-size:9px;color:#777;',
+    'letter-spacing:.04em;text-align:left;line-height:1.6;margin-top:6px;max-width:320px}',
     /* ── INFO BUTTON ── */
     '.comm-col-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.1);margin-bottom:20px}',
     '.comm-col-title{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-size:22px;font-weight:700;',
@@ -445,7 +446,7 @@ function updateScoreBlock(rank, total) {
     return '<div class="score-row">' +
       '<span class="score-row-label">' + label + '</span>' +
       '<div class="score-bar"><div class="score-bar-fill" style="width:' + pct + '%"></div></div>' +
-      '<span class="score-row-val' + (isFan ? ' fan-val' : '') + '">' + (val !== null ? val : '--') + '</span>' +
+      '<span class="score-row-val' + (isFan ? ' fan-val' : '') + (val === null ? ' pending' : '') + '">' + (val !== null ? val : 'Pendiente') + '</span>' +
     '</div>';
   }
 

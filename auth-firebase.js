@@ -813,9 +813,18 @@ window.TotAuth = {
       setTimeout(function(){ TotAuth.showToast('Hola, @' + userData.username + '!'); }, 400);
     } catch(e) {
       console.error(e);
-      var msg = e.code === 'auth/email-already-in-use' ? 'Ese email ya está registrado' : 'Error al crear cuenta';
+      var dup = (e.code === 'auth/email-already-in-use');
+      var msg = dup
+        ? 'Ese correo ya tiene una cuenta. Inicia sesión o usa otro correo.'
+        : (e.code === 'auth/weak-password'
+            ? 'La contraseña es muy débil (mínimo 6 caracteres).'
+            : 'No se pudo crear la cuenta. Revisa tus datos e inténtalo de nuevo.');
       document.getElementById('reg-email-err').textContent = msg;
       document.getElementById('reg-email-err').classList.add('show');
+      TotAuth.showToast(msg);
+      // El error del correo vive en el paso 1: si el usuario está en otro paso,
+      // lo llevamos ahí para que vea el mensaje en vez de "no pasa nada".
+      if (dup) { TotAuth._showRegStep(1); }
       btn.innerHTML = 'Crear cuenta →';
       btn.disabled = false;
     }

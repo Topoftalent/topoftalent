@@ -158,6 +158,20 @@ function buildMarquee(talents) {
 import { db } from './firebase-config.js';
 import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
+// Fallback estático: si Firestore/App Check no responde (p. ej. Safari con ITP),
+// la sección igual muestra los talentos en vez de quedar en blanco.
+var FALLBACK_OTROS = [
+  {id:'michaelmorales',  name:'Michael Morales',  category:'Deporte',        order:1},
+  {id:'bryamheredia',    name:'Bryam Heredia',    category:'Fotografía',     order:2},
+  {id:'domenicaazuero',  name:'Domenica Azuero',  category:'Ciclismo BMX',   order:3},
+  {id:'dayannacopete',   name:'Dayanna Copete',   category:'Modelaje',       order:4},
+  {id:'veronicabanchon', name:'Verónica Banchón', category:'Modelaje',       order:5},
+  {id:'rayneeralba',     name:'Rayneer Alba',     category:'Fotografía',     order:6},
+  {id:'nathalyquinonez', name:'Nathaly Quiñónez', category:'Modelaje',       order:7},
+  {id:'alfredocampo',    name:'Alfredo Campo',    category:'Ciclismo BMX',   order:8},
+  {id:'gustavomoscoso',  name:'Gustavo Moscoso',  category:'Diseño y moda',  order:9},
+];
+
 async function loadTalents() {
   try {
     var snap = await getDocs(collection(db, 'otros_talentos'));
@@ -168,13 +182,13 @@ async function loadTalents() {
         talents.push(Object.assign({ id: d.id }, data));
       }
     });
-    // Sort by order field client-side
     talents.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+    if (!talents.length) talents = FALLBACK_OTROS.slice();
     buildMarquee(talents);
   } catch(e) {
-    console.error('Error cargando otros talentos:', e);
-    document.getElementById('rows').innerHTML =
-      '<p style="text-align:center;font-family:JetBrains Mono,monospace;font-size:11px;color:rgba(255,255,255,.62);letter-spacing:.15em;padding:40px">Pronto · nuevos talentos</p>';
+    // Firestore/App Check no disponible: usar fallback para que no quede vacío.
+    console.error('otros_talentos no disponible, usando fallback:', e);
+    buildMarquee(FALLBACK_OTROS.slice());
   }
 }
 
