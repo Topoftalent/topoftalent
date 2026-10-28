@@ -33,7 +33,8 @@ exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 
 // novedades y comunidad con eventos reales de Firestore.
 const comunidad = require("./comunidad");
 exports.onEventoCreado = comunidad.onEventoCreado;             // crear eventos/{id}
-exports.onNovedadCreada = comunidad.onNovedadCreada;           // crear novedades/{id}
+exports.onNuevoOtroTalento = comunidad.onNuevoOtroTalento;    // novedades: nuevo Otro Talento
+exports.onBlackSessionsActivo = comunidad.onBlackSessionsActivo; // novedades: Black Sessions activo
 exports.onComentarioComunidad = comunidad.onComentarioComunidad; // comentario en perfil de talento
 
 const autoriz = require("./autorizaciones");

@@ -14,7 +14,7 @@
 // Para NO notificar al crear un evento/novedad (borrador), guarda el doc
 // con  notificar: false.
 // ─────────────────────────────────────────────────────────────────
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { getFirestore } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
 const noti = require("./notificaciones");
@@ -94,35 +94,72 @@ exports.onEventoCreado = onDocumentCreated(
   }
 );
 
-// ── NOVEDADES · al crear novedades/{id} ────────────────────────────
-exports.onNovedadCreada = onDocumentCreated(
-  { document: "novedades/{id}", region: REGION, secrets: [BREVO_API_KEY], memory: "256MiB" },
+// ── NOVEDADES (automáticas) · contenido nuevo del sitio ────────────
+// novedades = lo nuevo que NO cubre otro toggle, para no duplicar correos:
+//   - nuevo Otro Talento añadido      → otros_talentos/{id} (create)
+//   - Black Sessions activado         → config/black_sessions.activo: false→true
+// (Comentarios los cubre `comunidad`; el Top 7 lo cubre `semanal`.)
+
+// Nuevo Otro Talento. Para añadir sin avisar (borrador o carga masiva),
+// guardar el doc con notificar:false o active:false.
+exports.onNuevoOtroTalento = onDocumentCreated(
+  { document: "otros_talentos/{id}", region: REGION, secrets: [BREVO_API_KEY], memory: "256MiB" },
   async (event) => {
     const snap = event.data; if (!snap) return;
     const d = snap.data() || {};
-    if (d.notificar === false) { logger.info("novedad sin notificar", { id: snap.id }); return; }
+    if (d.notificar === false || d.active === false) { logger.info("otro talento sin aviso", { id: snap.id }); return; }
 
-    const artistaId = d.artista || d.artistId || d.talento || null;
-    const artistaNombre = (artistaId && NOMBRES[artistaId]) || d.artistaNombre || null;
-    const titulo = d.titulo || (artistaNombre ? `Novedad de ${artistaNombre}` : "Nueva novedad en Top of Talent");
-    const cuerpo = d.cuerpo || d.resumen || d.descripcion || "Hay una nueva novedad que te puede interesar.";
-    const slug = (artistaId && SLUGS[artistaId]) || null;
-    const link = d.link || (slug ? `${SITE}/${slug}` : `${SITE}/p-otros`);
+    const nombre = d.name || d.nombre || "un nuevo talento";
+    const categoria = d.category || d.categoria || "";
+    const linea = categoria ? `${nombre} (${categoria})` : nombre;
+    const link = `${SITE}/ot-perfil.html?id=${encodeURIComponent(snap.id)}`;
 
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "novedades",
       buildCorreo: (u) => ({
         to: u.email,
-        subject: esc(titulo),
-        preheader: "Novedades frescas en Top of Talent.",
-        titulo: esc(titulo),
-        cuerpoHtml: esc(cuerpo),
-        textoBoton: "Ver novedad",
+        subject: `Nuevo talento en Top of Talent: ${nombre}`,
+        preheader: "Acabamos de sumar un nuevo talento.",
+        titulo: `Conoce a ${esc(nombre)}`,
+        cuerpoHtml: `Sumamos un nuevo talento a Top of Talent: <b>${esc(linea)}</b>. Pásate a conocer su perfil en la sección Otros Talentos.`,
+        textoBoton: "Ver su perfil",
         linkBoton: link,
       }),
     });
-    logger.info("onNovedadCreada", { id: snap.id, ...r });
+    logger.info("onNuevoOtroTalento", { id: snap.id, ...r });
+  }
+);
+
+// Black Sessions activado. Flip del flag en el doc config/black_sessions:
+// para disparar, guardar { activo: true } (opcional: mensaje). Solo avisa en
+// el flanco OFF→ON (no re-avisa si ya estaba activo). notificar:false lo silencia.
+exports.onBlackSessionsActivo = onDocumentWritten(
+  { document: "config/black_sessions", region: REGION, secrets: [BREVO_API_KEY], memory: "256MiB" },
+  async (event) => {
+    const after = event.data && event.data.after && event.data.after.exists ? event.data.after.data() : null;
+    const before = event.data && event.data.before && event.data.before.exists ? event.data.before.data() : null;
+    if (!after) return;
+    const activoAhora = after.activo === true;
+    const activoAntes = !!(before && before.activo === true);
+    if (!activoAhora || activoAntes) return;                 // solo OFF→ON
+    if (after.notificar === false) { logger.info("black sessions activo sin aviso"); return; }
+
+    const link = `${SITE}/p-black`;
+    const r = await enviarAMiembros({
+      apiKey: BREVO_API_KEY.value(),
+      prefKey: "novedades",
+      buildCorreo: (u) => ({
+        to: u.email,
+        subject: "Black Sessions ya está activo",
+        preheader: "El escenario exclusivo de Top of Talent abrió.",
+        titulo: "Black Sessions está activo",
+        cuerpoHtml: `Ya puedes entrar a <b>Black Sessions</b>, el escenario exclusivo de Top of Talent. ${after.mensaje ? esc(after.mensaje) : "Descúbrelo ahora."}`,
+        textoBoton: "Entrar a Black Sessions",
+        linkBoton: link,
+      }),
+    });
+    logger.info("onBlackSessionsActivo", { ...r });
   }
 );
 
