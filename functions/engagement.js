@@ -6,7 +6,7 @@
 //   - Recordatorio de voto (8h)      · todos los días
 //   - Invitación a votar (nunca votó)· martes y jueves
 //   - Quedaste fuera del Top Fans    · miércoles
-//   - Inactividad                    · miércoles
+//   - Inactividad (solo si YA votó)  · miércoles
 //
 // Respeta: preferencias (user.prefs.*, default ON), anti-repetición
 // (marcas en el doc del usuario) y solo miembros (isMember == true).
@@ -131,19 +131,21 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
     }
 
     // D · Inactividad · miércoles(3)
-    if (day === 3 && prefOn(u, "voto")) {
+    // Solo a quien YA votó: así nunca choca con "invitar a votar" (mar/jue),
+    // que va dirigida a quien nunca votó. Audiencias separadas = sin solape.
+    if (day === 3 && prefOn(u, "voto") && mv && mv.topId) {
       const ultAct = msDe(u.lastActivityAt);
       const inactivo = ultAct && (ahora - ultAct) > INACTIVIDAD_DIAS * 86400000;
       const ultAviso = msDe(u.inactividadAt);
       if (inactivo && (!ultAviso || (ahora - ultAviso) > REPETIR_INACTIV_DIAS * 86400000)) {
-        const artista = mv && mv.topId ? (artistaNombre[mv.topId] || "tu artista") : "la escena";
-        const link = mv && mv.topId ? linkArtista(mv.topId) : `${SITE}/talento`;
+        const artista = artistaNombre[mv.topId] || "tu artista";
+        const link = linkArtista(mv.topId);
         await enviar("inactividad", u, {
           to: u.email,
           subject: "El ranking se movió sin ti",
           preheader: "Otros fans están subiendo a sus artistas.",
           titulo: "La competencia no se detiene",
-          cuerpoHtml: `Mientras no votas, otros fans siguen subiendo a sus artistas en el ranking. Vuelve y haz que ${artista === "la escena" ? "tu favorito" : "<b>" + artista + "</b>"} pelee por el TOP. Tu voto puede cambiar las posiciones.`,
+          cuerpoHtml: `Mientras no votas, otros fans siguen subiendo a sus artistas en el ranking. Vuelve y haz que <b>${artista}</b> pelee por el TOP. Tu voto puede cambiar las posiciones.`,
           textoBoton: "Volver y votar",
           linkBoton: link,
         }, { inactividadAt: FieldValue.serverTimestamp() });
