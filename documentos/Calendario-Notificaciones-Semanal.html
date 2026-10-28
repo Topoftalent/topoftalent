@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendario de Notificaciones · Top of Talent</title>
+<style>
+  :root{
+    --bg:#0e0d14; --panel:#16141f; --panel2:#1c1a26; --line:#272433;
+    --txt:#ece9f5; --muted:#9a93ad; --accent:#c86cff;
+    /* colores por tipo */
+    --c-prep:#ff7a66;      /* preparar contenido */
+    --c-voto:#5aa9ff;      /* engagement de voto (automático, dirigido) */
+    --c-talento:#38d9c4;   /* publicar nuevo talento */
+    --c-eventos:#f4b740;   /* publicar eventos */
+    --c-resumen:#c86cff;   /* resumen TOP 7 (masivo) */
+    --c-realtime:#8b8699;  /* tiempo real */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg)}
+  body{
+    font-family:Arial, Helvetica, "Segoe UI", sans-serif;
+    color:var(--txt); padding:40px 28px 60px; line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  header.doc{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:28px}
+  header.doc img{height:40px;width:auto}
+  header.doc .t h1{font-size:22px;margin:0;letter-spacing:.3px}
+  header.doc .t p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  header.doc .tag{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+
+  h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:34px 0 14px;font-weight:bold}
+
+  /* Grilla semanal */
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+  .day{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-height:230px}
+  .day h3{margin:0;padding:12px 12px 10px;font-size:13px;background:var(--panel2);border-bottom:1px solid var(--line);letter-spacing:.4px}
+  .day .band{padding:10px 10px 4px}
+  .band-label{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 2px 7px}
+  .band.you{border-top:1px dashed var(--line);margin-top:auto}
+  .chip{display:block;border-radius:9px;padding:8px 9px;margin-bottom:7px;font-size:11.5px;line-height:1.3;border-left:4px solid var(--c-realtime);background:var(--panel2)}
+  .chip b{display:block;font-size:11.5px;margin-bottom:1px}
+  .chip small{color:var(--muted);font-size:10px}
+  .chip.prep{border-left-color:var(--c-prep)}
+  .chip.voto{border-left-color:var(--c-voto)}
+  .chip.talento{border-left-color:var(--c-talento)}
+  .chip.eventos{border-left-color:var(--c-eventos)}
+  .chip.resumen{border-left-color:var(--c-resumen);background:rgba(200,108,255,.12)}
+  .chip.none{color:var(--muted);font-size:10.5px;border-left-color:transparent;background:transparent;padding-left:2px}
+
+  /* Franja diaria */
+  .daily{margin-top:12px;background:linear-gradient(90deg, rgba(90,169,255,.14), rgba(90,169,255,.04));border:1px solid var(--line);border-left:4px solid var(--c-voto);border-radius:12px;padding:12px 16px;font-size:12.5px;display:flex;gap:12px;align-items:center}
+  .daily b{color:var(--txt)}
+  .daily span{color:var(--muted)}
+
+  /* Leyenda + columnas de explicación */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .card h4{margin:0 0 12px;font-size:13px;letter-spacing:.4px}
+  .legend{display:flex;flex-direction:column;gap:9px}
+  .lg{display:flex;align-items:flex-start;gap:10px;font-size:12.5px}
+  .sw{width:14px;height:14px;border-radius:4px;flex:0 0 auto;margin-top:2px}
+  .lg small{color:var(--muted);display:block;font-size:11px}
+  ul.rules{margin:0;padding-left:18px}
+  ul.rules li{font-size:12.5px;margin-bottom:9px;color:var(--txt)}
+  ul.rules li b{color:var(--accent)}
+
+  .golden{margin-top:26px;background:rgba(200,108,255,.1);border:1px solid rgba(200,108,255,.35);border-radius:14px;padding:16px 20px;font-size:13.5px}
+  .golden b{color:var(--accent)}
+
+  footer.doc{margin-top:34px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  @media print{ body{background:#fff;color:#111;padding:0} .day,.card,.daily,.golden{break-inside:avoid} }
+  @media(max-width:900px){ .week{grid-template-columns:repeat(2,1fr)} .cols{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <img src="../logo-lockup-white.png" alt="Top of Talent" onerror="this.style.display='none'">
+    <div class="t">
+      <h1>Calendario de notificaciones</h1>
+      <p>Qué se prepara, qué se publica y cuándo sale cada alerta · uso interno</p>
+    </div>
+    <span class="tag">Recurso oficial · TOT</span>
+  </header>
+
+  <h2 class="sec">Semana tipo</h2>
+  <div class="week">
+
+    <!-- LUNES -->
+    <div class="day">
+      <h3>Lunes</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip none">Sin envíos masivos</div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú preparas</p>
+        <div class="chip prep"><b>Revisar y dejar listo</b><small>Nuevo talento, eventos y contenido de la semana, listos para publicar.</small></div>
+      </div>
+    </div>
+
+    <!-- MARTES -->
+    <div class="day">
+      <h3>Martes</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip voto"><b>Invitación a votar</b><small>Solo a quien nunca votó. Dirigido, no masivo.</small></div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip talento"><b>Nuevo talento (Otros Talentos)</b><small>Al agregarlo sale "Dale la bienvenida a…" con foto.</small></div>
+      </div>
+    </div>
+
+    <!-- MIÉRCOLES -->
+    <div class="day">
+      <h3>Miércoles</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip voto"><b>Fuera del Top Fans</b><small>Solo a quien perdió su puesto.</small></div>
+        <div class="chip voto"><b>Inactividad</b><small>Solo a quien lleva días sin votar.</small></div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip none">Nada</div>
+      </div>
+    </div>
+
+    <!-- JUEVES -->
+    <div class="day">
+      <h3>Jueves</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip voto"><b>Invitación a votar</b><small>Segundo recordatorio a quien no votó.</small></div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip eventos"><b>Actualización de eventos</b><small>Un solo correo con los 7 eventos de la agenda.</small></div>
+      </div>
+    </div>
+
+    <!-- VIERNES -->
+    <div class="day">
+      <h3>Viernes</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip none">Sin envíos masivos</div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip none">Día libre de publicación</div>
+      </div>
+    </div>
+
+    <!-- SÁBADO -->
+    <div class="day">
+      <h3>Sábado</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip resumen"><b>Resumen TOP 7</b><small>Correo masivo a todos los miembros. 11:00.</small></div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip none">Reservado: nada más este día</div>
+      </div>
+    </div>
+
+    <!-- DOMINGO -->
+    <div class="day">
+      <h3>Domingo</h3>
+      <div class="band">
+        <p class="band-label">Automático (Sistema)</p>
+        <div class="chip none">Descanso</div>
+      </div>
+      <div class="band you">
+        <p class="band-label">Tú publicas</p>
+        <div class="chip none">Nada</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="daily">
+    <b>Todos los días · 20:00</b>
+    <span>Recordatorio de voto (cada 8 h) a quien ya votó y puede volver a votar. Es automático y dirigido: nunca es un envío a toda la lista.</span>
+  </div>
+
+  <h2 class="sec">Leyenda y reglas</h2>
+  <div class="cols">
+
+    <div class="card">
+      <h4>Tipos de notificación</h4>
+      <div class="legend">
+        <div class="lg"><span class="sw" style="background:var(--c-prep)"></span><div><b>Preparación</b><small>Trabajo interno, sin correo. Dejar todo listo (lunes).</small></div></div>
+        <div class="lg"><span class="sw" style="background:var(--c-voto)"></span><div><b>Engagement de voto (automático, dirigido)</b><small>Invitar a votar, fuera del Top Fans, inactividad, recordatorio 8 h. Solo a quien aplica.</small></div></div>
+        <div class="lg"><span class="sw" style="background:var(--c-talento)"></span><div><b>Nuevo talento (masivo)</b><small>Sale solo al agregar un Otro Talento. Martes.</small></div></div>
+        <div class="lg"><span class="sw" style="background:var(--c-eventos)"></span><div><b>Eventos (masivo)</b><small>Un correo al publicar la actualización de la agenda. Jueves.</small></div></div>
+        <div class="lg"><span class="sw" style="background:var(--c-resumen)"></span><div><b>Resumen TOP 7 (masivo)</b><small>Automático cada sábado a todos los miembros.</small></div></div>
+        <div class="lg"><span class="sw" style="background:var(--c-realtime)"></span><div><b>Tiempo real</b><small>Hito #1 y comunidad (comentarios): salen cuando ocurren, sin día fijo.</small></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>Por qué esta cadencia</h4>
+      <ul class="rules">
+        <li><b>Masivos separados.</b> Nuevo talento (martes) y eventos (jueves) van en días distintos para no mandar dos correos a toda la lista el mismo día.</li>
+        <li><b>Sábado reservado.</b> Ese día sale el Resumen TOP 7 a todos; no se publica nada más para no chocar.</li>
+        <li><b>El voto es dirigido.</b> Los correos azules llegan solo a quien aplica (no votó, perdió puesto, está inactivo), así que no son spam aunque sean a diario.</li>
+        <li><b>Preparar ≠ publicar.</b> El lunes se arma todo; se publica el día asignado para que el correo salga con contenido real.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="golden">
+    <b>Regla de oro:</b> máximo <b>un correo masivo por día</b> a un mismo usuario. Las notificaciones tienen ritmo constante, pero nunca saturan.
+  </div>
+
+  <footer class="doc">
+    <span>Top of Talent · Documento interno de operación de notificaciones</span>
+    <span>Complemento de Notificaciones-Prelanzamiento.pdf</span>
+  </footer>
+
+</div>
+</body>
+</html>
