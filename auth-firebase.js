@@ -135,10 +135,13 @@ var css=`
   background:rgba(0,0,0,.6);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .35s ease;pointer-events:none;
+  opacity:0;pointer-events:none;
+  /* visibility:hidden cuando está cerrado evita que iOS Safari enfoque/autollene
+     los <input type=password> ocultos (keyboard "Contraseñas" saltando solo). */
+  visibility:hidden;transition:opacity .35s ease, visibility 0s linear .35s;
   padding:20px;
 }
-.tot-backdrop.open{opacity:1;pointer-events:all}
+.tot-backdrop.open{opacity:1;pointer-events:all;visibility:visible;transition:opacity .35s ease, visibility 0s}
 
 /* GLASS MODAL */
 .tot-modal{

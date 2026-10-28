@@ -298,6 +298,21 @@ function injectStyles() {
     '@media(max-width:768px){.community-grid{grid-template-columns:1fr;gap:40px}',
     '.cmt-ticker-wrap{height:220px}.vote-area{align-items:flex-start}',
     '.vote-legend{text-align:left}.resumen-quote-big{font-size:clamp(18px,5vw,28px)}}',
+    /* ── SCORE CARD · MÓVIL: tarjeta a ancho completo y barras desplegadas ── */
+    '@media(max-width:768px){',
+    '.specs-table{display:block;width:100%}.specs-table tbody{display:block;width:100%}',
+    '#tot-score-block{display:block;width:100%}',
+    '.tot-score-card{width:100%;padding:24px 20px 22px;gap:20px}',
+    '.score-title{font-size:22px}',
+    '.score-breakdown{gap:20px}',
+    '.score-row{grid-template-columns:1fr auto;grid-template-areas:"label val" "bar bar";gap:9px 12px}',
+    '.score-row-label{grid-area:label;align-self:center;font-size:11px}',
+    '.score-row-val{grid-area:val;align-self:center;font-size:17px;text-align:right}',
+    '.score-row-val.pending{grid-area:val;font-size:11px}',
+    '.score-bar{grid-area:bar;height:9px;background:rgba(0,0,0,.1)}',
+    '.score-avg-num{font-size:48px}',
+    '.score-pending{max-width:none;font-size:10px;line-height:1.7}',
+    '}',
   ].join('');
   document.head.appendChild(s);
 }
