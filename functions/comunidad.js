@@ -45,6 +45,9 @@ function esc(s) {
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 function hoy() { return new Date().toISOString().split("T")[0]; } // YYYY-MM-DD UTC
+// Normaliza una "marca de actualización" (Timestamp de Firestore o número/str)
+// para poder comparar si cambió entre before y after.
+function valorMarca(v) { if (v == null) return ""; if (v.toMillis) return v.toMillis(); return v; }
 
 // Envía el mismo correo a los miembros con la pref activa.
 // buildCorreo(user) -> objeto de correo o null para saltar a ese usuario.
@@ -63,34 +66,47 @@ async function enviarAMiembros({ apiKey, prefKey, buildCorreo }) {
   return { enviados, errores, miembros: snap.size };
 }
 
-// ── EVENTOS · al crear eventos/{id} ────────────────────────────────
-exports.onEventoCreado = onDocumentCreated(
-  { document: "eventos/{id}", region: REGION, secrets: [BREVO_API_KEY], memory: "256MiB" },
+// ── EVENTOS · UN aviso al publicar la actualización (proceso en lote) ──
+// Los eventos se revisan/actualizan en lote. Los docs de eventos/{id} son solo
+// datos (no avisan uno a uno). Cuando terminas la revisión y PUBLICAS la
+// actualización, sale UN solo correo: "la página de eventos está actualizada,
+// hay nuevos eventos".
+// Disparador: escribir config/eventos cambiando `actualizadoAt` (p. ej. a
+// Date.now() o serverTimestamp). Opcionales: `nuevos` (número) y `resumen`
+// (texto). notificar:false lo silencia.
+exports.onEventosActualizados = onDocumentWritten(
+  { document: "config/eventos", region: REGION, secrets: [BREVO_API_KEY], memory: "256MiB" },
   async (event) => {
-    const snap = event.data; if (!snap) return;
-    const d = snap.data() || {};
-    if (d.notificar === false) { logger.info("evento sin notificar", { id: snap.id }); return; }
+    const after = event.data && event.data.after && event.data.after.exists ? event.data.after.data() : null;
+    const before = event.data && event.data.before && event.data.before.exists ? event.data.before.data() : null;
+    if (!after) return;
+    // Solo cuando cambia la marca de actualización (fin de una revisión).
+    const cambio = after.actualizadoAt != null &&
+      String(valorMarca(after.actualizadoAt)) !== String(valorMarca(before && before.actualizadoAt));
+    if (!cambio) return;
+    if (after.notificar === false) { logger.info("eventos actualizados sin aviso"); return; }
 
-    const titulo = d.titulo || d.nombre || "Nuevo evento en Top of Talent";
-    const resumen = d.resumen || d.descripcion || "Hay un nuevo evento. Mira los detalles y no te lo pierdas.";
-    const fecha = d.fecha ? ` · ${esc(d.fecha)}` : "";
-    const lugar = d.lugar || d.ciudad ? ` · ${esc(d.lugar || d.ciudad)}` : "";
-    const link = d.link || `${SITE}/p-eventos`;
+    const cuantos = typeof after.nuevos === "number" ? after.nuevos : null;
+    const lineaNuevos = cuantos
+      ? `Hay ${cuantos} ${cuantos === 1 ? "evento nuevo" : "eventos nuevos"}. `
+      : "Hay nuevos eventos. ";
+    const extra = after.resumen ? ` ${esc(after.resumen)}` : "";
+    const link = `${SITE}/p-eventos`;
 
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "eventos",
       buildCorreo: (u) => ({
         to: u.email,
-        subject: `Nuevo evento: ${titulo}`,
-        preheader: "Un nuevo evento acaba de publicarse.",
-        titulo: esc(titulo),
-        cuerpoHtml: `${esc(resumen)}<br><br><b>${esc(titulo)}</b>${fecha}${lugar}`,
-        textoBoton: "Ver evento",
+        subject: "La página de eventos está actualizada",
+        preheader: "Nuevos eventos disponibles en Top of Talent.",
+        titulo: "Hay nuevos eventos",
+        cuerpoHtml: `${lineaNuevos}Ya actualizamos la página de eventos de Top of Talent.${extra} Pásate a verlos y aparta la fecha.`,
+        textoBoton: "Ver eventos",
         linkBoton: link,
       }),
     });
-    logger.info("onEventoCreado", { id: snap.id, ...r });
+    logger.info("onEventosActualizados", { ...r });
   }
 );
 

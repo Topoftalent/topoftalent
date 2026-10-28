@@ -32,7 +32,7 @@ exports.resumenSemanal = contenido.resumenSemanal;             // sábado 11:00 
 // Notificaciones de comunidad (triggers): conectan los toggles eventos,
 // novedades y comunidad con eventos reales de Firestore.
 const comunidad = require("./comunidad");
-exports.onEventoCreado = comunidad.onEventoCreado;             // crear eventos/{id}
+exports.onEventosActualizados = comunidad.onEventosActualizados; // 1 aviso al publicar actualización de eventos
 exports.onNuevoOtroTalento = comunidad.onNuevoOtroTalento;    // novedades: nuevo Otro Talento
 exports.onBlackSessionsActivo = comunidad.onBlackSessionsActivo; // novedades: Black Sessions activo
 exports.onComentarioComunidad = comunidad.onComentarioComunidad; // comentario en perfil de talento
