@@ -586,6 +586,14 @@ import "./firebase-config.js";
 
 function $(id){ return document.getElementById(id); }
 
+// En iOS/Safari el .focus() automático levanta el teclado sin pedirlo.
+// Solo auto-enfocamos en desktop (puntero fino); en móvil el teclado
+// sube cuando el usuario toca el campo.
+function _canAutoFocus(){
+  try { return !window.matchMedia || window.matchMedia('(pointer:fine)').matches; }
+  catch(e){ return true; }
+}
+
 function setEstado(estado, mensaje) {
   var input = $('mem-codigo'), err = $('mem-codigo-err'), btn = $('mem-codigo-btn'), note = $('mem-note');
   input.classList.remove('error','ok');
@@ -593,7 +601,7 @@ function setEstado(estado, mensaje) {
   if (estado === 'error') {
     input.classList.add('error');
     err.textContent = mensaje;
-    input.focus(); input.select();
+    if (_canAutoFocus()) { input.focus(); input.select(); }
   } else if (estado === 'ok') {
     input.classList.add('ok');
     btn.classList.add('ok');
@@ -620,7 +628,7 @@ var TotMembresia = {
     setEstado('reset','');
     $('mem-codigo').value = '';
     $('mem-backdrop').classList.add('open');
-    setTimeout(function(){ $('mem-codigo').focus(); }, 60);
+    if (_canAutoFocus()) setTimeout(function(){ $('mem-codigo').focus(); }, 60);
   },
 
   close: function() { $('mem-backdrop').classList.remove('open'); },
@@ -667,6 +675,6 @@ window.TotMembresia = TotMembresia;
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape') TotMembresia.close(); });
 </script>
 <script src="legal.js"></script>
-<script type="module" src="auth-firebase.js?v=4"></script>
+<script type="module" src="auth-firebase.js?v=5"></script>
 </body>
 </html>

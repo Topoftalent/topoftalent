@@ -10,8 +10,17 @@ import {
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  fetchSignInMethodsForEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// Solo auto-enfocamos inputs en dispositivos con puntero fino (desktop).
+// En iOS/Safari el .focus() automático levanta el teclado sin que el
+// usuario lo pida; en móvil el teclado sube solo cuando toca el campo.
+function _canAutoFocus() {
+  try { return !window.matchMedia || window.matchMedia('(pointer:fine)').matches; }
+  catch (e) { return true; }
+}
 
 import {
   doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp
@@ -438,7 +447,7 @@ var HTML=`
       </div>
       <div class="tot-err" id="reg-dob-err" style="margin-top:6px">Debes tener al menos 13 años</div>
       <div class="tot-warn-badge" id="reg-parental-warn" style="display:none">⚠️ Eres menor de 16 años. Necesitas autorización de un padre o tutor.</div>
-      <button class="tot-btn" onclick="TotAuth.submitEmailReg()" style="margin-top:12px">Continuar →</button>
+      <button class="tot-btn" onclick="TotAuth.submitEmailReg(event)" style="margin-top:12px">Continuar →</button>
       <button class="tot-btn ghost" onclick="TotAuth.backToStep1()">← Volver</button>
     </div>
     <!-- Step 2b: Google -->
@@ -736,20 +745,45 @@ window.TotAuth = {
     return true;
   },
 
-  submitEmailReg: function() {
+  submitEmailReg: async function(ev) {
     var first   = document.getElementById('reg-first').value.trim();
     var last    = document.getElementById('reg-last').value.trim();
     var email   = document.getElementById('reg-email').value.trim();
     var user    = document.getElementById('reg-user').value.trim();
     var pwd     = document.getElementById('reg-pwd').value;
     var country = document.getElementById('reg-country').value;
+    var emailErr = document.getElementById('reg-email-err');
     var ok = true;
-    if (!isValidEmail(email))  { document.getElementById('reg-email-err').classList.add('show'); ok=false; } else document.getElementById('reg-email-err').classList.remove('show');
+    if (!isValidEmail(email))  { emailErr.textContent = 'Correo inválido'; emailErr.classList.add('show'); ok=false; } else emailErr.classList.remove('show');
     if (!isValidUsername(user)){ document.getElementById('reg-user-err').classList.add('show');  ok=false; } else document.getElementById('reg-user-err').classList.remove('show');
     if (!isStrongPwd(pwd))     { document.getElementById('reg-pwd-err').classList.add('show');   ok=false; } else document.getElementById('reg-pwd-err').classList.remove('show');
     if (!TotAuth._checkDob('reg-dob','reg-dob-err','reg-parental-warn')) ok=false;
     if (!first || !last || !country) ok=false;
     if (!ok) return;
+
+    // Chequeo temprano: ¿el correo ya tiene cuenta? Así el usuario lo ve
+    // aquí mismo (paso de datos) y no después de darle a CREAR CUENTA.
+    var btn = ev && ev.target ? ev.target : null;
+    var original = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="tot-spinner"></span> Verificando…'; }
+    try {
+      var methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods && methods.length) {
+        emailErr.textContent = methods.indexOf('google.com') !== -1
+          ? 'Ese correo ya está registrado con Google. Inicia sesión con Google.'
+          : 'Ese correo ya tiene una cuenta. Inicia sesión o usa otro correo.';
+        emailErr.classList.add('show');
+        TotAuth.showToast('Ese correo ya tiene una cuenta.');
+        if (btn) { btn.disabled = false; btn.innerHTML = original; }
+        return;
+      }
+    } catch (e) {
+      // Si Firebase no responde (o la protección anti-enumeración oculta el
+      // resultado), seguimos: el duplicado se detecta al crear la cuenta.
+      console.warn('fetchSignInMethodsForEmail:', e);
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = original; }
+
     var dob = document.getElementById('reg-dob').value;
     _pendingUser = { provider:'email', firstName:first, lastName:last, email:email, username:user, country:country, dob:dob, age:calcAge(dob), fanNum:fanNum(), createdAt:today() };
     TotAuth.goTC();
@@ -819,12 +853,17 @@ window.TotAuth = {
         : (e.code === 'auth/weak-password'
             ? 'La contraseña es muy débil (mínimo 6 caracteres).'
             : 'No se pudo crear la cuenta. Revisa tus datos e inténtalo de nuevo.');
-      document.getElementById('reg-email-err').textContent = msg;
-      document.getElementById('reg-email-err').classList.add('show');
+      var emailErr = document.getElementById('reg-email-err');
+      emailErr.textContent = msg;
+      emailErr.classList.add('show');
       TotAuth.showToast(msg);
-      // El error del correo vive en el paso 1: si el usuario está en otro paso,
-      // lo llevamos ahí para que vea el mensaje en vez de "no pasa nada".
-      if (dup) { TotAuth._showRegStep(1); }
+      // El campo de correo (y su error) vive en el paso 2: si falló por correo
+      // duplicado, llevamos al usuario ahí para que vea el mensaje junto al campo.
+      if (dup) {
+        TotAuth._showRegStep(2);
+        document.getElementById('reg-step2').classList.add('active');
+        if (emailErr.scrollIntoView) emailErr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
       btn.innerHTML = 'Crear cuenta →';
       btn.disabled = false;
     }
@@ -1055,7 +1094,7 @@ window.TotAuth = {
       else if (/unauthenticated|sesión/i.test(raw)) msg = 'Tu sesión expiró. Vuelve a iniciar sesión.';
       else msg = raw || 'No se pudo activar. Intenta de nuevo.';
       if (err) { err.textContent = msg; err.classList.add('show'); }
-      inp.focus(); inp.select();
+      if (_canAutoFocus()) { inp.focus(); inp.select(); }
       console.error('activarMembresia:', e);
     }
   },
