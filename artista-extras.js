@@ -301,6 +301,10 @@ function injectStyles() {
     /* ── SCORE CARD · MÓVIL: tarjeta a ancho completo y barras desplegadas ── */
     '@media(max-width:768px){',
     '.specs-table{display:block;width:100%}.specs-table tbody{display:block;width:100%}',
+    // La celda del score es td:first-child y heredaba width:35% de la regla base
+    // (gana por especificidad), dejando la tarjeta encerrada en ~117px. Reset:
+    '.specs-table td:first-child{width:auto}',
+    '.specs-table tr:last-child td{display:block;width:100%}',
     '#tot-score-block{display:block;width:100%}',
     '.tot-score-card{width:100%;padding:24px 20px 22px;gap:20px}',
     '.score-title{font-size:22px}',
