@@ -104,10 +104,10 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
         const artista = artistaNombre[mv.topId] || "tu artista";
         await enviar("voto8h", u, {
           to: u.email,
-          subject: `Tu voto por ${artista} ya está listo`,
-          preheader: "Pasaron las 8 horas. Un voto más lo acerca al TOP.",
-          titulo: `Ya puedes votar por ${artista}`,
-          cuerpoHtml: `Pasaron las 8 horas: ya puedes volver a votar por <b>${artista}</b>. Un voto más lo acerca al TOP. No lo dejes caer.`,
+          subject: `Tu voto por ${artista} vuelve a contar`,
+          preheader: "Cada voto define quién sube al TOP.",
+          titulo: "Tu voto puede mover el ranking",
+          cuerpoHtml: `Ya pasaron las 8 horas: tu voto por <b>${artista}</b> vuelve a estar disponible. El ranking lo deciden los fans que votan. Haz que el tuyo pese.`,
           textoBoton: "Votar ahora",
           linkBoton: linkArtista(mv.topId),
         }, { voto8hRemindedForMs: topLast });
@@ -120,11 +120,11 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
       if (!ult || (ahora - ult) > REPETIR_INVITAR_DIAS * 86400000) {
         await enviar("invitarVotar", u, {
           to: u.email,
-          subject: `${nombre ? nombre + ", t" : "T"}u voto todavía no suena`,
-          preheader: "Elige a tu primer artista y súbelo en el ranking.",
-          titulo: "Da tu primer voto",
-          cuerpoHtml: `Aún no has votado. Aquí tu voz mueve la escena: elige a un artista que te guste y dale tu primer voto. Es el primer paso para aparecer en su Top Fans.`,
-          textoBoton: "Dar mi primer voto",
+          subject: `${nombre ? nombre + ", t" : "T"}ú decides quién llega al TOP`,
+          preheader: "Tu voto tiene poder. Úsalo.",
+          titulo: "Tu voto tiene poder",
+          cuerpoHtml: `En Top of Talent el ranking lo deciden los fans, no un jurado. Elige a tu artista, dale tu voto y entra a su Top Fans. Mientras más votas, más pesa tu voz en la escena.`,
+          textoBoton: "Elegir y votar",
           linkBoton: `${SITE}/talento`,
         }, { invitarVotarAt: FieldValue.serverTimestamp() });
       }
@@ -140,11 +140,11 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
         const link = mv && mv.topId ? linkArtista(mv.topId) : `${SITE}/talento`;
         await enviar("inactividad", u, {
           to: u.email,
-          subject: "Tu artista te extraña",
-          preheader: "Deja un comentario y vuelve a la escena.",
-          titulo: "Hace rato no te vemos",
-          cuerpoHtml: `Hace unos días que no pasas. ${artista === "la escena" ? "La escena sigue" : "<b>" + artista + "</b> sigue"} en la pelea y tu apoyo cuenta. Vuelve, deja un comentario y dale tu voto de hoy.`,
-          textoBoton: "Volver a la plataforma",
+          subject: "El ranking se movió sin ti",
+          preheader: "Otros fans están subiendo a sus artistas.",
+          titulo: "La competencia no se detiene",
+          cuerpoHtml: `Mientras no votas, otros fans siguen subiendo a sus artistas en el ranking. Vuelve y haz que ${artista === "la escena" ? "tu favorito" : "<b>" + artista + "</b>"} pelee por el TOP. Tu voto puede cambiar las posiciones.`,
+          textoBoton: "Volver y votar",
           linkBoton: link,
         }, { inactividadAt: FieldValue.serverTimestamp() });
       }
@@ -172,11 +172,11 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
         const artista = artistaNombre[artistId] || "tu artista";
         await enviar("fueraTopFans", user, {
           to: user.email,
-          subject: `Alguien te pasó en el Top Fans de ${artista}`,
-          preheader: "Un par de votos y recuperas tu lugar.",
-          titulo: `Perdiste tu lugar con ${artista}`,
-          cuerpoHtml: `Saliste del Top Fans de <b>${artista}</b>. ¿Lo vas a dejar así? Con un par de votos vuelves a subir.`,
-          textoBoton: "Recuperar mi lugar",
+          subject: `Te superaron en el Top Fans de ${artista}`,
+          preheader: "El puesto es de quien lo pelea.",
+          titulo: `Recupera tu puesto con ${artista}`,
+          cuerpoHtml: `Otro fan te pasó en el Top Fans de <b>${artista}</b>. El ranking es de quien lo pelea: con unos votos recuperas tu puesto y apuntas más arriba.`,
+          textoBoton: "Recuperar mi puesto",
           linkBoton: linkArtista(artistId),
         }, null);
       }
@@ -207,11 +207,11 @@ async function procesarEngagement({ apiKey, day, dryRun }) {
         u._ref = doc.ref;
         await enviar("hito", u, {
           to: u.email,
-          subject: `${artista} es #1 esta semana`,
-          preheader: "Lo lograste con tu voto.",
-          titulo: `${artista} llegó al #1`,
-          cuerpoHtml: `Lo lograste con tu voto: <b>${artista}</b> llegó al #1 del ranking. Gracias por empujar. ¿Lo mantenemos ahí?`,
-          textoBoton: "Ver el ranking",
+          subject: `${artista} es #1 gracias a fans como tú`,
+          preheader: "Ahora toca defender la cima.",
+          titulo: `${artista} está en el #1`,
+          cuerpoHtml: `Los votos de su comunidad llevaron a <b>${artista}</b> al #1 del ranking. La cima se mantiene votando: defiende el puesto y no dejes que lo bajen.`,
+          textoBoton: "Defender el #1",
           linkBoton: linkArtista(top1),
         }, null);
       }

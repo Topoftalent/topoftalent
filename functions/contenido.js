@@ -76,17 +76,17 @@ exports.resumenSemanal = onSchedule(
   async () => {
     const uno = await artistaNumeroUno();
     const lineaUno = uno
-      ? `Esta semana el artista más votado es <b>${uno.nombre}</b>. `
+      ? `El más votado de la semana es <b>${uno.nombre}</b>. `
       : "";
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "semanal",
       buildCorreo: (u) => ({
         to: u.email,
-        subject: "Tu semana en Top of Talent",
-        preheader: "El nuevo TOP 7 y el #1 de la semana, en un vistazo.",
-        titulo: "Tu semana en Top of Talent",
-        cuerpoHtml: `Ya está el nuevo TOP 7 de la semana. ${lineaUno}Escucha las 7 mejores, mira tu posición en los Top Fans y vota por tus favoritas para mantener a tus artistas arriba.`,
+        subject: "Nuevo TOP 7: así quedó el ranking",
+        preheader: "Mira quién subió y haz que tu favorito pelee el #1.",
+        titulo: "El nuevo TOP 7 ya está aquí",
+        cuerpoHtml: `Se renovó el ranking de la semana. ${lineaUno}Descubre quién subió, escucha a los 7 más votados y haz que tus favoritos peleen por el próximo #1. El ranking lo decides tú.`,
         textoBoton: "Ver el TOP 7",
         linkBoton: `${SITE}/talento`,
       }),

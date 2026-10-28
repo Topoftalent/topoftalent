@@ -71,17 +71,18 @@ async function upsertContact(data, apiKey) {
 }
 
 // Envía un correo transaccional con la plantilla oscura de marca.
-async function sendEmail({ to, subject, preheader, titulo, cuerpoHtml, textoBoton, linkBoton }, apiKey) {
+async function sendEmail({ to, subject, preheader, titulo, cuerpoHtml, textoBoton, linkBoton, imagen }, apiKey) {
   await brevo("/v3/smtp/email", "POST", {
     sender: SENDER,
     to: [{ email: to }],
     subject,
-    htmlContent: plantilla({ preheader, titulo, cuerpoHtml, textoBoton, linkBoton }),
+    htmlContent: plantilla({ preheader, titulo, cuerpoHtml, textoBoton, linkBoton, imagen }),
   }, apiKey);
 }
 
 // Plantilla oscura oficial (misma que plantillas-email/plantilla-oscura.html).
-function plantilla({ preheader, titulo, cuerpoHtml, textoBoton, linkBoton }) {
+// imagen (opcional): URL absoluta de una foto centrada antes del botón.
+function plantilla({ preheader, titulo, cuerpoHtml, textoBoton, linkBoton, imagen }) {
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="x-apple-disable-message-reformatting">
@@ -96,6 +97,7 @@ function plantilla({ preheader, titulo, cuerpoHtml, textoBoton, linkBoton }) {
 <tr><td style="padding:18px 36px 0;"><div style="height:3px;width:60px;background:#c86cff;border-radius:3px;line-height:3px;font-size:0;">&nbsp;</div></td></tr>
 <tr><td style="padding:18px 36px 0;"><h1 style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:26px;line-height:1.2;color:#ffffff;font-weight:bold;letter-spacing:-0.5px;">${titulo}</h1></td></tr>
 <tr><td style="padding:16px 36px 0;"><p style="margin:0;font-size:15px;line-height:1.7;color:#b7b3c4;">${cuerpoHtml}</p></td></tr>
+${imagen ? `<tr><td align="center" style="padding:24px 36px 0;"><img src="${imagen}" alt="${titulo}" width="320" style="display:block;width:100%;max-width:320px;height:auto;border-radius:14px;border:1px solid #1c1a26;outline:none;text-decoration:none;"></td></tr>` : ``}
 <tr><td style="padding:28px 36px 0;"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#c86cff;border-radius:10px;"><a href="${linkBoton}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#0e0d14;text-decoration:none;">${textoBoton}</a></td></tr></table></td></tr>
 <tr><td style="padding:32px 36px 0;"><div style="height:1px;background:#1c1a26;line-height:1px;font-size:0;">&nbsp;</div></td></tr>
 <tr><td style="padding:18px 36px 30px;"><p style="margin:0 0 12px;font-size:11px;line-height:1.7;color:#4d4959;"><a href="${SITE}" style="color:#c86cff;text-decoration:none;">topoftalentoficial.com</a> &nbsp;·&nbsp; <a href="${SITE}/talento" style="color:#8a8598;text-decoration:none;">Ver artistas</a></p><p style="margin:0;font-size:10px;color:#3a3644;letter-spacing:0.5px;">Top of Talent &nbsp;·&nbsp; &copy; 2026</p></td></tr>

@@ -87,26 +87,45 @@ exports.onEventosActualizados = onDocumentWritten(
     if (after.notificar === false) { logger.info("eventos actualizados sin aviso"); return; }
 
     const cuantos = typeof after.nuevos === "number" ? after.nuevos : null;
-    const lineaNuevos = cuantos
-      ? `Hay ${cuantos} ${cuantos === 1 ? "evento nuevo" : "eventos nuevos"}. `
-      : "Hay nuevos eventos. ";
-    const extra = after.resumen ? ` ${esc(after.resumen)}` : "";
+    const intro = cuantos
+      ? `Sumamos ${cuantos} ${cuantos === 1 ? "evento nuevo" : "eventos nuevos"} a la agenda. `
+      : "Renovamos la agenda de eventos. ";
+    const extra = after.resumen ? `${esc(after.resumen)} ` : "";
     const link = `${SITE}/p-eventos`;
+
+    // Preview: hasta 7 eventos activos, ordenados por `order`.
+    let listaHtml = "";
+    try {
+      const evs = await db.collection("eventos").get();
+      const items = evs.docs.map((x) => x.data())
+        .filter((e) => e.active !== false)
+        .sort((a, b) => (a.order || 999) - (b.order || 999))
+        .slice(0, 7);
+      listaHtml = items.map((e) => {
+        const nombre = esc(e.nombre || e.titulo || "Evento");
+        const donde = e.ubicacion || e.lugar || "";
+        const det = [e.fecha ? esc(e.fecha) : "", donde ? esc(donde + (e.pais ? ", " + e.pais : "")) : ""]
+          .filter(Boolean).join(" · ");
+        return `&#8226; <b style="color:#ffffff">${nombre}</b>${det ? " — " + det : ""}`;
+      }).join("<br>");
+    } catch (e) { logger.warn("no se pudo listar eventos", e); }
+
+    const cuerpoHtml = `Rompe la rutina y vive la música en directo. ${intro}${extra}Conciertos y festivales para disfrutar cerca de casa o para animarte a viajar por una experiencia inolvidable.${listaHtml ? `<br><br>${listaHtml}` : ""}<br><br>Apoya al talento en vivo y arma tu próximo plan.`;
 
     const r = await enviarAMiembros({
       apiKey: BREVO_API_KEY.value(),
       prefKey: "eventos",
       buildCorreo: (u) => ({
         to: u.email,
-        subject: "La página de eventos está actualizada",
-        preheader: "Nuevos eventos disponibles en Top of Talent.",
-        titulo: "Hay nuevos eventos",
-        cuerpoHtml: `${lineaNuevos}Ya actualizamos la página de eventos de Top of Talent.${extra} Pásate a verlos y aparta la fecha.`,
-        textoBoton: "Ver eventos",
+        subject: "Nuevos eventos y festivales para vivir en directo",
+        preheader: "Sal de la rutina: música en vivo cerca de ti y más allá.",
+        titulo: "Sal de la rutina: música en vivo",
+        cuerpoHtml,
+        textoBoton: "Ver la agenda",
         linkBoton: link,
       }),
     });
-    logger.info("onEventosActualizados", { ...r });
+    logger.info("onEventosActualizados", { ...r, lista: !!listaHtml });
   }
 );
 
@@ -127,7 +146,8 @@ exports.onNuevoOtroTalento = onDocumentCreated(
 
     const nombre = d.name || d.nombre || "un nuevo talento";
     const categoria = d.category || d.categoria || "";
-    const linea = categoria ? `${nombre} (${categoria})` : nombre;
+    const foto = d.photo_url || d.foto || null;
+    const detCat = categoria ? ` en <b style="color:#ffffff">${esc(categoria)}</b>` : "";
     const link = `${SITE}/ot-perfil.html?id=${encodeURIComponent(snap.id)}`;
 
     const r = await enviarAMiembros({
@@ -135,15 +155,16 @@ exports.onNuevoOtroTalento = onDocumentCreated(
       prefKey: "novedades",
       buildCorreo: (u) => ({
         to: u.email,
-        subject: `Nuevo talento en Top of Talent: ${nombre}`,
-        preheader: "Acabamos de sumar un nuevo talento.",
-        titulo: `Conoce a ${esc(nombre)}`,
-        cuerpoHtml: `Sumamos un nuevo talento a Top of Talent: <b>${esc(linea)}</b>. Pásate a conocer su perfil en la sección Otros Talentos.`,
-        textoBoton: "Ver su perfil",
+        subject: `Dale la bienvenida a ${nombre}`,
+        preheader: "Un nuevo talento que no conoce límites.",
+        titulo: `Dale la bienvenida a ${esc(nombre)}`,
+        cuerpoHtml: `Hay un nuevo nombre en Top of Talent. <b style="color:#ffffff">${esc(nombre)}</b> se suma a los talentos${detCat} que están cambiando las reglas: sin límites, demostrando que el talento ecuatoriano inspira y se reconoce dentro y fuera del país. Conócelo, descubre su historia y sé de los primeros en apoyarlo.`,
+        textoBoton: `Conocer a ${nombre}`,
         linkBoton: link,
+        imagen: foto,
       }),
     });
-    logger.info("onNuevoOtroTalento", { id: snap.id, ...r });
+    logger.info("onNuevoOtroTalento", { id: snap.id, foto: !!foto, ...r });
   }
 );
 
@@ -232,11 +253,11 @@ exports.onComentarioComunidad = onDocumentCreated(
       try {
         await sendEmail({
           to: u.email,
-          subject: `Nueva actividad en el perfil de ${artista}`,
-          preheader: "La comunidad está moviéndose.",
+          subject: `La comunidad de ${artista} está activa`,
+          preheader: "No te quedes fuera de la conversación.",
           titulo: `Se mueve la comunidad de ${esc(artista)}`,
-          cuerpoHtml: `Hay nueva actividad en el perfil de <b>${esc(artista)}</b>: comentarios y participación de la comunidad. Pásate, deja tu voto y suma tu voz.`,
-          textoBoton: "Ir al perfil",
+          cuerpoHtml: `La comunidad de <b style="color:#ffffff">${esc(artista)}</b> está comentando y votando ahora mismo. Suma tu voz, deja tu voto y haz que tu favorito pelee por el TOP.`,
+          textoBoton: "Unirme a la conversación",
           linkBoton: link,
         }, apiKey);
         enviados++;
