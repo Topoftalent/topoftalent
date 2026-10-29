@@ -11,7 +11,8 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  fetchSignInMethodsForEmail
+  fetchSignInMethodsForEmail,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // Solo auto-enfocamos inputs en dispositivos con puntero fino (desktop).
@@ -539,6 +540,7 @@ var HTML=`
     <div class="tot-input-group"><i class="iico">🔒</i><input class="tot-input" id="log-pwd" type="password" placeholder="Tu contraseña"><button class="ieye" onclick="TotAuth.togglePwd('log-pwd',this)" type="button">👁</button></div>
     <div class="tot-err" id="log-err">Email o contraseña incorrectos</div>
     <button class="tot-btn" onclick="TotAuth.submitLogin()">Iniciar Sesión →</button>
+    <button type="button" onclick="TotAuth.resetPassword()" style="background:none;border:none;color:rgba(200,108,255,.85);font-family:inherit;font-size:12px;letter-spacing:.02em;margin-top:12px;display:block;width:100%;text-align:center;cursor:none!important">¿Olvidaste tu contraseña?</button>
     <button class="tot-btn ghost" onclick="TotAuth.closeLogin();TotAuth.openRegister()" style="margin-top:10px">¿No tienes cuenta? Regístrate</button>
   </div>
 </div>
@@ -923,6 +925,23 @@ window.TotAuth = {
       errEl.classList.add('show');
       if (btn) { btn.innerHTML = 'Iniciar Sesión →'; btn.disabled = false; }
     }
+  },
+
+  // Restablecer contraseña: envía el correo de reset de Firebase.
+  // Por privacidad mostramos el mismo mensaje exista o no la cuenta,
+  // para no revelar qué correos están registrados.
+  resetPassword: async function() {
+    var email = document.getElementById('log-email').value.trim();
+    if (!isValidEmail(email)) {
+      TotAuth.showToast('Escribe tu email arriba y te enviamos el enlace');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch(e) {
+      console.error('resetPassword:', e);
+    }
+    TotAuth.showToast('Si ese correo tiene cuenta, te enviamos un enlace para restablecerla');
   },
 
   // ── PROFILE ──
