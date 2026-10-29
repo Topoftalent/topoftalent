@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estructura · Top of Talent</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e0d14;--card:#16151f;--line:#262433;--purple:#c86cff;--txt:#e7e5ef;--dim:#9b97ab;--ok:#7be0a4;--amber:#ffbf80}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:40px 20px}
+.sheet{max-width:1040px;margin:0 auto}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:2px solid var(--purple);padding-bottom:18px;margin-bottom:8px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:13px;letter-spacing:.28em;text-transform:uppercase}
+.brand b{color:var(--purple)}
+.title{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+.subtitle{color:var(--dim);font-size:13px;margin-top:4px}
+.meta{font-size:11px;color:var(--dim);text-align:right;letter-spacing:.04em}
+.legend-top{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 26px;font-size:11.5px;color:var(--dim)}
+.legend-top span{display:inline-flex;align-items:center;gap:7px}
+.legend-top i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+.layer{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;position:relative}
+.layer + .arrow{display:flex;justify-content:center;color:var(--purple);font-size:20px;line-height:1;padding:7px 0}
+.layer .ltag{position:absolute;top:-10px;left:18px;background:var(--purple);color:#0e0d14;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.layer h3{font-size:16px;margin:6px 0 4px}
+.layer .desc{color:var(--dim);font-size:12px;margin-bottom:14px}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.box{background:#100f18;border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+.box .bt{font-size:12.5px;font-weight:700}
+.box .bd{font-size:11px;color:var(--dim);margin-top:3px;line-height:1.45}
+.box.pp{border-color:rgba(200,108,255,.35)}
+.box.pp .bt{color:var(--purple)}
+
+.grp-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:14px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:11px;background:#100f18;border:1px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--txt)}
+.chip b{color:var(--purple);font-weight:700}
+.chip.amber{border-color:rgba(255,191,128,.4)}
+.chip.amber b{color:var(--amber)}
+
+.flows{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.flows h3{font-size:15px;margin-bottom:12px}
+.flow{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;align-items:flex-start}
+.flow:first-of-type{border-top:none}
+.flow .n{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--purple);color:#0e0d14;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.flow .ft b{color:var(--purple)}
+.foot{margin-top:26px;color:var(--dim);font-size:11px;text-align:center;line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+@media print{body{background:#fff;color:#000;padding:0}.layer,.flows,.box,.chip{background:#fff;border-color:#ccc}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="head">
+    <div>
+      <div class="brand">TOP OF <b>TALENT</b></div>
+      <div class="title">Cómo funciona la plataforma</div>
+      <div class="subtitle">Mapa de la estructura: del usuario al backend y los correos.</div>
+    </div>
+    <div class="meta">Documento interno<br>topoftalentoficial.com<br>Actualizado: oct 2026</div>
+  </div>
+
+  <div class="legend-top">
+    <span><i style="background:var(--purple)"></i> Nuestro código / nube</span>
+    <span><i style="background:#3a7bd5"></i> Servicio de Google</span>
+    <span><i style="background:var(--amber)"></i> Servicio externo</span>
+  </div>
+
+  <!-- CAPA 1 -->
+  <div class="layer">
+    <span class="ltag">1 · Personas</span>
+    <h3>Quién usa la plataforma</h3>
+    <div class="desc">Entran desde el navegador (celular o computadora).</div>
+    <div class="boxes">
+      <div class="box"><div class="bt">Fans y visitantes</div><div class="bd">Ven rankings, votan, comentan, se hacen miembros.</div></div>
+      <div class="box"><div class="bt">Artistas</div><div class="bd">Firman su autorización desde un enlace privado.</div></div>
+      <div class="box"><div class="bt">Admin (XC &amp; SO)</div><div class="bd">Entran al panel privado a ver cifras y gestionar.</div></div>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <!-- CAPA 2 -->
+  <div class="layer">
+    <span class="ltag">2 · El sitio web (Frontend)</span>
+    <h3>GitHub Pages · topoftalentoficial.com</h3>
+    <div class="desc">Páginas estáticas (HTML, CSS y JavaScript, sin framework). Rápido y barato de hospedar. El código vive en GitHub.</div>
+    <div class="grp-title">Páginas públicas</div>
+    <div class="chips">
+      <span class="chip">Inicio</span><span class="chip">Talento (ranking)</span><span class="chip">Perfiles de artista</span>
+      <span class="chip">Membresía</span><span class="chip">Otros Talentos</span><span class="chip">Eventos</span>
+      <span class="chip">Comentarios</span><span class="chip">Nosotros</span><span class="chip">FAQ</span>
+    </div>
+    <div class="grp-title">Páginas privadas</div>
+    <div class="chips">
+      <span class="chip"><b>Dashboard</b> (solo admin)</span><span class="chip">Autorización de artistas</span><span class="chip">Encuestas</span>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <!-- CAPA 3 -->
+  <div class="layer">
+    <span class="ltag">3 · El cerebro (Firebase / Google Cloud · us-east1)</span>
+    <h3>Autenticación + Base de datos + Automatizaciones</h3>
+    <div class="desc">Todo lo que guarda datos y reacciona a lo que pasa. Plan Blaze (de pago por uso).</div>
+    <div class="boxes" style="margin-bottom:6px">
+      <div class="box pp"><div class="bt">Authentication</div><div class="bd">Registro e inicio de sesión (correo y Google). Reset de contraseña.</div></div>
+      <div class="box pp"><div class="bt">Firestore (base de datos)</div><div class="bd">Guarda usuarios, votos, comentarios, firmas, encuestas y config. Protegido por reglas de seguridad.</div></div>
+      <div class="box pp"><div class="bt">Cloud Functions</div><div class="bd">Automatizaciones que corren en la nube y disparan correos.</div></div>
+    </div>
+    <div class="grp-title">Colecciones de datos</div>
+    <div class="chips">
+      <span class="chip">users</span><span class="chip">votes</span><span class="chip">comments</span><span class="chip">artistas</span>
+      <span class="chip">otros_talentos</span><span class="chip">eventos</span><span class="chip">autorizaciones</span>
+      <span class="chip">encuestas</span><span class="chip">config</span><span class="chip">admin_log</span>
+    </div>
+    <div class="grp-title">Automatizaciones (Cloud Functions)</div>
+    <div class="chips">
+      <span class="chip">Bienvenida al registrarse</span><span class="chip">Bienvenida de miembro</span>
+      <span class="chip">Activar membresía (código)</span><span class="chip">Reset de contraseña</span>
+      <span class="chip">Resumen semanal</span><span class="chip">Recordatorios de voto / inactividad</span>
+      <span class="chip">Aviso de eventos</span><span class="chip">Nuevo talento</span>
+      <span class="chip">Black Sessions activo</span><span class="chip">Actividad en comunidad</span>
+      <span class="chip">Firma de artista</span><span class="chip">Límite de comentarios</span>
+      <span class="chip">Analítica del panel</span>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <!-- CAPA 4 -->
+  <div class="layer">
+    <span class="ltag">4 · Servicios externos</span>
+    <h3>Lo que usamos por fuera</h3>
+    <div class="boxes">
+      <div class="box"><div class="bt" style="color:var(--amber)">Brevo</div><div class="bd">Envía todos los correos (bienvenida, eventos, novedades, reset de contraseña) con la plantilla de marca.</div></div>
+      <div class="box"><div class="bt" style="color:#6fa8ff">Google Analytics 4</div><div class="bd">Mide visitas, países y páginas. Solo se activa si el usuario acepta cookies.</div></div>
+    </div>
+  </div>
+
+  <!-- FLUJOS -->
+  <div class="flows">
+    <h3>Los flujos clave (cómo se conecta todo)</h3>
+    <div class="flow"><div class="n">1</div><div class="ft">La persona abre el <b>sitio</b> en su navegador y navega rankings y perfiles (datos que se leen en vivo de Firestore).</div></div>
+    <div class="flow"><div class="n">2</div><div class="ft">Para votar, comentar o ser miembro, el sitio usa <b>Authentication</b> (registro / login) y escribe en <b>Firestore</b>, siempre validado por las reglas de seguridad.</div></div>
+    <div class="flow"><div class="n">3</div><div class="ft">Cuando algo cambia en la base de datos (se registra alguien, se activa Black Sessions, se publican eventos…), se dispara una <b>Cloud Function</b> que le pide a <b>Brevo</b> enviar el correo correcto.</div></div>
+    <div class="flow"><div class="n">4</div><div class="ft">Acciones directas (activar membresía con código, reset de contraseña, cargar la analítica del panel) el sitio las pide llamando a una <b>Cloud Function</b> puntual.</div></div>
+    <div class="flow"><div class="n">5</div><div class="ft">El <b>Dashboard</b> (solo admin) lee las cifras de Firestore y muestra la analítica de <b>GA4</b>; desde ahí se publican eventos y se activa Black Sessions.</div></div>
+  </div>
+
+  <div class="foot">
+    Hosting: GitHub Pages (estático) &nbsp;·&nbsp; Backend: Firebase / Google Cloud (Blaze, us-east1) &nbsp;·&nbsp; Correos: Brevo &nbsp;·&nbsp; Métricas: GA4<br>
+    Código versionado en GitHub &nbsp;·&nbsp; Pendiente: activar copia de seguridad de Firestore.
+  </div>
+
+</div>
+</body>
+</html>
