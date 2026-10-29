@@ -437,10 +437,10 @@ var HTML=`
       <div class="tot-err" id="reg-email-err">Email inválido o ya registrado</div>
       <label class="tot-label">Nombre de usuario</label>
       <div class="tot-input-group"><i class="iico">@</i><input class="tot-input" id="reg-user" placeholder="tu_usuario" oninput="TotAuth.checkUsername(this)"></div>
-      <div class="tot-err" id="reg-user-err">No disponible (3–20 chars, sin espacios)</div>
+      <div class="tot-err" id="reg-user-err">No disponible (3 a 20 caracteres, sin espacios)</div>
       <div class="tot-hint">Letras, números, _ y . únicamente</div>
       <label class="tot-label">Contraseña</label>
-      <div class="tot-input-group"><i class="iico">🔒</i><input class="tot-input" id="reg-pwd" type="password" placeholder="Mín. 8 chars, 1 mayúscula, 1 número" oninput="TotAuth.checkPwd(this)"><button class="ieye" onclick="TotAuth.togglePwd('reg-pwd',this)" type="button">👁</button></div>
+      <div class="tot-input-group"><i class="iico">🔒</i><input class="tot-input" id="reg-pwd" type="password" placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número" oninput="TotAuth.checkPwd(this)"><button class="ieye" onclick="TotAuth.togglePwd('reg-pwd',this)" type="button">👁</button></div>
       <div class="tot-pwd-meter"><div class="tot-pwd-bar" id="pb1"></div><div class="tot-pwd-bar" id="pb2"></div><div class="tot-pwd-bar" id="pb3"></div></div>
       <div class="tot-pwd-label" id="pwd-label" style="color:rgba(255,255,255,.22)">Seguridad de contraseña</div>
       <div class="tot-err" id="reg-pwd-err">Mínimo 8 caracteres, 1 mayúscula y 1 número</div>

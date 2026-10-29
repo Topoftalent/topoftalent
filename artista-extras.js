@@ -469,7 +469,7 @@ function updateScoreBlock(rank, total) {
     '</div>';
   }
 
-  var infoTooltipText = 'El Score TOT refleja el nivel artistico y proyeccion del artista. Combina la valoracion del equipo editorial de Top of Talent, la opinion de criticos del medio musical ecuatoriano, y el respaldo de los fans a traves de sus votos. Es un promedio ponderado que se actualiza mensualmente.';
+  var infoTooltipText = 'El Score TOT refleja el nivel artístico y proyección del artista. Combina la valoración del equipo editorial de Top of Talent, la opinión de críticos del medio musical ecuatoriano, y el respaldo de los fans a través de sus votos. Es un promedio ponderado que se actualiza mensualmente.';
 
   block.innerHTML =
     '<div class="tot-score-card">' +
@@ -481,13 +481,13 @@ function updateScoreBlock(rank, total) {
       '</div>' +
       '<div class="score-breakdown">' +
         row('TOT Editorial', scoreTot, false) +
-        row('Criticos', scoreCriticos, false) +
+        row('Críticos', scoreCriticos, false) +
         row('Fans', scoreFans, true) +
       '</div>' +
       '<div class="score-footer">' +
         '<span class="score-avg-label">Promedio general</span>' +
         '<span class="score-avg-num">' + avg + '</span>' +
-        (!hasFinal ? '<p class="score-pending">Calificacion provisional · basada en votos de fans, pendiente editorial y criticos</p>' : '') +
+        (!hasFinal ? '<p class="score-pending">Calificación provisional · basada en votos de fans, pendiente editorial y críticos</p>' : '') +
       '</div>' +
     '</div>';
 }
@@ -523,7 +523,7 @@ async function buildVoteArea() {
   var card = document.createElement('div');
   card.className = 'vote-area';
 
-  var counterHTML = '<p class="vote-counter"><strong id="tot-public-votes">' + total + '</strong><span class="vote-counter-label">votos totales</span></p>';
+  var counterHTML = '<p class="vote-counter"><strong id="tot-public-votes">' + total + '</strong><span class="vote-counter-label">' + (total === 1 ? 'voto total' : 'votos totales') + '</span></p>';
 
   if (isMember) {
     var uid   = getUid();

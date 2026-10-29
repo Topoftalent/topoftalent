@@ -222,7 +222,7 @@ footer{margin-top:auto;background:var(--cream-dark);border-top:1px solid rgba(0,
       </div>
     </div>
     <div class="info-panel">
-      <div class="info-panel-default" id="panelDefault">Toca o pasa el cursor sobre un artista para ver su perfil</div>
+      <div class="info-panel-default" id="panelDefault">Toca un artista para ver su perfil</div>
       <div class="info-panel-content" id="panelContent">
         <div class="info-col" style="align-items:center"><span class="info-rank" id="infoRank">01</span></div>
         <div class="info-col">
@@ -305,6 +305,13 @@ function getSortedArtists() {
 }
 
 function buildCarousel() {
+  // En equipos con mouse sí aplica el hover: ajusta la pista.
+  try {
+    var pd = document.getElementById('panelDefault');
+    if (pd && window.matchMedia && window.matchMedia('(pointer:fine)').matches) {
+      pd.textContent = 'Pasa el cursor sobre un artista para ver su perfil';
+    }
+  } catch(e) {}
   var track = document.getElementById('carouselTrack');
   track.innerHTML = '';
   var sorted = getSortedArtists();
@@ -321,7 +328,7 @@ function buildCarousel() {
       '<div class="card-info">' +
         '<div class="card-name">' + a.name + '</div>' +
         '<div class="card-genre">' + a.genre + '</div>' +
-        '<div class="card-votes"><span class="card-votes-dot"></span>' + votes + ' votos</div>' +
+        '<div class="card-votes"><span class="card-votes-dot"></span>' + votes + (votes === 1 ? ' voto' : ' votos') + '</div>' +
       '</div>';
     card.addEventListener('mouseenter', function() { showInfo(a); document.getElementById('carouselTrack').classList.add('paused'); });
     card.addEventListener('mouseleave', function() { document.getElementById('carouselTrack').classList.remove('paused'); });
@@ -346,7 +353,7 @@ function showInfo(a) {
   document.getElementById('fichaBtn').href = a.file;
   // votos en panel
   var vRow = document.getElementById('infoVotes');
-  if (vRow) vRow.textContent = votes + ' votos de fans';
+  if (vRow) vRow.textContent = votes + (votes === 1 ? ' voto de fans' : ' votos de fans');
 }
 
 // feat      = invitado (nuestro artista es el principal) -> va DESPUES, en gris
@@ -456,7 +463,7 @@ document.getElementById('eyebrowCount').textContent = '…';
 </script>
 <script src="legal.js"></script>
 <script src="slugs.js"></script>
-<script type="module" src="auth-firebase.js?v=6"></script>
+<script type="module" src="auth-firebase.js?v=7"></script>
 <script type="module" src="talento-data.js?v=2"></script>
 </body>
 </html>

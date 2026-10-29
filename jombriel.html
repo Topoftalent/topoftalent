@@ -69,7 +69,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:500;background:linear-gradien
 .gallery-caption{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.08em;line-height:1.6;font-style:italic;text-align:center;padding:16px 40px 24px;background:var(--black)}
 .gallery-note p{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.08em;line-height:1.6;font-style:italic}
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;flex:1}
-.gallery-photo{background:var(--gray-dim);aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.gallery-photo{background:linear-gradient(135deg,#201b2a,#14121b);aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .gallery-photo:first-child{grid-row:1/3;aspect-ratio:auto}
 .photo-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:transform .5s ease}
 .gallery-photo:hover .photo-bg{transform:scale(1.04)}
@@ -186,7 +186,7 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 4
 <section id="paso5" class="snap-section">
   <div class="quote-section">
     <p class="quote-eyebrow">Resumen de carrera</p>
-    <blockquote class="quote-text fade-up">Pop que no pide permiso<br>para tener algo que decir.<br>Ocho anos probandolo.</blockquote>
+    <blockquote class="quote-text fade-up">Pop que no pide permiso<br>para tener algo que decir.<br>Ocho años probándolo.</blockquote>
     <p class="quote-attr fade-up">· Top of Talent, 2026</p>
     <div class="profile-cta fade-up">
       <a href="#" class="btn-dark" target="_blank" rel="noopener">Escuchar en Spotify →</a>
@@ -225,8 +225,8 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:24px 4
 </script>
 <script src="legal.js"></script>
 <script src="slugs.js"></script>
-<script type="module" src="auth-firebase.js?v=6"></script>
+<script type="module" src="auth-firebase.js?v=7"></script>
 <script type="module" src="artista-data.js?v=2"></script>
-<script type="module" src="artista-extras.js?v=10"></script>
+<script type="module" src="artista-extras.js?v=11"></script>
 </body>
 </html>
