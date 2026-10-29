@@ -11,8 +11,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  fetchSignInMethodsForEmail,
-  sendPasswordResetEmail
+  fetchSignInMethodsForEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // Solo auto-enfocamos inputs en dispositivos con puntero fino (desktop).
@@ -937,7 +936,9 @@ window.TotAuth = {
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, email);
+      // Correo de reset con la marca (función en Brevo), no el genérico de Firebase.
+      var call = httpsCallable(getFunctions(getApp(), 'us-east1'), 'enviarResetPassword');
+      await call({ email: email });
     } catch(e) {
       console.error('resetPassword:', e);
     }

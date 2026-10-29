@@ -20,6 +20,7 @@ const notificaciones = require("./notificaciones");
 exports.onUserCreated = notificaciones.onUserCreated;
 exports.onMemberActivated = notificaciones.onMemberActivated;
 exports.activarMembresia = notificaciones.activarMembresia;
+exports.enviarResetPassword = notificaciones.enviarResetPassword; // reset de contraseña con la marca
 
 // Motor de engagement (programado, requiere Blaze).
 const engagement = require("./engagement");

@@ -17,6 +17,7 @@ const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { defineSecret } = require("firebase-functions/params");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { getAuth } = require("firebase-admin/auth");
 const { logger } = require("firebase-functions");
 
 const BREVO_API_KEY = defineSecret("BREVO_API_KEY");
@@ -172,6 +173,36 @@ exports.activarMembresia = onCall({ region: "us-east1" }, async (request) => {
   });
 
   logger.info("Membresía de prueba activada", { uid });
+  return { ok: true };
+});
+
+// ── Restablecer contraseña (correo con la marca) ─────────────────
+// El sitio llama a esta función desde "¿Olvidaste tu contraseña?".
+// Genera el enlace de reset con el Admin SDK y lo envía con la
+// plantilla oscura (como el resto de correos), en vez del correo
+// genérico de Firebase. Por privacidad responde igual exista o no la
+// cuenta: nunca revela qué correos están registrados.
+exports.enviarResetPassword = onCall({ region: "us-east1", secrets: [BREVO_API_KEY] }, async (request) => {
+  const email = String((request.data && request.data.email) || "").trim().toLowerCase();
+  const formatoOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!formatoOk) return { ok: true }; // respuesta neutra
+
+  try {
+    const link = await getAuth().generatePasswordResetLink(email);
+    await sendEmail({
+      to: email,
+      subject: "Restablece tu contraseña · Top of Talent",
+      preheader: "Crea una nueva contraseña para tu cuenta.",
+      titulo: "Restablece tu contraseña",
+      cuerpoHtml: "Recibimos una solicitud para restablecer la contraseña de tu cuenta en Top of Talent. Crea una nueva con el botón de abajo. Si no fuiste tú, ignora este correo: tu contraseña seguirá igual.",
+      textoBoton: "Restablecer contraseña",
+      linkBoton: link,
+    }, BREVO_API_KEY.value());
+    logger.info("reset enviado");
+  } catch (e) {
+    // auth/user-not-found u otros: no revelamos nada al cliente.
+    logger.info("enviarResetPassword (sin envío)", { code: (e && e.code) || "error" });
+  }
   return { ok: true };
 });
 
