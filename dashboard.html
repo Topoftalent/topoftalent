@@ -156,11 +156,13 @@ onAuthStateChanged(auth, async function(u){
   // Bienvenida cálida: saludo por hora + nombre si lo tenemos.
   var hh=new Date().getHours();
   var saludo = hh<12?'Buenos días':(hh<19?'Buenas tardes':'Buenas noches');
-  var nombre = String(udata.firstName||udata.username||'').trim().split(' ')[0];
+  // Nombre a mostrar: alias por cuenta de admin, si no el del perfil.
+  var ADMINS={ 'contactoftalent@gmail.com':'XC' };
+  var nombre = ADMINS[String(u.email||'').toLowerCase()] || String(udata.firstName||udata.username||'').trim().split(' ')[0];
   var fecha = new Date().toLocaleDateString('es-EC',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('greet-eyebrow').textContent = saludo+' · '+fecha;
   document.getElementById('greet').innerHTML = (nombre ? 'Hola de nuevo, '+esc(nombre) : 'Qué bueno verte')+' <span class="wave">👋</span>';
-  document.getElementById('welcome').innerHTML = 'Esto es <b>todo tuyo</b>: lo que construiste, vivo y creciendo. Aquí ves cómo late Top of Talent en tiempo real.';
+  document.getElementById('welcome').innerHTML = 'Qué bueno tenerte de vuelta'+(nombre?', <b>'+esc(nombre)+'</b>':'')+'. Esto es lo que construiste, vivo y latiendo en tiempo real. Te damos la bienvenida a tu casa.';
   document.getElementById('hola').textContent='Sesión de administrador · '+(u.email||'');
   cargarGA();
   try{ var os=await getDocs(collection(db,'otros_talentos')); os.forEach(function(d){OTROS.push({id:d.id,name:(d.data().name||d.id)});}); }catch(e){}
