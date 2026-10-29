@@ -65,6 +65,11 @@ h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.02em;margin-b
 .item .badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:3px 7px}
 .item a.mini{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:rgba(200,108,255,.85);text-decoration:none;border:1px solid rgba(200,108,255,.3);border-radius:5px;padding:4px 8px}
 .empty{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.6);padding:16px 0}
+.card .act{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0a0710;background:#c86cff;border:none;border-radius:24px;padding:9px 16px;transition:opacity .15s,transform .15s}
+.card .act:hover{transform:translateY(-1px)}
+.card .act.danger{background:transparent;color:#ffb4b4;border:1px solid rgba(255,120,120,.5)}
+.card .act:disabled{opacity:.55;transform:none}
+.card.warn{border-color:rgba(255,160,120,.25)}
 </style>
 </head>
 <body>
@@ -81,6 +86,8 @@ h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.02em;margin-b
     <div class="sub" id="hola"></div>
     <div class="sec-label">Cifras en vivo · toca una tarjeta para ver el detalle</div>
     <div class="grid" id="stats"></div>
+    <div class="sec-label">Acciones · ⚠ envían un correo a todos los usuarios</div>
+    <div class="grid" id="acciones"><div class="card"><div class="d">Cargando acciones…</div></div></div>
     <div class="sec-label">Analítica · GA4 · últimos 28 días</div>
     <div id="ga-wrap"><div class="card"><div class="d">Cargando analítica…</div></div></div>
     <div class="sec-label">Recursos · abre y revisa cuando quieras</div>
@@ -115,7 +122,7 @@ function openDraw(kk,title,bodyHtml){document.getElementById('dkk').textContent=
 <script type="module">
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { doc, getDoc, getDocs, collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { doc, getDoc, getDocs, collection, query, where, getCountFromServer, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
@@ -143,7 +150,50 @@ onAuthStateChanged(auth, async function(u){
   try{ var os=await getDocs(collection(db,'otros_talentos')); os.forEach(function(d){OTROS.push({id:d.id,name:(d.data().name||d.id)});}); }catch(e){}
   ROSTER=TOP.map(function(a){return{id:a.id,name:a.name,tipo:'top'};}).concat(OTROS.map(function(a){return{id:a.id,name:a.name,tipo:'otro'};}));
   cargar();
+  cargarAcciones();
 });
+
+// ── Acciones de admin (disparan Cloud Functions que envían correo) ──
+async function cargarAcciones(){
+  var cont=document.getElementById('acciones');
+  var evTs=null, bsActivo=false;
+  try{ var ev=await getDoc(doc(db,'config','eventos')); if(ev.exists()) evTs=ev.data().actualizadoAt; }catch(e){}
+  try{ var bs=await getDoc(doc(db,'config','black_sessions')); if(bs.exists()) bsActivo=bs.data().activo===true; }catch(e){}
+
+  cont.innerHTML=
+    '<div class="card warn">'+
+      '<div class="k">Publicar actualización de eventos</div>'+
+      '<div class="d">Envía un correo a todos los usuarios con hasta 7 eventos activos. Última publicación: <b style="color:rgba(200,108,255,.9)">'+(fmt(evTs)||'nunca')+'</b>.</div>'+
+      '<div class="row"><button class="act" id="btn-eventos">Publicar y notificar &rarr;</button></div>'+
+    '</div>'+
+    '<div class="card warn">'+
+      '<div class="k">Black Sessions</div>'+
+      '<div class="d">'+(bsActivo
+          ? 'Ya está <b style="color:#7be0a4">activo</b>. El aviso a los usuarios ya se envió.'
+          : 'Al activarlo se envía un correo a todos los usuarios anunciándolo. Hazlo <b>solo cuando quieras lanzarlo</b>.')+'</div>'+
+      '<div class="row">'+(bsActivo
+          ? '<span class="verd">Estado: <b>activado</b></span>'
+          : '<button class="act danger" id="btn-bs">Activar Black Sessions &rarr;</button>')+'</div>'+
+    '</div>';
+
+  var be=document.getElementById('btn-eventos');
+  if(be) be.onclick=async function(){
+    if(!confirm('Esto enviará un correo a TODOS los usuarios con los eventos activos. ¿Publicar ahora?')) return;
+    be.disabled=true; be.textContent='Publicando…';
+    try{ await setDoc(doc(db,'config','eventos'),{actualizadoAt:serverTimestamp()},{merge:true});
+      be.textContent='Publicado ✓'; }
+    catch(e){ alert('No se pudo publicar: '+((e&&e.message)||e)); be.disabled=false; be.innerHTML='Publicar y notificar &rarr;'; }
+  };
+  var bb=document.getElementById('btn-bs');
+  if(bb) bb.onclick=async function(){
+    if(!confirm('ACTIVAR Black Sessions enviará un correo a TODOS los usuarios ahora. El envío no se puede deshacer. ¿Seguro?')) return;
+    if(!confirm('Confirma otra vez: se envía el aviso de Black Sessions a todos en este momento.')) return;
+    bb.disabled=true; bb.textContent='Activando…';
+    try{ await setDoc(doc(db,'config','black_sessions'),{activo:true},{merge:true});
+      bb.textContent='Activado ✓'; bb.classList.remove('danger'); }
+    catch(e){ alert('No se pudo activar: '+((e&&e.message)||e)); bb.disabled=false; bb.innerHTML='Activar Black Sessions &rarr;'; }
+  };
+}
 
 async function count(q){ try{ var s=await getCountFromServer(q); return s.data().count; }catch(e){ console.warn(e); return '—'; } }
 function fmt(ts){ try{ var d=ts&&ts.toDate?ts.toDate():(ts?new Date(ts):null); return d?d.toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'}):''; }catch(e){ return ''; } }

@@ -122,6 +122,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ── CONFIG (banderas del panel de admin) ─────────────────────
+    // Lectura pública (el sitio lee estados como black_sessions.activo).
+    // Escritura solo admin: desde el panel se publica la actualización de
+    // eventos (config/eventos.actualizadoAt) y se activa Black Sessions
+    // (config/black_sessions.activo). Ambos disparan Cloud Functions.
+    match /config/{docId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
     // ── ENCUESTAS (respuestas del prelanzamiento) ────────────────
     // Cada usuario autenticado escribe SU propia respuesta (doc = uid),
     // una sola vez (no editable). Nadie puede leer las respuestas de
