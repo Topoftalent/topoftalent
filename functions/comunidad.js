@@ -159,7 +159,7 @@ exports.onNuevoOtroTalento = onDocumentCreated(
         preheader: "Un nuevo talento que no conoce límites.",
         titulo: `Dale la bienvenida a ${esc(nombre)}`,
         cuerpoHtml: `Hay un nuevo nombre en Top of Talent. <b style="color:#ffffff">${esc(nombre)}</b> se suma a los talentos${detCat} que están cambiando las reglas: sin límites, demostrando que el talento ecuatoriano inspira y se reconoce dentro y fuera del país. Conócelo, descubre su historia y sé de los primeros en apoyarlo.`,
-        textoBoton: `Conocer a ${nombre}`,
+        textoBoton: `Ver su ficha`,
         linkBoton: link,
         imagen: foto,
       }),
