@@ -87,6 +87,25 @@ h1 .wave{display:inline-block;transform-origin:70% 70%;animation:wave 2.4s ease-
 .card .act.danger{background:transparent;color:#ffb4b4;border:1px solid rgba(255,120,120,.5)}
 .card .act:disabled{opacity:.55;transform:none}
 .card.warn{border-color:rgba(255,160,120,.25)}
+/* ── Neón en la tarjeta destacada (moderno, sin saturar) ── */
+.card.feat{border-color:rgba(200,108,255,.55);box-shadow:0 0 0 1px rgba(200,108,255,.45),0 0 44px -8px rgba(200,108,255,.5),0 18px 42px -24px rgba(0,0,0,.9)}
+.card.feat::after{opacity:1;background:radial-gradient(ellipse at 32% -12%,rgba(200,108,255,.34),transparent 62%)}
+.card.feat .n{text-shadow:0 0 24px rgba(200,108,255,.6)}
+.card.feat .k{color:rgba(230,210,255,.85)}
+/* Botones del flujo de acciones */
+.act.ghost{background:transparent;color:rgba(200,108,255,.95);border:1px solid rgba(200,108,255,.45)}
+.act.ghost:hover{background:rgba(200,108,255,.1)}
+.act.neon{background:#c86cff;color:#0a0710;box-shadow:0 0 0 1px rgba(200,108,255,.6),0 0 24px -2px rgba(200,108,255,.75)}
+.act.neon:hover{box-shadow:0 0 0 1px rgba(200,108,255,.85),0 0 34px 0 rgba(200,108,255,.9);transform:translateY(-1px)}
+/* Panel de confirmación (en el drawer) */
+.cf-warn{background:rgba(255,160,120,.1);border:1px solid rgba(255,160,120,.32);color:#ffcf99;border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.5;margin-bottom:16px}
+.cf-row{display:flex;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)}
+.cf-row:first-of-type{border-top:none}
+.cf-l{flex:0 0 76px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);padding-top:3px}
+.cf-v{flex:1;font-size:13.5px;line-height:1.55;color:#fff}
+.cf-actions{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.cf-actions .act{width:100%;padding:14px;font-size:12px;border-radius:12px}
+.cf-status{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -206,7 +225,7 @@ async function cargarAcciones(){
     '<div class="card warn">'+
       '<div class="k">Publicar actualización de eventos</div>'+
       '<div class="d">Envía un correo a todos los usuarios con hasta 7 eventos activos. Última publicación: <b style="color:rgba(200,108,255,.9)">'+(fmt(evTs)||'nunca')+'</b>.</div>'+
-      '<div class="row"><button class="act" id="btn-eventos">Publicar y notificar &rarr;</button></div>'+
+      '<div class="row"><button class="act ghost" id="btn-eventos">Preparar envío &rarr;</button></div>'+
     '</div>'+
     '<div class="card warn">'+
       '<div class="k">Black Sessions</div>'+
@@ -215,25 +234,58 @@ async function cargarAcciones(){
           : 'Al activarlo se envía un correo a todos los usuarios anunciándolo. Hazlo <b>solo cuando quieras lanzarlo</b>.')+'</div>'+
       '<div class="row">'+(bsActivo
           ? '<span class="verd">Estado: <b>activado</b></span>'
-          : '<button class="act danger" id="btn-bs">Activar Black Sessions &rarr;</button>')+'</div>'+
+          : '<button class="act ghost" id="btn-bs">Preparar activación &rarr;</button>')+'</div>'+
     '</div>';
 
   var be=document.getElementById('btn-eventos');
-  if(be) be.onclick=async function(){
-    if(!confirm('Esto enviará un correo a TODOS los usuarios con los eventos activos. ¿Publicar ahora?')) return;
-    be.disabled=true; be.textContent='Publicando…';
-    try{ await setDoc(doc(db,'config','eventos'),{actualizadoAt:serverTimestamp()},{merge:true});
-      be.textContent='Publicado ✓'; }
-    catch(e){ alert('No se pudo publicar: '+((e&&e.message)||e)); be.disabled=false; be.innerHTML='Publicar y notificar &rarr;'; }
-  };
+  if(be) be.onclick=function(){ confirmarEnvio({
+    kk:'Envío de correo · revisa antes',
+    titulo:'Publicar actualización de eventos',
+    destino:'Todos los usuarios con notificaciones de eventos activas.',
+    asunto:'Nuevos eventos en Top of Talent',
+    resumen:'Un correo con hasta 7 eventos activos, con la plantilla de marca.',
+    textoBtn:'Confirmar y enviar a todos',
+    accion:async function(){ await setDoc(doc(db,'config','eventos'),{actualizadoAt:serverTimestamp()},{merge:true}); }
+  }); };
   var bb=document.getElementById('btn-bs');
-  if(bb) bb.onclick=async function(){
-    if(!confirm('ACTIVAR Black Sessions enviará un correo a TODOS los usuarios ahora. El envío no se puede deshacer. ¿Seguro?')) return;
-    if(!confirm('Confirma otra vez: se envía el aviso de Black Sessions a todos en este momento.')) return;
-    bb.disabled=true; bb.textContent='Activando…';
-    try{ await setDoc(doc(db,'config','black_sessions'),{activo:true},{merge:true});
-      bb.textContent='Activado ✓'; bb.classList.remove('danger'); }
-    catch(e){ alert('No se pudo activar: '+((e&&e.message)||e)); bb.disabled=false; bb.innerHTML='Activar Black Sessions &rarr;'; }
+  if(bb) bb.onclick=function(){ confirmarEnvio({
+    kk:'Envío de correo · revisa antes',
+    titulo:'Activar Black Sessions',
+    destino:'Todos los usuarios con notificaciones de novedades activas.',
+    asunto:'Black Sessions ya está activo',
+    resumen:'Anuncia que Black Sessions está disponible. El envío no se puede deshacer y solo ocurre una vez.',
+    textoBtn:'Confirmar y activar',
+    accion:async function(){ await setDoc(doc(db,'config','black_sessions'),{activo:true},{merge:true}); }
+  }); };
+}
+
+// Paso 2: panel de confirmación. Se estructura la notificación y recién
+// aquí, con un botón aparte, se confirma el envío a todos. Evita disparos
+// por accidente desde las tarjetas.
+function confirmarEnvio(o){
+  var html=
+    '<div class="cf-warn">⚠ Esto envía un correo real a <b>todos los usuarios</b>. Revisa los datos y confirma solo si estás segura.</div>'+
+    '<div class="cf-row"><span class="cf-l">Para</span><span class="cf-v">'+esc(o.destino)+'</span></div>'+
+    '<div class="cf-row"><span class="cf-l">Asunto</span><span class="cf-v">'+esc(o.asunto)+'</span></div>'+
+    '<div class="cf-row"><span class="cf-l">Contenido</span><span class="cf-v">'+esc(o.resumen)+'</span></div>'+
+    '<div class="cf-actions">'+
+      '<button class="act neon" id="cf-go">'+esc(o.textoBtn)+'</button>'+
+      '<button class="act ghost" id="cf-cancel">Cancelar</button>'+
+    '</div>'+
+    '<div class="cf-status" id="cf-status"></div>';
+  openDraw(o.kk, o.titulo, html);
+  document.getElementById('cf-cancel').onclick=closeDraw;
+  document.getElementById('cf-go').onclick=async function(){
+    var go=this, st=document.getElementById('cf-status');
+    go.disabled=true; go.textContent='Enviando…';
+    try{ await o.accion();
+      st.innerHTML='<b style="color:#7be0a4">Listo ✓</b> · el correo saldrá en breve.';
+      go.style.display='none';
+      cargarAcciones();
+    }catch(e){
+      st.innerHTML='<b style="color:#ffb4b4">No se pudo: '+esc((e&&e.message)||e)+'</b>';
+      go.disabled=false; go.textContent=o.textoBtn;
+    }
   };
 }
 

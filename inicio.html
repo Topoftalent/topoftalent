@@ -142,7 +142,9 @@ nav.h-nav a.active::before {
 .hero-title {
   font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 700;
-  font-size: clamp(88px, 14vw, 180px);
+  /* El tamaño se limita por ANCHO y por ALTURA: así en tablet horizontal
+     (poca altura) el título no se corta por arriba. */
+  font-size: clamp(56px, min(13vw, 18vh), 180px);
   line-height: .88;
   text-transform: uppercase;
   letter-spacing: -.03em;
@@ -340,6 +342,13 @@ nav.h-nav a.active::before {
   .hero-right { align-items: flex-start; }
   .hero-tagline { text-align: left; }
   body { overflow: auto; }
+}
+/* Pantallas de poca altura (tablet horizontal / laptops cortas): que la
+   marca nunca se corte por arriba. */
+@media (max-height: 820px) {
+  .hero-title { font-size: clamp(44px, min(12vw, 15vh), 150px); }
+  .hero-bottom { margin-top: 22px; }
+  .hero { padding-bottom: 20px; }
 }
 
 
