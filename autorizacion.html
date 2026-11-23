@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Yellowtail&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Petit+Formal+Script&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{--purple:#c86cff}
@@ -50,7 +50,7 @@ select option{background:#141018}
 .nota .i{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1.5px solid #c86cff;color:#c86cff;display:flex;align-items:center;justify-content:center;font-style:italic;font-weight:700;font-size:12px;margin-top:1px}
 .nota b{color:rgba(255,255,255,.85);font-weight:700}
 .firma-prev{margin-top:12px;border:1px dashed rgba(200,108,255,.35);border-radius:11px;min-height:62px;display:flex;align-items:center;justify-content:center;padding:6px 12px;background:rgba(200,108,255,.04)}
-.firma-prev span{font-family:'Yellowtail',cursive;font-size:32px;color:#fff;line-height:1.2;text-align:center;word-break:break-word}
+.firma-prev span{font-family:'Petit Formal Script',cursive;font-size:30px;color:#fff;line-height:1.35;text-align:center;word-break:break-word}
 .firma-prev.empty::before{content:'Tu firma aparecerá aquí en cursiva';font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
 .clausulas{margin-top:26px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 22px}
 .clausulas .ct{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c86cff;margin-bottom:14px}
@@ -73,7 +73,7 @@ select option{background:#141018}
 #pdfdoc .fz{margin-top:32px;display:flex;gap:40px}
 #pdfdoc .fb{flex:1}
 #pdfdoc .fl{border-bottom:1.5px solid #4a3d66;min-height:50px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
-#pdfdoc .cursiva{font-family:'Yellowtail',cursive;font-size:28px;color:#1a1340;line-height:1.25}
+#pdfdoc .cursiva{font-family:'Petit Formal Script',cursive;font-size:24px;color:#1a1340;line-height:1.35}
 #pdfdoc .fc{font-size:11px;color:#8678a0;text-align:center;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
 #pdfdoc .sl{font-size:10px;color:#9a8fb3;text-align:center;margin-top:3px}
 #pdfdoc .ff{margin-top:26px;border-top:1px solid #e0d7f0;padding-top:8px;font-size:9px;color:#9a8fb3;text-align:center}
@@ -156,7 +156,19 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function showState(h){document.getElementById('form').classList.add('hidden');var s=document.getElementById('state');s.classList.remove('hidden');s.innerHTML=h;}
 function toggleC(){document.getElementById('consent').classList.toggle('on');}
 (function(){var f=document.getElementById('firma');if(f)f.addEventListener('input',function(){var p=document.getElementById('firmaPrev');document.getElementById('firma-cursiva').textContent=this.value;if(this.value.trim())p.classList.remove('empty');else p.classList.add('empty');});})();
-window.descargarPdf=function(){var s=window.SIGN||{};document.getElementById('pdf-firma-texto').textContent=s.firma||'—';document.getElementById('pdf-firma-cursiva').textContent=s.firma||'';document.getElementById('pdf-sello').textContent='Firmado el '+(s.fecha||'')+(s.hora?(' · '+s.hora):'');var nombre=(s.firma||'autorizacion').replace(/\s+/g,'-');var opt={margin:[8,8,8,8],filename:'Autorizacion-'+nombre+'-TOT.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};html2pdf().set(opt).from(document.getElementById('pdfdoc')).save();};
+window.descargarPdf=function(){
+  var s=window.SIGN||{};
+  document.getElementById('pdf-firma-texto').textContent=s.firma||'—';
+  document.getElementById('pdf-firma-cursiva').textContent=s.firma||'';
+  document.getElementById('pdf-sello').textContent='Firmado el '+(s.fecha||'')+(s.hora?(' · '+s.hora):'');
+  var el=document.getElementById('pdfdoc');
+  // Lo traemos dentro de la vista (detrás del contenido) para que html2canvas lo capture bien.
+  el.style.left='0'; el.style.top='0'; el.style.zIndex='-1';
+  var nombre=(s.firma||'autorizacion').replace(/\s+/g,'-');
+  var opt={margin:[8,8,8,8],filename:'Autorizacion-'+nombre+'-TOT.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+  function restore(){ el.style.left='-9999px'; el.style.zIndex=''; }
+  setTimeout(function(){ html2pdf().set(opt).from(el).save().then(restore).catch(restore); }, 120);
+};
 </script>
 
 <script type="module">
