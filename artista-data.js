@@ -104,6 +104,33 @@ async function loadArtist() {
           html += '<span class="social-stat" style="opacity:.5;font-size:.82em;letter-spacing:.04em">Actualizado ' + esc(d.stats_fecha) + '</span>';
         }
         socials.innerHTML = html;
+
+        // Leyenda liquid-glass al pasar el mouse por los números
+        if (!document.getElementById('stat-tip')) {
+          var tipStyle = document.createElement('style');
+          tipStyle.textContent = '#stat-tip{position:fixed;z-index:99999;pointer-events:none;max-width:250px;padding:12px 14px;border-radius:16px;background:rgba(22,16,34,.5);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border:1px solid rgba(255,255,255,.2);box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-size:12px;line-height:1.5;opacity:0;transform:translateY(5px);transition:opacity .16s ease,transform .16s ease}#stat-tip.on{opacity:1;transform:translateY(0)}';
+          document.head.appendChild(tipStyle);
+          var tipEl0 = document.createElement('div');
+          tipEl0.id = 'stat-tip';
+          tipEl0.innerHTML = '<div style="font-weight:700;margin-bottom:5px">Cómo leer los números</div>' +
+            '<div><span style="color:#3ddc84">● Verde</span> subió &nbsp; <span style="color:#ff6b6b">● Rojo</span> bajó</div>' +
+            '<div style="opacity:.8;margin-top:5px">Es respecto a la última actualización. El número es el total actual, no cuánto subió o bajó.</div>';
+          document.body.appendChild(tipEl0);
+        }
+        if (!socials.dataset.tip) {
+          socials.dataset.tip = '1';
+          socials.style.cursor = 'help';
+          var tipEl = document.getElementById('stat-tip');
+          socials.addEventListener('mousemove', function (e) {
+            tipEl.classList.add('on');
+            var x = e.clientX + 16, y = e.clientY + 18;
+            if (x + 260 > window.innerWidth) x = e.clientX - 260;
+            if (y + 130 > window.innerHeight) y = e.clientY - 130;
+            tipEl.style.left = x + 'px';
+            tipEl.style.top = y + 'px';
+          });
+          socials.addEventListener('mouseleave', function () { tipEl.classList.remove('on'); });
+        }
       }
     }
 
