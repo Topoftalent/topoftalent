@@ -69,18 +69,41 @@ async function loadArtist() {
       }
     }
 
-    // ── HERO · social stats ───────────────────────────────────────
+    // ── HERO · social stats (estilo "stock": color según cambio) ──
+    // Cada métrica se compara con su valor anterior (<campo>_prev).
+    // Sube -> verde con ▲ ; baja -> rojo con ▼ ; igual o sin previo -> normal.
     var socials = document.querySelector('.hero-socials');
     if (socials) {
+      var statNum = function (s) {
+        if (s == null) return null;
+        var m = String(s).replace(/\s/g, '').match(/([\d.,]+)\s*([kKmM]?)/);
+        if (!m) return null;
+        var n = parseFloat(m[1].replace(/,/g, ''));
+        if (isNaN(n)) return null;
+        var u = (m[2] || '').toLowerCase();
+        if (u === 'k') n *= 1e3; else if (u === 'm') n *= 1e6;
+        return n;
+      };
+      var cell = function (label, val, prev, suffix) {
+        var a = statNum(val), b = statNum(prev), dir = 0;
+        if (a != null && b != null) { if (a > b) dir = 1; else if (a < b) dir = -1; }
+        var color = dir > 0 ? '#3ddc84' : dir < 0 ? '#ff6b6b' : '';
+        var arrow = dir > 0 ? ' <span style="font-size:.72em;vertical-align:1px">▲</span>'
+                  : dir < 0 ? ' <span style="font-size:.72em;vertical-align:1px">▼</span>' : '';
+        var style = color ? ' style="color:' + color + '"' : '';
+        return label + ' <strong' + style + '>' + esc(val) + arrow + '</strong>' + (suffix || '');
+      };
       var rows = [];
-      if (d.ig_seguidores)   rows.push('INSTAGRAM <strong>' + esc(d.ig_seguidores) + '</strong>');
-      if (d.spotify_oyentes) rows.push('SPOTIFY <strong>' + esc(d.spotify_oyentes) + '</strong> oyentes/mes');
-      if (d.youtube_subs)    rows.push('YOUTUBE <strong>' + esc(d.youtube_subs) + '</strong> subs');
-      if (d.tiktok)          rows.push('TIKTOK <strong>' + esc(d.tiktok) + '</strong>');
+      if (d.ig_seguidores)   rows.push(cell('INSTAGRAM', d.ig_seguidores, d.ig_seguidores_prev, ''));
+      if (d.spotify_oyentes) rows.push(cell('SPOTIFY', d.spotify_oyentes, d.spotify_oyentes_prev, ' oyentes/mes'));
+      if (d.youtube_subs)    rows.push(cell('YOUTUBE', d.youtube_subs, d.youtube_subs_prev, ' subs'));
+      if (d.tiktok)          rows.push(cell('TIKTOK', d.tiktok, d.tiktok_prev, ''));
       if (rows.length) {
-        socials.innerHTML = rows.map(function(r) {
-          return '<span class="social-stat">' + r + '</span>';
-        }).join('');
+        var html = rows.map(function (r) { return '<span class="social-stat">' + r + '</span>'; }).join('');
+        if (d.stats_fecha) {
+          html += '<span class="social-stat" style="opacity:.5;font-size:.82em;letter-spacing:.04em">Actualizado ' + esc(d.stats_fecha) + '</span>';
+        }
+        socials.innerHTML = html;
       }
     }
 
