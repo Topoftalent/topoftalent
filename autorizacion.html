@@ -206,9 +206,6 @@ async function cargar(){
   var base='<option value="">— Elige tu nombre —</option><optgroup label="Artistas del Top">';
   TOP.forEach(function(a){ var v='top:'+a.id; LISTA[v]={tipo:'top',id:a.id,nombre:a.name,ficha:'/'+a.slug}; base+='<option value="'+v+'">'+esc(a.name)+'</option>'; });
   base+='</optgroup>';
-  // Entrada de prueba temporal (quitar luego). No escribe en Firestore.
-  LISTA['demo:camila']={tipo:'demo',id:'demo-camila',nombre:'Camila Solano',ficha:'/talento'};
-  base+='<optgroup label="Prueba (temporal)"><option value="demo:camila">XCAAAAM (prueba)</option></optgroup>';
   sel.innerHTML=base; preselec();
   // 2) Otros Talentos desde Firestore (se agregan al terminar)
   try{
