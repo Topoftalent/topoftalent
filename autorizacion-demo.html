@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autorización · Demo de firma · Top of Talent</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root{
+    --morado:#6a2fb5; --morado-claro:#c86cff; --tinta:#1d1630;
+    --papel:#ffffff; --fondo:#2a1a44; --linea:#e0d7f0; --suave:#faf7ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:Arial,Helvetica,sans-serif; color:var(--tinta);
+    background:linear-gradient(135deg,#150e26,#2a1a44); min-height:100vh;
+    padding:24px 16px; line-height:1.55; font-size:15px;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  .intro{color:#e9d9ff;text-align:center;margin-bottom:18px;}
+  .intro h1{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
+  .intro p{font-size:13px;color:#c7b3e8;}
+
+  /* El documento (lo que se descarga) */
+  .doc{
+    background:var(--papel); border-radius:10px; padding:38px 40px 34px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+  }
+  .doc-head{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--morado);padding-bottom:14px;margin-bottom:20px;}
+  .doc-head .brand{font-weight:700;font-size:15px;color:var(--morado);letter-spacing:.3px;}
+  .doc-head .tag{font-size:10px;color:#8678a0;text-transform:uppercase;letter-spacing:1px;}
+  h2.titulo{font-size:19px;color:var(--fondo);margin-bottom:4px;}
+  .sub{font-size:12px;color:#8678a0;margin-bottom:18px;}
+  .doc p{margin:9px 0;font-size:13.5px;text-align:justify;}
+  .doc b{color:var(--fondo);}
+  .datos{background:var(--suave);border-radius:8px;padding:12px 15px;margin:16px 0;font-size:13px;}
+  .datos .fila{display:flex;justify-content:space-between;padding:3px 0;}
+  .datos .fila span:first-child{color:#8678a0;}
+  .datos .fila span:last-child{font-weight:700;color:var(--fondo);}
+  ol.clausulas{margin:10px 0 10px 20px;}
+  ol.clausulas li{font-size:13px;margin:7px 0;text-align:justify;}
+
+  /* Firma */
+  .firma-zona{margin-top:26px;display:flex;gap:30px;align-items:flex-end;flex-wrap:wrap;}
+  .firma-box{flex:1;min-width:220px;}
+  .firma-linea{
+    border-bottom:1.5px solid #4a3d66; min-height:52px; display:flex;align-items:flex-end;
+    justify-content:center; padding-bottom:4px;
+  }
+  .firma-cursiva{font-family:'Dancing Script',cursive;font-size:34px;color:#1a1340;line-height:1;}
+  .firma-cap{font-size:11px;color:#8678a0;text-align:center;margin-top:6px;text-transform:uppercase;letter-spacing:.5px;}
+  .sello{font-size:10px;color:#9a8fb3;text-align:center;margin-top:3px;}
+
+  /* Controles (no se descargan) */
+  .panel{background:#fff;border-radius:10px;padding:20px 22px;margin-top:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+  .panel h3{font-size:14px;color:var(--fondo);margin-bottom:12px;}
+  label.campo{display:block;font-size:12px;color:#6a5d85;margin:10px 0 4px;font-weight:700;}
+  input[type=text]{width:100%;padding:11px 13px;border:1.5px solid var(--linea);border-radius:8px;font-size:15px;font-family:Arial,sans-serif;}
+  input[type=text]:focus{outline:none;border-color:var(--morado-claro);}
+  .check{display:flex;gap:9px;align-items:flex-start;margin:14px 0;font-size:13px;color:#4a3d66;}
+  .check input{margin-top:3px;transform:scale(1.2);}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+  button{font-family:Arial,sans-serif;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:12px 20px;cursor:pointer;}
+  .b-firmar{background:var(--morado);color:#fff;}
+  .b-firmar:disabled{background:#c9bfe0;cursor:not-allowed;}
+  .b-pdf{background:#12a56f;color:#fff;display:none;}
+  .b-reset{background:#f0ecf7;color:#6a5d85;}
+  .ok{display:none;background:#eafaf2;color:#0a6b48;border-radius:8px;padding:11px 14px;margin-top:12px;font-size:13px;font-weight:700;}
+  .aviso{font-size:11px;color:#c7b3e8;text-align:center;margin-top:16px;}
+
+  @media(max-width:520px){ .doc{padding:26px 20px;} .firma-cursiva{font-size:28px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>Demostración de firma</h1>
+    <p>Escribe tu nombre, firma y descarga el respaldo. Así lo recibiría el artista y lo tendrías tú.</p>
+  </div>
+
+  <!-- DOCUMENTO -->
+  <div class="doc" id="documento">
+    <div class="doc-head">
+      <span class="brand">TOP OF TALENT</span>
+      <span class="tag">Documento de autorización</span>
+    </div>
+    <h2 class="titulo">Autorización de uso de nombre, imagen y obra</h2>
+    <div class="sub">topoftalentoficial.com · Ecuador</div>
+
+    <p>Por medio del presente documento, yo, <b id="nombre-texto">Camila Solano</b>, en mi calidad de talento, autorizo de manera libre y voluntaria a <b>Top of Talent</b> para los fines que se detallan a continuación.</p>
+
+    <div class="datos">
+      <div class="fila"><span>Nombre del talento</span><span id="d-nombre">Camila Solano</span></div>
+      <div class="fila"><span>Documento</span><span id="d-doc">—</span></div>
+      <div class="fila"><span>Fecha de firma</span><span id="d-fecha">—</span></div>
+    </div>
+
+    <ol class="clausulas">
+      <li>Autorizo el uso de mi <b>nombre e imagen</b> dentro de la plataforma Top of Talent y sus canales oficiales, con fines de difusión y promoción de mi perfil artístico.</li>
+      <li>Autorizo la publicación de mi <b>contenido artístico</b> (fotografías, música, videos y material promocional) en mi ficha dentro de la plataforma.</li>
+      <li>Reconozco que conservo la <b>titularidad</b> de mi obra. Esta autorización no transfiere la propiedad de mis derechos, únicamente permite su difusión en la plataforma.</li>
+      <li>Puedo <b>revocar</b> esta autorización en cualquier momento mediante solicitud escrita a Top of Talent.</li>
+      <li>Declaro que la información entregada es veraz y que firmo este documento de forma consciente y voluntaria.</li>
+    </ol>
+
+    <div class="firma-zona">
+      <div class="firma-box">
+        <div class="firma-linea"><span class="firma-cursiva" id="firma-visual"></span></div>
+        <div class="firma-cap">Firma del talento</div>
+        <div class="sello" id="firma-sello"></div>
+      </div>
+      <div class="firma-box">
+        <div class="firma-linea"><span class="firma-cursiva" style="font-family:Arial;font-size:13px;color:#8678a0;">Top of Talent</span></div>
+        <div class="firma-cap">Por la plataforma</div>
+        <div class="sello">Registro automático</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL DE FIRMA (no entra al PDF) -->
+  <div class="panel" id="panel">
+    <h3>Firmar documento</h3>
+    <label class="campo" for="in-nombre">Nombre completo</label>
+    <input type="text" id="in-nombre" value="Camila Solano" autocomplete="off">
+    <label class="campo" for="in-doc">Documento / cédula (opcional)</label>
+    <input type="text" id="in-doc" placeholder="Ej. 0102030405" autocomplete="off">
+    <label class="campo" for="in-firma">Tu firma (escribe tu nombre tal como quieres que aparezca)</label>
+    <input type="text" id="in-firma" placeholder="Escribe aquí para firmar" autocomplete="off">
+    <div class="check">
+      <input type="checkbox" id="acepto">
+      <label for="acepto">He leído y acepto el contenido de esta autorización.</label>
+    </div>
+    <div class="btns">
+      <button class="b-firmar" id="btn-firmar" disabled>Firmar</button>
+      <button class="b-pdf" id="btn-pdf">Descargar respaldo (PDF)</button>
+      <button class="b-reset" id="btn-reset">Reiniciar</button>
+    </div>
+    <div class="ok" id="ok">Firmado correctamente. Ya puedes descargar tu respaldo en PDF.</div>
+  </div>
+
+  <div class="aviso">Demo interna de Top of Talent · documento de prueba</div>
+</div>
+
+<script>
+  var inNombre=document.getElementById('in-nombre');
+  var inDoc=document.getElementById('in-doc');
+  var inFirma=document.getElementById('in-firma');
+  var acepto=document.getElementById('acepto');
+  var btnFirmar=document.getElementById('btn-firmar');
+  var btnPdf=document.getElementById('btn-pdf');
+  var btnReset=document.getElementById('btn-reset');
+  var ok=document.getElementById('ok');
+
+  function sync(){
+    var n=inNombre.value.trim()||'Camila Solano';
+    document.getElementById('nombre-texto').textContent=n;
+    document.getElementById('d-nombre').textContent=n;
+    document.getElementById('d-doc').textContent=inDoc.value.trim()||'—';
+    // La firma en cursiva refleja lo que se escribe en el campo de firma
+    document.getElementById('firma-visual').textContent=inFirma.value.trim();
+    // Habilitar botón solo si hay firma y aceptó
+    btnFirmar.disabled=!(inFirma.value.trim().length>=2 && acepto.checked);
+  }
+  [inNombre,inDoc,inFirma].forEach(function(el){el.addEventListener('input',sync);});
+  acepto.addEventListener('change',sync);
+
+  function hoy(){
+    var d=new Date();
+    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return d.getDate()+' de '+meses[d.getMonth()]+' de '+d.getFullYear();
+  }
+
+  btnFirmar.addEventListener('click',function(){
+    var fecha=hoy();
+    document.getElementById('d-fecha').textContent=fecha;
+    var sello='Firmado el '+fecha+' · '+new Date().toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('firma-sello').textContent=sello;
+    ok.style.display='block';
+    btnPdf.style.display='inline-block';
+    // Bloquear edición tras firmar
+    inNombre.disabled=inDoc.disabled=inFirma.disabled=acepto.disabled=true;
+    btnFirmar.disabled=true;
+  });
+
+  btnPdf.addEventListener('click',function(){
+    var nombre=(inNombre.value.trim()||'Camila-Solano').replace(/\s+/g,'-');
+    var opt={
+      margin:[8,8,8,8],
+      filename:'Autorizacion-'+nombre+'-TOT.pdf',
+      image:{type:'jpeg',quality:0.98},
+      html2canvas:{scale:2,backgroundColor:'#ffffff'},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    };
+    html2pdf().set(opt).from(document.getElementById('documento')).save();
+  });
+
+  btnReset.addEventListener('click',function(){
+    inNombre.disabled=inDoc.disabled=inFirma.disabled=acepto.disabled=false;
+    inNombre.value='Camila Solano'; inDoc.value=''; inFirma.value=''; acepto.checked=false;
+    document.getElementById('d-fecha').textContent='—';
+    document.getElementById('firma-sello').textContent='';
+    ok.style.display='none'; btnPdf.style.display='none';
+    sync();
+  });
+
+  sync();
+</script>
+</body>
+</html>
