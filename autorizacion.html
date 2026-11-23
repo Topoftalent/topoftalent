@@ -162,12 +162,18 @@ window.descargarPdf=function(){
   document.getElementById('pdf-firma-cursiva').textContent=s.firma||'';
   document.getElementById('pdf-sello').textContent='Firmado el '+(s.fecha||'')+(s.hora?(' · '+s.hora):'');
   var el=document.getElementById('pdfdoc');
-  // Lo traemos dentro de la vista (detrás del contenido) para que html2canvas lo capture bien.
-  el.style.left='0'; el.style.top='0'; el.style.zIndex='-1';
+  // html2pdf mide mal un elemento fuera de flujo (daba PDF en blanco).
+  // Lo pasamos a un overlay en flujo normal durante la captura y luego lo devolvemos.
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;z-index:99999;background:#0b0713;overflow:auto;display:flex;justify-content:center;padding:20px';
+  el.style.position='static'; el.style.left='auto'; el.style.top='auto'; el.style.zIndex='';
+  ov.appendChild(el);
+  document.body.appendChild(ov);
+  window.scrollTo(0,0);
   var nombre=(s.firma||'autorizacion').replace(/\s+/g,'-');
-  var opt={margin:[8,8,8,8],filename:'Autorizacion-'+nombre+'-TOT.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
-  function restore(){ el.style.left='-9999px'; el.style.zIndex=''; }
-  setTimeout(function(){ html2pdf().set(opt).from(el).save().then(restore).catch(restore); }, 120);
+  var opt={margin:[8,8,8,8],filename:'Autorizacion-'+nombre+'-TOT.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+  function restore(){ try{document.body.removeChild(ov);}catch(e){} el.style.position='fixed'; el.style.left='-9999px'; el.style.top='0'; document.body.appendChild(el); }
+  setTimeout(function(){ html2pdf().set(opt).from(el).save().then(restore).catch(restore); }, 160);
 };
 </script>
 
