@@ -7,7 +7,8 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{--purple:#c86cff}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -48,6 +49,34 @@ select option{background:#141018}
 .nota{margin-top:22px;display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.6;color:rgba(255,255,255,.6)}
 .nota .i{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1.5px solid #c86cff;color:#c86cff;display:flex;align-items:center;justify-content:center;font-style:italic;font-weight:700;font-size:12px;margin-top:1px}
 .nota b{color:rgba(255,255,255,.85);font-weight:700}
+.firma-prev{margin-top:12px;border:1px dashed rgba(200,108,255,.35);border-radius:11px;min-height:62px;display:flex;align-items:center;justify-content:center;padding:6px 12px;background:rgba(200,108,255,.04)}
+.firma-prev span{font-family:'Dancing Script',cursive;font-size:36px;color:#fff;line-height:1;text-align:center;word-break:break-word}
+.firma-prev.empty::before{content:'Tu firma aparecerá aquí en cursiva';font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
+.clausulas{margin-top:26px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 22px}
+.clausulas .ct{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c86cff;margin-bottom:14px}
+.clausulas ol{margin-left:18px;display:flex;flex-direction:column;gap:10px}
+.clausulas li{font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+.clausulas li b{color:#fff}
+/* Documento PDF (oculto, se captura para el respaldo descargable) */
+#pdfdoc{position:fixed;left:-9999px;top:0;width:760px;background:#fff;color:#1d1630;font-family:Arial,Helvetica,sans-serif;padding:44px 48px}
+#pdfdoc .ph{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #6a2fb5;padding-bottom:14px;margin-bottom:20px}
+#pdfdoc .ph .brand{display:flex;align-items:center;gap:10px}
+#pdfdoc .ph img{width:30px;height:30px}
+#pdfdoc .ph .bn{font-weight:700;font-size:15px;color:#6a2fb5;letter-spacing:.3px}
+#pdfdoc .ph .tg{font-size:10px;color:#8678a0;text-transform:uppercase;letter-spacing:1px}
+#pdfdoc h3{font-size:19px;color:#2a1a44;margin-bottom:4px}
+#pdfdoc .u{font-size:12px;color:#8678a0;margin-bottom:16px}
+#pdfdoc p{font-size:13px;line-height:1.55;margin:9px 0;text-align:justify}
+#pdfdoc b{color:#2a1a44}
+#pdfdoc ol{margin:12px 0 12px 20px;display:flex;flex-direction:column;gap:7px}
+#pdfdoc ol li{font-size:12.5px;line-height:1.5;text-align:justify}
+#pdfdoc .fz{margin-top:32px;display:flex;gap:40px}
+#pdfdoc .fb{flex:1}
+#pdfdoc .fl{border-bottom:1.5px solid #4a3d66;min-height:50px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+#pdfdoc .cursiva{font-family:'Dancing Script',cursive;font-size:32px;color:#1a1340;line-height:1}
+#pdfdoc .fc{font-size:11px;color:#8678a0;text-align:center;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+#pdfdoc .sl{font-size:10px;color:#9a8fb3;text-align:center;margin-top:3px}
+#pdfdoc .ff{margin-top:26px;border-top:1px solid #e0d7f0;padding-top:8px;font-size:9px;color:#9a8fb3;text-align:center}
 .hidden{display:none}
 </style>
 </head>
@@ -73,9 +102,21 @@ select option{background:#141018}
       <label class="label">Confirma tu nombre (firma)</label>
       <input type="text" id="firma" placeholder="Escribe tu nombre real completo" autocomplete="off">
       <div class="hint">Tu nombre y apellidos reales (legales), no tu nombre artístico. Ej.: seleccionas XCAAAAM y firmas CAMILA ISABEL SOLANO CÓRDOVA.</div>
+      <div class="firma-prev empty" id="firmaPrev"><span id="firma-cursiva"></span></div>
     </div>
 
     <div class="nota"><span class="i">i</span><div>Este enlace es <b>único para ti y no es público</b>. No lo compartas: cualquiera con el enlace podría firmar en tu nombre. Si tienes algún problema, escríbenos a <b>contactoftalent@gmail.com</b>.</div></div>
+
+    <div class="clausulas">
+      <div class="ct">Lo que autorizas</div>
+      <ol>
+        <li>Autorizo el uso de mi <b>nombre e imagen</b> dentro de la plataforma Top of Talent y sus canales oficiales, con fines de difusión y promoción de mi perfil artístico.</li>
+        <li>Autorizo la publicación de mi <b>contenido artístico</b> (fotografías, música, videos y material promocional) en mi ficha dentro de la plataforma.</li>
+        <li>Reconozco que conservo la <b>titularidad</b> de mi obra. Esta autorización no transfiere la propiedad de mis derechos, únicamente permite su difusión en la plataforma.</li>
+        <li>Puedo <b>revocar</b> esta autorización en cualquier momento mediante solicitud escrita a Top of Talent.</li>
+        <li>Declaro que la información entregada es veraz y que firmo este documento de forma consciente y voluntaria.</li>
+      </ol>
+    </div>
 
     <div class="consent" id="consent" onclick="toggleC()">
       <div class="box"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="#0a0710" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -87,6 +128,25 @@ select option{background:#141018}
   </div>
 </div>
 
+<div id="pdfdoc">
+  <div class="ph"><div class="brand"><img src="logo.png" alt=""><span class="bn">TOP OF TALENT</span></div><span class="tg">Documento de autorización</span></div>
+  <h3>Autorización de uso de nombre, imagen y obra</h3>
+  <div class="u">topoftalentoficial.com · Ecuador</div>
+  <p>Por medio del presente documento, yo, <b id="pdf-firma-texto">—</b>, en mi calidad de talento, autorizo de manera libre y voluntaria a <b>Top of Talent</b> lo siguiente:</p>
+  <ol>
+    <li>Autorizo el uso de mi <b>nombre e imagen</b> dentro de la plataforma Top of Talent y sus canales oficiales, con fines de difusión y promoción de mi perfil artístico.</li>
+    <li>Autorizo la publicación de mi <b>contenido artístico</b> (fotografías, música, videos y material promocional) en mi ficha dentro de la plataforma.</li>
+    <li>Reconozco que conservo la <b>titularidad</b> de mi obra. Esta autorización no transfiere la propiedad de mis derechos, únicamente permite su difusión en la plataforma.</li>
+    <li>Puedo <b>revocar</b> esta autorización en cualquier momento mediante solicitud escrita a Top of Talent.</li>
+    <li>Declaro que la información entregada es veraz y que firmo este documento de forma consciente y voluntaria.</li>
+  </ol>
+  <div class="fz">
+    <div class="fb"><div class="fl"><span class="cursiva" id="pdf-firma-cursiva"></span></div><div class="fc">Firma del talento</div><div class="sl" id="pdf-sello"></div></div>
+    <div class="fb"><div class="fl"><span style="font-family:Arial;font-size:12px;color:#8678a0">Top of Talent</span></div><div class="fc">Por la plataforma</div><div class="sl">Registro automático</div></div>
+  </div>
+  <div class="ff">Documento generado por Top of Talent · topoftalentoficial.com</div>
+</div>
+
 <script>
 var cur=document.getElementById('cur'),crng=document.getElementById('crng');
 var mx=0,my=0,rx=0,ry=0;
@@ -95,6 +155,8 @@ document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function showState(h){document.getElementById('form').classList.add('hidden');var s=document.getElementById('state');s.classList.remove('hidden');s.innerHTML=h;}
 function toggleC(){document.getElementById('consent').classList.toggle('on');}
+(function(){var f=document.getElementById('firma');if(f)f.addEventListener('input',function(){var p=document.getElementById('firmaPrev');document.getElementById('firma-cursiva').textContent=this.value;if(this.value.trim())p.classList.remove('empty');else p.classList.add('empty');});})();
+window.descargarPdf=function(){var s=window.SIGN||{};document.getElementById('pdf-firma-texto').textContent=s.firma||'—';document.getElementById('pdf-firma-cursiva').textContent=s.firma||'';document.getElementById('pdf-sello').textContent='Firmado el '+(s.fecha||'')+(s.hora?(' · '+s.hora):'');var nombre=(s.firma||'autorizacion').replace(/\s+/g,'-');var opt={margin:[8,8,8,8],filename:'Autorizacion-'+nombre+'-TOT.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};html2pdf().set(opt).from(document.getElementById('pdfdoc')).save();};
 </script>
 
 <script type="module">
@@ -126,6 +188,9 @@ async function cargar(){
   var base='<option value="">— Elige tu nombre —</option><optgroup label="Artistas del Top">';
   TOP.forEach(function(a){ var v='top:'+a.id; LISTA[v]={tipo:'top',id:a.id,nombre:a.name,ficha:'/'+a.slug}; base+='<option value="'+v+'">'+esc(a.name)+'</option>'; });
   base+='</optgroup>';
+  // Entrada de prueba temporal (quitar luego). No escribe en Firestore.
+  LISTA['demo:camila']={tipo:'demo',id:'demo-camila',nombre:'Camila Solano',ficha:'/talento'};
+  base+='<optgroup label="Prueba (temporal)"><option value="demo:camila">XCAAAAM (prueba)</option></optgroup>';
   sel.innerHTML=base; preselec();
   // 2) Otros Talentos desde Firestore (se agregan al terminar)
   try{
@@ -150,13 +215,19 @@ window.firmar=async function(){
   if(!ok){ err.textContent='Debes marcar la casilla de autorización.'; return; }
   var art=LISTA[val];
   btn.disabled=true; btn.textContent='Firmando…';
+  var d=new Date();
+  var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var fecha=d.getDate()+' de '+meses[d.getMonth()]+' de '+d.getFullYear();
+  var hora=d.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+  window.SIGN={nombre:art.nombre, firma:firma, fecha:fecha, hora:hora};
   try{
-    await addDoc(collection(db,'autorizaciones'),{
-      tipo:art.tipo, artistaId:art.id, nombre:art.nombre, firma:firma,
-      autorizado:true, at:serverTimestamp(), ua:navigator.userAgent.slice(0,180)
-    });
-    showState('<div class="big">✓</div><h2>¡Gracias, '+esc(art.nombre)+'!</h2><p>Tu autorización quedó registrada. Bienvenido oficialmente a Top of Talent.<br>Te llevamos a tu ficha…</p><button onclick="location.href=\''+art.ficha+'\'">Ver mi ficha</button>');
-    setTimeout(function(){ location.href=art.ficha; }, 3200);
+    if(art.tipo!=='demo'){
+      await addDoc(collection(db,'autorizaciones'),{
+        tipo:art.tipo, artistaId:art.id, nombre:art.nombre, firma:firma,
+        autorizado:true, at:serverTimestamp(), ua:navigator.userAgent.slice(0,180)
+      });
+    }
+    showState('<div class="big">✓</div><h2>¡Gracias, '+esc(art.nombre)+'!</h2><p>Tu autorización quedó registrada. Descarga tu respaldo en PDF y bienvenido oficialmente a Top of Talent.</p><button onclick="descargarPdf()">Descargar respaldo (PDF)</button><button onclick="location.href=\''+art.ficha+'\'" style="background:rgba(255,255,255,.08);color:#fff;margin-left:10px">Ver mi ficha</button>');
   }catch(e){
     console.error(e); btn.disabled=false; btn.textContent='Firmar autorización';
     err.textContent='No se pudo registrar. Intenta de nuevo.';
