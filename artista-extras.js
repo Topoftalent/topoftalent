@@ -469,7 +469,7 @@ function updateScoreBlock(rank, total) {
     '</div>';
   }
 
-  var infoTooltipText = 'El Score TOT refleja el nivel artístico y proyección del artista. Combina la valoración del equipo editorial de Top of Talent, la opinión de críticos del medio musical ecuatoriano, y el respaldo de los fans a través de sus votos. Es un promedio ponderado que se actualiza mensualmente.';
+  var infoTooltipText = 'El Score TOT refleja el nivel artístico y proyección del artista. Combina la valoración del equipo editorial de Top of Talent, la opinión de críticos del medio musical ecuatoriano, y el voto de los fans miembros. Es un promedio ponderado de esas tres partes.';
 
   block.innerHTML =
     '<div class="tot-score-card">' +

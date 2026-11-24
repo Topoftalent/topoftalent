@@ -42,30 +42,11 @@ function revealFadeUps(){
     var rk = d.ranking || d.order;
     if (rankEl && rk) rankEl.textContent = '#' + String(rk).padStart(2, '0') + ' TOP OF TALENT';
 
-    // Specs
+    // Specs: los renderiza artista-data.js, que además inserta el bloque de
+    // barras del Score (#tot-score-block · Fans/Críticos/TOT). No reconstruir
+    // la tabla aquí para no borrar ese bloque.
     var disc = asArr(d.discografia);
     var colab = asArr(d.colaboraciones);
-    var scoreVal = (typeof d.score_tot === 'number') ? d.score_tot : d.score;
-    var specs = [
-      ['Nombre artístico', d.nombre],
-      ['Ciudad de origen', d.ciudad],
-      ['Género musical', d.genero, 'hl'],
-      ['Activo desde', d.activo_desde],
-      ['Tipo', d.tipo],
-      ['Sello', d.sello || d.ep_label],
-      ['Discografía', disc.join(' · ')],
-      ['Colaboraciones', colab.join(' · ')],
-      ['Score Top of Talent', (scoreVal != null ? scoreVal + ' / 100' : ''), 'score']
-    ];
-    var tbl = document.querySelector('.specs-table');
-    if (tbl) {
-      tbl.innerHTML = specs.filter(function(s){ return s[1] != null && String(s[1]).trim() !== ''; }).map(function(s){
-        var v = s[2] === 'score' ? '<span class="spec-highlight" style="font-size:20px;font-weight:700">' + esc(s[1]) + '</span>'
-              : s[2] === 'hl'    ? '<span class="spec-highlight">' + esc(s[1]) + '</span>'
-              : esc(s[1]);
-        return '<tr class="fade-up"><td>' + esc(s[0]) + '</td><td>' + v + '</td></tr>';
-      }).join('');
-    }
 
     // Biografía
     setText('.bio-headline', d.bio_headline);
