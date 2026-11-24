@@ -113,8 +113,8 @@ async function loadArtist() {
           var tipEl0 = document.createElement('div');
           tipEl0.id = 'stat-tip';
           tipEl0.innerHTML = '<div style="font-weight:700;margin-bottom:5px">Cómo leer los números</div>' +
-            '<div><span style="color:#3ddc84">● Verde</span> subió &nbsp; <span style="color:#ff6b6b">● Rojo</span> bajó</div>' +
-            '<div style="opacity:.8;margin-top:5px">Es respecto a la última actualización. El número es el total actual, no cuánto subió o bajó.</div>';
+            '<div><span style="color:#3ddc84">● Verde</span> subió &nbsp; <span style="color:#ff6b6b">● Rojo</span> bajó &nbsp; <span style="opacity:.55">● Blanco</span> igual</div>' +
+            '<div style="opacity:.8;margin-top:5px">El color es respecto a la última actualización. El <strong>blanco</strong> significa que el número no se movió. El número es el total actual, no cuánto subió o bajó.</div>';
           document.body.appendChild(tipEl0);
         }
         if (!socials.dataset.tip) {
