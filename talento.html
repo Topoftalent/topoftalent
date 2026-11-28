@@ -81,6 +81,7 @@ nav.h-nav a.active::before{content:'';position:absolute;bottom:-2px;left:22px;ri
 .carousel-container::-webkit-scrollbar{display:none}
 .carousel-track{display:flex;align-items:center;gap:14px;padding:0 60px;animation:carouselScroll 40s linear infinite;width:max-content}
 .carousel-track.paused{animation-play-state:paused}
+.carousel-track.js-controlled{animation:none;transform:none}
 @keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .artist-card{flex-shrink:0;width:200px;transition:transform .3s ease;border:2px solid transparent;position:relative}
 .artist-card:hover{transform:translateY(-6px);border-color:var(--purple)}
@@ -439,11 +440,49 @@ function showView(view) {
 }
 
 var cont = document.getElementById('carouselContainer');
-var isDrag=false, startX, scrollL;
+var isDrag=false, startX, scrollL, inside=false, ratio=0.5;
 cont.addEventListener('mousedown', function(e) { isDrag=true; startX=e.pageX-cont.offsetLeft; scrollL=cont.scrollLeft; });
-cont.addEventListener('mouseleave', function() { isDrag=false; });
+cont.addEventListener('mouseenter', function() { inside=true; });
+cont.addEventListener('mouseleave', function() { isDrag=false; inside=false; });
 cont.addEventListener('mouseup', function() { isDrag=false; });
-cont.addEventListener('mousemove', function(e) { if(!isDrag) return; e.preventDefault(); cont.scrollLeft=scrollL-(e.pageX-cont.offsetLeft-startX); });
+cont.addEventListener('mousemove', function(e) {
+  var r = cont.getBoundingClientRect();
+  ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  if(isDrag) { e.preventDefault(); cont.scrollLeft=scrollL-(e.pageX-cont.offsetLeft-startX); }
+});
+
+// Navegación de la galería (mouse + trackpad): auto-play cuando el cursor no está
+// encima; borde izquierdo retrocede, borde derecho avanza, centro se detiene para
+// leer. El contenido está duplicado, así el bucle es infinito en ambos sentidos.
+(function(){
+  if (!(window.matchMedia && window.matchMedia('(pointer:fine)').matches)) return;
+  var track = document.getElementById('carouselTrack');
+  if (!cont || !track) return;
+  track.classList.add('js-controlled');
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var BASE = reduce ? 0 : 0.75;   // deriva automática
+  var MAX  = 7;                   // velocidad máxima en los bordes
+  var EDGE = 0.22;                // ancho de la zona activa a cada lado
+  var vel = 0, target = 0;
+  (function run(){
+    if (isDrag)              { vel = 0; }
+    else {
+      if (!inside)                target = BASE;
+      else if (ratio < EDGE)      target = -MAX * (EDGE - ratio) / EDGE;
+      else if (ratio > 1 - EDGE)  target =  MAX * (ratio - (1 - EDGE)) / EDGE;
+      else                        target = 0;
+      vel += (target - vel) * 0.12;
+      if (Math.abs(vel) > 0.01) {
+        var W = (track.scrollWidth / 2) || 1;
+        var s = cont.scrollLeft + vel;
+        if (s >= W) s -= W;
+        if (s < 0)  s += W;
+        cont.scrollLeft = s;
+      }
+    }
+    requestAnimationFrame(run);
+  })();
+})();
 
 // Cursor
 var cur=document.getElementById('cur'), crng=document.getElementById('crng');
